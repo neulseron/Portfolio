@@ -1,2 +1,2 @@
-# Portfolio
-만든거 저장용
+# Portfolio(Shooting)
+단순 슈팅게임
