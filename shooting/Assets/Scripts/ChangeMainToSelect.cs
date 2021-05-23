@@ -5,13 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class ChangeMainToSelect : MonoBehaviour
 {
-    public GameObject level;
-
     LevelManager levelManager;
 
     private void Start() {
-        level = GameObject.Find("LevelManager");
-        levelManager = level.GetComponent<LevelManager>();
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
     }
     
     public void ChangeLevelSelectScene()

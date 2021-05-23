@@ -4,43 +4,36 @@ using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
-    // 매니저
+    [Header("매니저")]
     public GameManager gameManager;
     public ObjectManager objectManager;
+    public GameObject player;
+
+    [Header("보스")]
     Animator animator;
-    //---------------------
-    // enemy 변수
-    public string enemyName;
     public float speed;
     int health;
     int enemyScore;
-    //---------------------
-    // 외부변수
-    public GameObject player;
-    //---------------------
-    // 코드 변수
-    public int[] maxPatternCount;
+
+    [Header("패턴")]
+    public int[] maxPatternCount;   // 패턴 당 반복 횟수
     int currPatternCount;
     int patternIndex;
+
     //=======================
-    // 시스템 함수
     void Awake() 
     {
-        patternIndex = -1;
         animator = GetComponent<Animator>();
     }
 
     void OnEnable() {
-        health = 500;
+        patternIndex = -1;
+        health = 1000;
         speed = 1.5f;
         enemyScore = 2000;
         Invoke("Stop", 2);
     }
 
-    //---------------------
-    // 커스텀 함수
-
-    // ** 보스 **
     void Stop()
     {
         if (!gameObject.activeSelf)
@@ -52,11 +45,10 @@ public class Boss : MonoBehaviour
         Invoke("Think", 2);
     }
 
-    void Think()
+    void Think()    // ** 다음 패턴 **
     {
         currPatternCount = 0;
         patternIndex = patternIndex == 3 ? 0 : patternIndex + 1;
-        //Debug.Log("think"+patternIndex);
 
         switch (patternIndex) {
             case 0:
@@ -144,8 +136,7 @@ public class Boss : MonoBehaviour
 
         currPatternCount++;
 
-        int roundA = 50;
-        int roundB = 40;
+        int roundA = 50, roundB = 40;   // 개수 다르게 해서 가만히 있어도 피하는거 방지
         int roundNum = currPatternCount % 2 == 0 ? roundA : roundB;
 
         for (int i = 0; i < roundNum; i++) {
@@ -167,7 +158,6 @@ public class Boss : MonoBehaviour
             Invoke("Think", 3);
     }
 
-    // ** 공통 **
     void OnTriggerEnter2D(Collider2D other) 
     {
         if (other.gameObject.tag == "PlayerBullet") {
@@ -195,12 +185,9 @@ public class Boss : MonoBehaviour
 
             gameObject.SetActive(false);
             CancelInvoke();
-            gameManager.CallExplosion(transform.position, enemyName);
+            gameManager.CallExplosion(transform.position, "B");
 
-            // boss kill
-            //gameManager.StageEnd();
-
-            if (gameManager.stage != 99)
+            if (gameManager.stage != 99)    // 무한 모드가 아니면 다음 스테이지로
                 gameManager.GameClear();
         }
     }

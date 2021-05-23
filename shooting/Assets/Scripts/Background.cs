@@ -5,8 +5,8 @@ using UnityEngine;
 public class Background : MonoBehaviour
 {
     public float speed;
-    public int startIndex;
-    public int endIndex;
+    public int startIndex;      // 2
+    public int endIndex;        // 0
     //---------------------
     public Transform[] sprites;
     //---------------------
@@ -33,8 +33,7 @@ public class Background : MonoBehaviour
     {
         if (sprites[endIndex].position.y < viewHeight * (-1)) {
             Vector3 backSpritesPos = sprites[startIndex].transform.localPosition;
-            Vector3 frontSpritesPos = sprites[endIndex].transform.localPosition;
-            sprites[endIndex].transform.localPosition = backSpritesPos + Vector3.up * viewHeight;
+            sprites[endIndex].transform.localPosition = backSpritesPos + Vector3.up * viewHeight;   // startIndex위에 갖다 붙임
 
             // 인덱스 교체
             int tmp = startIndex;

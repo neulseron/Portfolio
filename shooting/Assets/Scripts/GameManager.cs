@@ -7,11 +7,12 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
-    // ** stage **
+    [Header("Stage")]
     public int stage;
     bool isEnd;
 
-    // ** UI **
+
+    [Header("UI")]
     public Text scoreTxt;
     public Text highScoreTxt;
     public Text endScoreTxt;
@@ -25,13 +26,15 @@ public class GameManager : MonoBehaviour
     public Animator stageAnim;
     public Animator fadeAnim;
 
-    // ** 컨트롤러 **
+
+    [Header("매니저")]
     public GameObject player;
     Player playerLogic;
     public ObjectManager objectManager;
-    GameObject levelManager;
+    LevelManager levelManager;
 
-    // ** 적 스폰 **
+
+    [Header("Enemy")]
     string[] enemyObjs;
     public Transform[] spawnPoints;
     public float nextSpawnDelay;
@@ -39,8 +42,8 @@ public class GameManager : MonoBehaviour
     public List<Spawn> spawnList;
     public int spawnIndex;
     public bool spawnEnd;
-    //---------------------
     //=====================
+
     private void Awake() {
         playerLogic = player.GetComponent<Player>();
         enemyObjs = new string[] { "EnemyL", "EnemyM", "EnemyS", "Boss", "Star" };
@@ -48,8 +51,8 @@ public class GameManager : MonoBehaviour
     }
 
     private void Start() {
-        levelManager = GameObject.Find("LevelManager");
-        stage = levelManager.GetComponent<LevelManager>().stageNum;
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        stage = levelManager.stageNum;
         StageStart();
     }
     
@@ -68,7 +71,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ** stage **
+
     public void StageStart()
     {
         // fain in
@@ -86,31 +89,15 @@ public class GameManager : MonoBehaviour
 
     public void StageEnd()
     {
-        // ui
-        //clearAnim.SetTrigger("On");
-        //isAnimationActivePause(clearAnim, 3.1f);
-
         // fade out
         fadeAnim.SetTrigger("Out");
 
         // player reposition
         player.transform.position = new Vector3(0, -3.5f, 0);
-
-        /*
-        stage++;
-
-        if (stage > maxStage)
-            GameOver();
-        else {
-            //Pause();
-            Invoke("StageStart", 3);
-        }
-        */
         
         GameOver();
     }
 
-    // ** spqwn enemy **
     void ReadSpawnFile()
     {
         // 초기화
@@ -167,10 +154,12 @@ public class GameManager : MonoBehaviour
         if (enemyPoint == 9) // 랜덤 위치
             enemyPoint = Random.Range(0, 5);
 
+
         GameObject enemy = objectManager.MakeObj(enemyObjs[enemyIndex]);
+        Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
+
         enemy.transform.position = spawnPoints[enemyPoint].position;
         
-        Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
 
         if (enemyIndex == 3) { // 보스
             Boss bossLogic = enemy.GetComponent<Boss>();
@@ -187,15 +176,15 @@ public class GameManager : MonoBehaviour
             enemyLogic.objectManager = objectManager;
             enemyLogic.gameManager = this;
 
-            if (enemyPoint == 5) { // 왼쪽
+            if (enemyPoint == 5) { // 왼쪽->오른쪽
                 rigid.velocity = new Vector2(enemyLogic.speed, -1);
-            } else if (enemyPoint == 6) { // 오른쪽
+            } else if (enemyPoint == 6) { // 오른쪽->왼쪽
                 rigid.velocity = new Vector2(enemyLogic.speed * (-1), -1);
-            } else
+            } else // 아래로
                 rigid.velocity = new Vector2(0, enemyLogic.speed * (-1));
         }
 
-        // 리스폰 인덱스 증가
+        // 다음 스폰
         spawnIndex++;
         if (spawnIndex == spawnList.Count) {
             spawnEnd = true;
@@ -259,23 +248,21 @@ public class GameManager : MonoBehaviour
 
         isEnd = true;
 
-        LevelManager lv = levelManager.GetComponent<LevelManager>();
-
         if (stage == 99) {
-            if (playerLogic.score > lv.unlimitScore)
-                lv.unlimitScore = playerLogic.score;
+            if (playerLogic.score > levelManager.unlimitScore)
+                levelManager.unlimitScore = playerLogic.score;
 
-            over_highScoreTxt.text = "High Score : " + lv.unlimitScore;
+            over_highScoreTxt.text = "High Score : " + levelManager.unlimitScore;
         } else {
             // 별 개수 업데이트
-            if (playerLogic.currStarNum > lv.starCntArr[stage - 1])
-                lv.starCntArr[stage - 1] = playerLogic.currStarNum;
+            if (playerLogic.currStarNum > levelManager.starCntArr[stage - 1])
+                levelManager.starCntArr[stage - 1] = playerLogic.currStarNum;
 
             // 하이스코어 업데이트
-            if (playerLogic.score > lv.highScoreArr[stage - 1])
-                lv.highScoreArr[stage - 1] = playerLogic.score;
+            if (playerLogic.score > levelManager.highScoreArr[stage - 1])
+                levelManager.highScoreArr[stage - 1] = playerLogic.score;
 
-            over_highScoreTxt.text = "High Score : " + lv.highScoreArr[stage - 1];
+            over_highScoreTxt.text = "High Score : " + levelManager.highScoreArr[stage - 1];
         }
             
         over_endScoreTxt.text = "Score : " + playerLogic.score;
@@ -289,38 +276,36 @@ public class GameManager : MonoBehaviour
             return;
 
         isEnd = true;
-        LevelManager lv = levelManager.GetComponent<LevelManager>();
-
         
         // 별 개수 업데이트
-        if (playerLogic.currStarNum > lv.starCntArr[stage - 1])
-            lv.starCntArr[stage - 1] = playerLogic.currStarNum;
+        if (playerLogic.currStarNum > levelManager.starCntArr[stage - 1])
+            levelManager.starCntArr[stage - 1] = playerLogic.currStarNum;
         
-        if (lv.starCntArr[stage - 1] == 3)
-            lv.allClearArr[stage - 1] = true;
+        if (levelManager.starCntArr[stage - 1] == 3)
+            levelManager.allClearArr[stage - 1] = true;
         
         // 하이스코어 업데이트
-        if (playerLogic.score > lv.highScoreArr[stage - 1])
-            lv.highScoreArr[stage - 1] = playerLogic.score;
+        if (playerLogic.score > levelManager.highScoreArr[stage - 1])
+            levelManager.highScoreArr[stage - 1] = playerLogic.score;
 
-        highScoreTxt.text = "High Score : " + lv.highScoreArr[stage - 1];
+        highScoreTxt.text = "High Score : " + levelManager.highScoreArr[stage - 1];
         endScoreTxt.text = "Score : " + playerLogic.score;
 
         gameClear.SetActive(true);
     }
 
+    // 무한 모드 일때 엔딩 화면
     public void GameClear2()
     {
         if (isEnd)
             return;
 
         isEnd = true;
-        LevelManager lv = levelManager.GetComponent<LevelManager>();
 
-        if (playerLogic.score > lv.unlimitScore)
-            lv.unlimitScore = playerLogic.score;
+        if (playerLogic.score > levelManager.unlimitScore)
+            levelManager.unlimitScore = playerLogic.score;
 
-        gameClear2.transform.Find("highScoreTxt").GetComponent<Text>().text = "High Score : " + lv.unlimitScore;
+        gameClear2.transform.Find("highScoreTxt").GetComponent<Text>().text = "High Score : " + levelManager.unlimitScore;
         gameClear2.transform.Find("endScoreTxt").GetComponent<Text>().text = "Score : " + playerLogic.score;
 
         gameClear2.SetActive(true);
@@ -345,8 +330,7 @@ public class GameManager : MonoBehaviour
 
     public void NextStage()
     {
-        LevelManager lv = levelManager.GetComponent<LevelManager>();
-        lv.stageNum++;
+        levelManager.stageNum++;
 
         SceneManager.LoadScene(1);
     }
@@ -359,14 +343,5 @@ public class GameManager : MonoBehaviour
     public void Continue()
     {
         Time.timeScale = 1;
-    }
-
-    void isAnimationActivePause(Animator anim, float exitTime)
-    {
-        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime <= exitTime) {
-            Pause();
-        } else {
-            Continue();
-        }
     }
 }

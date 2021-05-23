@@ -5,14 +5,14 @@ using UnityEngine;
 public class Follwer : MonoBehaviour
 {
     public ObjectManager objectManager;
-    public Transform parent;
     //---------------------
     public float maxShotDelay;
     float curShotDelay;
-    int followDelay;
 
+    public Transform parent;
     Vector3 followPos;
     Queue<Vector3> parentPos;
+    int followDelay;
     //=====================
     void Awake() 
     {
@@ -27,7 +27,7 @@ public class Follwer : MonoBehaviour
         Fire();
         Reload();
     }
-    //---------------------
+
     void Watch()
     {
         if (!parentPos.Contains(parent.position))
@@ -39,16 +39,10 @@ public class Follwer : MonoBehaviour
             followPos = parent.position;
     }
 
-    void Follow()
-    {
-        transform.position = followPos;
-    }
+    void Follow()    { transform.position = followPos; }
 
     void Fire()
     {
-        //if (!Input.GetButton("Fire1"))
-            //return;
-
         if (curShotDelay < maxShotDelay)
             return;
 
@@ -61,8 +55,5 @@ public class Follwer : MonoBehaviour
         curShotDelay = 0;
     }
 
-    void Reload()
-    {
-        curShotDelay += Time.deltaTime;
-    }
+    void Reload()    { curShotDelay += Time.deltaTime; }
 }

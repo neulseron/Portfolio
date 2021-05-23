@@ -8,7 +8,6 @@ public class Item : MonoBehaviour
     
     Rigidbody2D rigid;
 
-    // Start is called before the first frame update
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();

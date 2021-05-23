@@ -4,41 +4,45 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("매니저")]
     public GameManager gameManager;
     public ObjectManager objectManager;
+
+
+    [Header("Player")]
     Animator animator;
     SpriteRenderer spriteRenderer;
-    //---------------------
-    // player 자체 변수
     public float speed;
+    public int score;
+    int life;
+    public Transform firePos;
+    public bool isHit;
+    public bool isRespawnTime;
+
+
+    [Header("Item")]
     public int power; // 파워 단계
     int MaxPower;
     public int boom; // 폭탄 개수
+    bool isBoomTIme;
     int MaxBoom;
-    public int score; // 외부 변수 사용
-    int life;
-    public Transform firePos;
-    //---------------------
-    // 코드 변수
     public GameObject boomEffect;
+    public GameObject[] followers;
+
+
+    [Header("Fire")]
+    // 코드 변수
     float curShotDelay;
     public float maxShotDelay;
-    public GameObject[] followers;
     string[] powerBullets;
-    //---------------------
-    bool isTop;
-    bool isBottom;
-    bool isLeft;
-    bool isRight;
-    public bool isHit;
-    bool isBoomTIme;
-    public bool isRespawnTime;
+
+
+    [Header("Move")]
+    bool isTop, isBottom, isLeft, isRight;      // 경계에 닿았는지 여부
     public bool[] joyControl;
     public bool isControl;
-    public bool isBtnA;
-    public bool isBtnB;
+    public bool isBtnA, isBtnB;
     //---------------------
-    GameObject levelManager;
     public int currStarNum;
     //=====================
     void Awake() 
@@ -49,30 +53,24 @@ public class Player : MonoBehaviour
         MaxBoom = 2;
         MaxPower = 6;
         life = 3;
-        //isRespawnTime = true;
     }
 
-    private void OnEnable() {
+    void OnEnable() {
+        // 시작할때 무적
         Unbeatable();
         Invoke("Unbeatable", 3);
     }
 
-    private void Start() {
-        levelManager = GameObject.Find("LevelManager");
-    }
-
     void Unbeatable()
     {
-        //Debug.Log(isRespawnTime);
         isRespawnTime = !isRespawnTime;
+
         if (isRespawnTime) {
             spriteRenderer.color = new Color(1, 1, 1, 0.5f);
             for (int i = 0; i < followers.Length; i++) {
                 followers[i].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
             }
         } else {
-            isRespawnTime = false;
-
             spriteRenderer.color = new Color(1, 1, 1, 1);
             for (int i = 0; i < followers.Length; i++) {
                 followers[i].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
@@ -95,23 +93,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void JoyDown()
-    {
-        isControl = true;
-    }
+    public void JoyDown()    { isControl = true; }
 
-    public void JoyUp()
-    {
-        isControl = false;
-    }
+    public void JoyUp()    { isControl = false; }
 
     void Move()
     {
-        // keyboard
-        //float h = Input.GetAxisRaw("Horizontal");
-        //float v = Input.GetAxisRaw("Vertical");
-
-        float h = 0; float v = 0;
+        float h = 0, v = 0;
 
         // joypanel
         if (joyControl[0]) { h = -1; v = 1; }
@@ -134,7 +122,6 @@ public class Player : MonoBehaviour
         transform.position = curPos + nextPos;
 
         // animation
-        //if (Input.GetButtonDown("Horizontal") || Input.GetButtonUp("Horizontal")) {
         if (h == 1 || h == -1 || h == 0) {
             animator.SetInteger("Input", (int)h);
         }
@@ -143,11 +130,10 @@ public class Player : MonoBehaviour
     public void BtnADown()  { isBtnA = true; }
     public void BtnAUp()    { isBtnA = false; }
     public void BtnBDown()  { isBtnB = true; }
-    public void BtnBUp()  { isBtnB = false; }
+    public void BtnBUp()    { isBtnB = false; }
 
     void Fire()
     {
-        //if (!Input.GetButton("Fire1"))
         if (!isBtnA)
             return;
 
@@ -168,7 +154,6 @@ public class Player : MonoBehaviour
 
     void Boom()
     {
-        //if (!Input.GetButton("Fire2"))
         if (!isBtnB)
             return;
 
@@ -182,10 +167,10 @@ public class Player : MonoBehaviour
         isBoomTIme = true;
         gameManager.UpdateBoom(boom);
 
-
         boomEffect.SetActive(true);
         Invoke("OffBoomEffect", 2f);
 
+        // 필드에 나와있는 몬스터 제거
         GameObject[] enemiesL = objectManager.GetPool("EnemyL");
         GameObject[] enemiesM = objectManager.GetPool("EnemyM");
         GameObject[] enemiesS = objectManager.GetPool("EnemyS");
@@ -211,6 +196,7 @@ public class Player : MonoBehaviour
             }
         }
 
+        // 필드에 나와있는 총알 제거
         GameObject[] bulletsA = objectManager.GetPool("EnemyBulletA");
         GameObject[] bulletsB = objectManager.GetPool("EnemyBulletB");
 
@@ -291,7 +277,6 @@ public class Player : MonoBehaviour
             }
             other.gameObject.SetActive(false);
         } else if (other.gameObject.tag == "Star") { // ** 별
-            LevelManager lv = levelManager.GetComponent<LevelManager>();
             currStarNum++;
             other.gameObject.SetActive(false);
         }

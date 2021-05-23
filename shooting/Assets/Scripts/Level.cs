@@ -8,18 +8,16 @@ public class Level : MonoBehaviour
     public int myLevel;
     public Image[] stars;
 
-    GameObject levelManager;
-    LevelManager lv;
+    LevelManager levelManager;
 
     private void Start() {
-        levelManager = GameObject.Find("LevelManager");
-        lv = levelManager.GetComponent<LevelManager>();
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 
-        for (int i = 0; i < lv.starCntArr[myLevel]; i++) {
-            if (lv.allClearArr[myLevel] == true)
-                stars[i].sprite = lv.clearStar;
+        for (int i = 0; i < levelManager.starCntArr[myLevel]; i++) {
+            if (levelManager.allClearArr[myLevel] == true)
+                stars[i].sprite = levelManager.clearStar;
             else
-                stars[i].sprite = lv.starOn;
+                stars[i].sprite = levelManager.starOn;
         }
     }
 }

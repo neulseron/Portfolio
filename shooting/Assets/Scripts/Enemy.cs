@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // 매니저
+    [Header("매니저")]
     public GameManager gameManager;
     public ObjectManager objectManager;
+    [HideInInspector]
+    public GameObject player;
+
+
+    [Header("Enemy")]
     SpriteRenderer spriteRenderer;
-    //---------------------
-    // enemy 변수
     public string enemyName;
     public string bulletName;
     public float speed;
     int health;
     int enemyScore;
     public Sprite[] sprites;
-    //---------------------
-    // 외부변수
-    public GameObject player;
-    //---------------------
-    // 코드 변수
-    string[] items;
+
+
+    [Header("Fire")]
     float maxShotDelay;
     float curShotDelay;
-    //=======================
-    // 시스템 함수
+
+
+    [Header("Etc")]
+    string[] items;
+    
+    //============================
     void Awake() 
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -38,17 +42,17 @@ public class Enemy : MonoBehaviour
                 health = 50;
                 speed = 1;
                 enemyScore = 500;
-                maxShotDelay = 0.7f;
+                maxShotDelay = 5;
                 break;
             case "M":
                 health = 10;
-                speed = 3;
+                speed = 4;
                 enemyScore = 200;
                 //maxShotDelay = 1;
                 break;
             case "S":
                 health = 5;
-                speed = 1;
+                speed = 1.5f;
                 enemyScore = 100;
                 maxShotDelay = 3;
                 break;
@@ -57,16 +61,12 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {   
-        if (enemyName != "M") {
+        if (enemyName != "M") { // M은 지나가기만
             Fire();
             Reload();
         }
     }
     
-    //---------------------
-    // 커스텀 함수
-
-    // ** 일반 **
     void Fire()
     {
         if (curShotDelay < maxShotDelay)
@@ -78,26 +78,16 @@ public class Enemy : MonoBehaviour
         Rigidbody2D bulletRigid = bullet.GetComponent<Rigidbody2D>();
         
         Vector2 dirVec;
-        if (enemyName == "S")
+        if (enemyName == "S")   // 작은 적은 직선 발사
             dirVec = Vector2.down;
-        else
+        else    // 큰 적은 플레이어에게로 유도 발사
             dirVec = player.transform.position - transform.position;
-        bulletRigid.AddForce(dirVec.normalized * 8, ForceMode2D.Impulse); 
+
+        bulletRigid.AddForce(dirVec.normalized * 7, ForceMode2D.Impulse); 
         
         curShotDelay = 0;
     }
 
-    void Reload()
-    {
-        curShotDelay += Time.deltaTime;
-    }
-
-    void ReturnSprite()
-    {
-        spriteRenderer.sprite = sprites[0];
-    }
-
-    // ** 공통 **
     void OnTriggerEnter2D(Collider2D other) 
     {
         if (other.gameObject.tag == "BorderBullet")
@@ -117,6 +107,7 @@ public class Enemy : MonoBehaviour
 
         health -= damage;
         
+        // 맞은 이펙트
         spriteRenderer.sprite = sprites[1];
         Invoke("ReturnSprite", 0.1f);
  
@@ -124,7 +115,7 @@ public class Enemy : MonoBehaviour
             Player playerLogic = player.GetComponent<Player>();
             playerLogic.score += enemyScore;
 
-            // item drop
+            // item 확률 생성
             int ran = Random.Range(1, 11);
             if (ran == 10) { // boom
                 GameObject boom = objectManager.MakeObj(items[0]);
@@ -141,4 +132,8 @@ public class Enemy : MonoBehaviour
             gameManager.CallExplosion(transform.position, enemyName);
         }
     }
+
+    void Reload()   { curShotDelay += Time.deltaTime; }
+
+    void ReturnSprite()     { spriteRenderer.sprite = sprites[0]; }
 }
