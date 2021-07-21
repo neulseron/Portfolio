@@ -6,7 +6,6 @@ public class ProjectileAttackBehaviour : AttackBehaviour
 {
     public override void ExcuteAttack(GameObject target = null, Transform startPoint = null)
     {
-        Debug.Log("Projectile");
         if (target == null)     return;
 
         Vector3 projectilePosition = startPoint != null ? startPoint.position : transform.position;

@@ -25,8 +25,8 @@ public class AttackState_Brute : State<EnemyController>
             return;
         }
 
-        //attackStateController.enterAttackStateHandler += OnEnterAttackState();
-        //attackStateController.exitAttackStateHandler += OnExitAttackState();
+        //attackStateController.enterAttackStateHandler += OnEnterAttackState;
+        //attackStateController.exitAttackStateHandler += OnExitAttackState;
 
         animator.SetInteger(attackIndexHash, attackable.CurrentAttackBehaviour.animationIndex);
         animator.SetTrigger(attackHash);

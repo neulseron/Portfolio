@@ -76,7 +76,6 @@ public class AttackState : State<EnemyController>
 
     public override void OnExit()
     {
-        Debug.Log("Exit");
         attackStateController.enterAttackHandler -= OnEnterAttackState;
         attackStateController.exitAttackHandler -= OnExitAttackState;
     }

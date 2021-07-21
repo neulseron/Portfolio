@@ -12,6 +12,8 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
 
     public int maxHelth = 100;
     public int health;
+    [SerializeField]
+    NPCBattleUI battleUI;
 
     int hitTriggerHash = Animator.StringToHash("Hit");
 
@@ -19,6 +21,8 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
     List<AttackBehaviour> attackBehaviours = new List<AttackBehaviour>();
     #endregion Variables
 
+
+    #region Properties
     public override bool IsAvailableAttack  
     {
         get {
@@ -27,6 +31,8 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
             return (distance <= AttackRange);
         }
     }   // 공격 거리가 되는지 확인
+    #endregion Properties
+
 
     #region Unity Methods
     protected override void Start()
@@ -40,6 +46,11 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
         InitAttackBehaviour();
 
         health = maxHelth;
+        if (battleUI) {
+            battleUI.MinValue = 0f;
+            battleUI.MaxValue = maxHelth;
+            battleUI.Value = health;
+        }
     }
 
     protected override void Update()
@@ -66,7 +77,6 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
     void ChkAttackBehaviour()
     {
         if (CurrentAttackBehaviour == null || !CurrentAttackBehaviour.IsAvailable) {
-            Debug.Log("들어오나");
             CurrentAttackBehaviour = null;
 
             foreach (AttackBehaviour behaviour in attackBehaviours) {
@@ -110,6 +120,10 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
         if (!IsAlive)   return;
 
         health -= damage;
+        if (battleUI) {
+            battleUI.Value = health;
+            battleUI.CreateDmgTxt(damage);
+        }
 
         if (hitEffectPrefabs) {
             Instantiate(hitEffectPrefabs, hitTransform);
@@ -118,7 +132,13 @@ public class EnemyController_Mouse : EnemyController, IAttackable, IDamageable
         if (IsAlive) {
             animator?.SetTrigger(hitTriggerHash);
         } else {
+            if (battleUI != null) {
+                battleUI.enabled = false;
+            }
+
             stateMachine.ChangeState<DeadState>();
+
+            QuestManager.Instance.ProcessQuest(QuestType.DestroyEnemy, 0);    
         }
     }
     #endregion IDamageable

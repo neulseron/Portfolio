@@ -8,7 +8,6 @@ public class MeleeAttackBehaviour : AttackBehaviour
 
     public override void ExcuteAttack(GameObject target = null, Transform startPoint = null)
     {
-        Debug.Log("Melee");
         Collider[] colliders = attackCollision?.ChkOverlapBox(targetMask);
 
         foreach (Collider col in colliders) {    // 광역 공격

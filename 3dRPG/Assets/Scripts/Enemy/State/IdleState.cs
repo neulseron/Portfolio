@@ -34,7 +34,6 @@ public class IdleState : State<EnemyController>
 
     public override void Update(float deltaTime)
     {
-        Debug.Log("Idle 상태입니당");
         Transform enemy = context.SearchEnemy();
         
         if (enemy) {
