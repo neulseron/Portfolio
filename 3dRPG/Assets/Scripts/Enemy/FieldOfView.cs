@@ -48,9 +48,13 @@ public class FieldOfView : MonoBehaviour
             if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2) {
                 float distToTarget = Vector3.Distance(transform.position, target.position);
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask)) {
-                    visibleTargets.Add(target);
-                    if (nearestTarget == null || (distanceToTarget > distToTarget)) {
-                        nearestTarget = target;
+                    if (target.GetComponent<IDamageable>()?.IsAlive ?? false) {
+                        visibleTargets.Add(target);
+                        
+                        if (nearestTarget == null || (distanceToTarget > distToTarget)) {
+                            nearestTarget = target;
+                        }
+                        
                         distanceToTarget = distToTarget;
                     }
                 }

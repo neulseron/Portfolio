@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,6 @@ public class ProjectileAttackBehaviour : AttackBehaviour
                 projectile.attackBehaviour = this;
             }
         }
-
-        calcCoolTime = 0f;
+        //calcCoolTime = 0f;
     }
 }

@@ -27,16 +27,15 @@ public class IdleState : State<EnemyController>
         animator.SetFloat(hasMoveSpeed, 0f);
         controller.Move(Vector3.zero);
 
-        if (isPatrol) {
+        if (context is EnemyController_Patrol) {
+            isPatrol = true;
             idleTime = Random.Range(minIdleTime, maxIdleTime);
         }
     }
 
     public override void Update(float deltaTime)
     {
-        Transform enemy = context.SearchEnemy();
-        
-        if (enemy) {
+        if (context.Target) {
             if (context.IsAvailableAttack) {
                 stateMachine.ChangeState<AttackState>();
             } else {

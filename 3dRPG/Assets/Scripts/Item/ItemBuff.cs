@@ -19,7 +19,7 @@ public class ItemBuff : IModifier
     public ItemBuff(int _min, int _max) 
     {
         this.min = _min;
-        this.max = _max;
+        this.max = _max + 1;
 
         GenerateValue();
     }
@@ -27,10 +27,12 @@ public class ItemBuff : IModifier
     public void GenerateValue()
     {
         value = UnityEngine.Random.Range(min, max);
+        Debug.Log("[ItemBuff] value : " + value);
     }
 
     public void AddValue(ref int v)
     {
+        Debug.Log("[ItemBuff/AddValue] Buff : " + stat + "/" + value);
         v += value;
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine;
 [Serializable]
 public class ModifiableInt
 {
+    event Action<ModifiableInt> OnModifiedValue;
+    List<IModifier> modifiers = new List<IModifier>();
+
     [NonSerialized]
     int baseValue;
 
@@ -26,9 +29,7 @@ public class ModifiableInt
         get => modifiedValue;
         set => modifiedValue = value;
     }
-
-    event Action<ModifiableInt> OnModifiedValue;
-    List<IModifier> modifiers = new List<IModifier>();
+    
 
 
     public ModifiableInt(Action<ModifiableInt> method = null) {
@@ -50,18 +51,6 @@ public class ModifiableInt
         }
     }
 
-    void UpdateModifiedValue()
-    {
-        int valueToAdd = 0;
-        foreach (IModifier modifier in modifiers) {
-            modifier.AddValue(ref valueToAdd);
-        }
-
-        ModifiedValue = baseValue + valueToAdd;
-
-        OnModifiedValue.Invoke(this);
-    }
-
     public void AddModifier(IModifier modifier)
     {
         modifiers.Add(modifier);
@@ -72,5 +61,23 @@ public class ModifiableInt
     {
         modifiers.Remove(modifier);
         UpdateModifiedValue();
+    }
+
+    public void ResetModifier(IModifier modifier)
+    {
+        modifiedValue = baseValue;
+    }
+
+    void UpdateModifiedValue()
+    {
+        int valueToAdd = 0;
+        foreach (IModifier modifier in modifiers) {
+            modifier.AddValue(ref valueToAdd);
+        }
+
+        ModifiedValue = baseValue + valueToAdd;
+        //Debug.Log(baseValue + ", " + valueToAdd + "//");
+
+        OnModifiedValue.Invoke(this);
     }
 }

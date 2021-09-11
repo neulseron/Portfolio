@@ -13,14 +13,12 @@ MonoBehaviour:
   m_Name: Quest01
   m_EditorClassIdentifier: 
   data:
-    id: 0
+    id: 2
     type: 0
-    targetID: 0
-    count: 1
-    completeCnt: 2
-    rewardExp: 100
-    rewardGold: 50
-    rewardItemId: -1
-    title: Destroy Enemy
-    description: Remove mouse
+    targetID: 99
+    count: 3
+    completeCnt: 1
+    rewardItemId: 16
+    title: "\uACE0\uB300\uAE30\uC0AC"
+    description: "\uACE0\uB300\uAE30\uC0AC \uCC98\uCE58"
   status: 3

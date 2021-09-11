@@ -46,6 +46,7 @@ public class DynamicInventoryUI : InventoryUI
 
     protected override void OnRightClick(InventorySlot slot)
     {
+        Debug.Log("우클릭");
         inventoryObject.UseItem(slot);
     }
 }

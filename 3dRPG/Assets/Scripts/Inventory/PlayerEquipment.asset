@@ -24,14 +24,10 @@ MonoBehaviour:
       amount: 0
     - allowedItems: 01000000
       item:
-        id: 1
-        name: LeatherArmor
-        buffs:
-        - stat: 4
-          value: 12
-          min: 5
-          max: 15
-      amount: 1
+        id: -1
+        name: 
+        buffs: []
+      amount: 0
     - allowedItems: 02000000
       item:
         id: -1
@@ -50,3 +46,5 @@ MonoBehaviour:
         name: 
         buffs: []
       amount: 0
+  playerStats: {fileID: 11400000, guid: 428cde13e8a099b42a01ae2f1fc1dace, type: 2}
+  savePath: Equipment

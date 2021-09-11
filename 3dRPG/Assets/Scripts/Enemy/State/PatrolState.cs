@@ -13,6 +13,8 @@ public class PatrolState : State<EnemyController>
     protected int hasMove = Animator.StringToHash("Move");
     protected int hasMoveSpeed = Animator.StringToHash("MoveSpeed");
 
+    EnemyController_Patrol patrolController;
+
     Transform[] Waypoints => context.waypoints;
     [HideInInspector]
     public Transform targetWaypoint = null;
@@ -25,10 +27,14 @@ public class PatrolState : State<EnemyController>
         animator = context.GetComponent<Animator>();
         controller = context.GetComponent<CharacterController>();
         agent = context.GetComponent<NavMeshAgent>();
+
+        patrolController = context as EnemyController_Patrol;
     }
 
     public override void OnEnter()
     {
+        agent.stoppingDistance = 0.02f;
+
         if (targetWaypoint == null) {
             FindNextWaypoint();
         }
@@ -36,15 +42,14 @@ public class PatrolState : State<EnemyController>
         if (targetWaypoint) {
             agent.SetDestination(targetWaypoint.position);
             animator.SetBool(hasMove, true);
+        } else {
+            stateMachine.ChangeState<IdleState>();
         }
     }
 
     public override void Update(float deltaTime)
     {
-        Debug.Log("Patrol 상태입니당");
-        Transform enemy = context.SearchEnemy();
-        
-        if (enemy) {
+        if (context.Target) {
             if (context.IsAvailableAttack) {
                 stateMachine.ChangeState<AttackState>();
             } else {
@@ -52,11 +57,14 @@ public class PatrolState : State<EnemyController>
             }
         } else {
             if (!agent.pathPending && (agent.remainingDistance <= agent.stoppingDistance)) {    // 이동할 거리가 안남았으면
+                
+                /*
                 Transform nextDest =  FindNextWaypoint();
-                if (nextDest) {
+                if (nextDest != null) {
                     agent.SetDestination(nextDest.position);
-                }
-
+                } 
+                */
+                /**/FindNextWaypoint();
                 stateMachine.ChangeState<IdleState>();
             } else {
                 controller.Move(agent.velocity * deltaTime);
@@ -67,19 +75,20 @@ public class PatrolState : State<EnemyController>
 
     public override void OnExit()
     {
+        /**/agent.stoppingDistance = context.AttackRange;
         animator.SetBool(hasMove, false);
         agent.ResetPath();
     }
 
-    public Transform FindNextWaypoint()
+    public void FindNextWaypoint()
     {
         targetWaypoint = null;
 
-        if (Waypoints.Length > 0) {
+        if (Waypoints != null && Waypoints.Length > 0) {
             targetWaypoint = Waypoints[waypointIndex];
         }
         waypointIndex = (waypointIndex + 1) % Waypoints.Length;
 
-        return targetWaypoint;
+        //return targetWaypoint;
     }
 }

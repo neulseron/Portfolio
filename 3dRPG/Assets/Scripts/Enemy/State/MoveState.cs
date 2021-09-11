@@ -28,11 +28,10 @@ public class MoveState : State<EnemyController>
 
     public override void Update(float deltaTime)
     {
-        Transform enemy = context.SearchEnemy();
-        if (enemy) {
+        if (context.Target) {
             agent.SetDestination(context.Target.transform.position);
 
-            if (agent.remainingDistance > agent.stoppingDistance) {
+            if (agent.remainingDistance > context.AttackRange) {
                 controller.Move(agent.velocity * deltaTime);
                 animator.SetFloat(hasMoveSpeed, agent.velocity.magnitude / agent.speed, 1f, deltaTime);     // damp 보간
                 return;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AttributeType { Agility, Intellect, Stamina, Strength, Health, Mana, }
+public enum AttributeType { Strength, Health, MaxHealth }
 
 [Serializable]
 public class Attribute

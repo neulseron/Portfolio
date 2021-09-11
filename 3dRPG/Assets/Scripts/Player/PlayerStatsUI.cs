@@ -5,12 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerStatsUI : MonoBehaviour
 {
+    [SerializeField]
+    PlayerCharacter player;
     public InventoryObject equipment;
     public StatsObject playerStats;
 
     public Text[] attributeTxt;
 
     void OnEnable() {
+        Debug.Log("## 스탯 유아이 Enable ##");
         playerStats.OnChangedStats += OnChangedStats;
 
         if (equipment != null && playerStats != null) {
@@ -23,7 +26,8 @@ public class PlayerStatsUI : MonoBehaviour
         UpdateAttributeTxts();
     }
 
-    private void OnDestroy() {
+    void OnDisable() {
+        Debug.Log("## 스탯 유아이 Disable ##");
         playerStats.OnChangedStats -= OnChangedStats;
 
         if (equipment != null && playerStats != null) {
@@ -34,22 +38,28 @@ public class PlayerStatsUI : MonoBehaviour
         }
     }
 
-    void UpdateAttributeTxts()
+    public void UpdateAttributeTxts()
     {
-        attributeTxt[0].text = playerStats.GetModifiedValue(AttributeType.Agility).ToString("n0");
-        attributeTxt[1].text = playerStats.GetModifiedValue(AttributeType.Intellect).ToString("n0");
-        attributeTxt[2].text = playerStats.GetModifiedValue(AttributeType.Stamina).ToString("n0");
-        attributeTxt[3].text = playerStats.GetModifiedValue(AttributeType.Strength).ToString("n0");
+        attributeTxt[0].text = playerStats.GetModifiedValue(AttributeType.Strength).ToString("n0");
+        //attributeTxt[0].text = playerStats.Strength.ToString("n0");
     }
 
-    void OnRemoveItem(InventorySlot slot)
+    public void OnRemoveItem(InventorySlot slot)
     {
         if (slot.ItemObject == null)    return;
+            Debug.Log("^^^^^^^^^^^^^^^^^^^^^^^");
 
-        foreach (ItemBuff buff in slot.item.buffs) {
-            foreach (Attribute attribute in playerStats.attributes) {
-                if (attribute.type == buff.stat) {
-                    attribute.value.RemoveModifier(buff);
+        if (slot.parent.type == InterfaceType.Equipment) {
+            foreach (ItemBuff buff in slot.item.buffs) {
+                foreach (Attribute attribute in playerStats.attributes) {
+                    if (attribute.type == buff.stat) {
+                        attribute.value.RemoveModifier(buff);
+
+                        if (attribute.type == AttributeType.MaxHealth) {
+                            playerStats.AddHealth(-(buff.value));
+                        }
+                        Debug.Log("~~~~OnRemoveItem에 입니다~~~~ 현재 MaxHealth : " + playerStats.GetModifiedValue(AttributeType.MaxHealth));
+                    }
                 }
             }
         }
@@ -58,11 +68,24 @@ public class PlayerStatsUI : MonoBehaviour
     void OnEquipItem(InventorySlot slot)
     {
         if (slot.ItemObject == null)    return;
+            Debug.Log("^^********************^");
 
-        foreach (ItemBuff buff in slot.item.buffs) {
-            foreach (Attribute attribute in playerStats.attributes) {
-                if (attribute.type == buff.stat) {
-                    attribute.value.AddModifier(buff);
+        if (slot.parent.type == InterfaceType.Equipment) {
+            foreach (ItemBuff buff in slot.item.buffs) {
+                foreach (Attribute attribute in playerStats.attributes) {
+                    if (attribute.type == buff.stat) {
+                        Debug.Log("item : " + slot.item.name + ", type : " + attribute.type + ", value : " + buff.value);
+                        attribute.value.AddModifier(buff);
+
+                        if (player.CurrentAttackBehaviour != null && attribute.type == AttributeType.Strength) {
+                            player.CurrentAttackBehaviour.addDamage = buff.value;
+                        } else if (attribute.type == AttributeType.MaxHealth) {
+                            Debug.Log("~~~~OnEquipItem에 MaxHealth 입니다~~~~ 현재 MaxHealth : " + playerStats.GetModifiedValue(AttributeType.MaxHealth));
+                            //playerStats.Health += buff.value;
+                            playerStats.AddHealth(buff.value);
+                            Debug.Log("~~~~OnEquipItem에 Health 입니다~~~~ 현재 Health : " + playerStats.GetModifiedValue(AttributeType.Health));
+                        }
+                    }
                 }
             }
         }

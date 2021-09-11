@@ -73,7 +73,6 @@ public class DialogueManager : MonoBehaviour
 
     void EndDialogue()
     {
-        Debug.Log("End dialogue입니다");
         //animator?.SetBool("IsOpen", false);
 
         OnEndDialogue?.Invoke();

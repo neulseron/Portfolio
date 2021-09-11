@@ -13,14 +13,12 @@ MonoBehaviour:
   m_Name: Quest02
   m_EditorClassIdentifier: 
   data:
-    id: 1
-    type: 1
-    targetID: 1
-    count: 1
-    completeCnt: 2
-    rewardExp: 50
-    rewardGold: 100
-    rewardItemId: 20
-    title: Acquire item
-    description: i need item
-  status: 3
+    id: 0
+    type: 0
+    targetID: 10
+    count: 0
+    completeCnt: 1
+    rewardItemId: -1
+    title: "\uBC15\uC2A4 \uCC3E\uAE30"
+    description: 
+  status: 0

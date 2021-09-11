@@ -14,16 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributes:
   - type: 0
-    value: {fileID: 0}
+    value:
+      modifiedValue: 0
   - type: 1
-    value: {fileID: 0}
+    value:
+      modifiedValue: 0
   - type: 2
-    value: {fileID: 0}
-  - type: 3
-    value: {fileID: 0}
-  - type: 4
-    value: {fileID: 0}
-  - type: 5
-    value: {fileID: 0}
-  level: 1
-  exp: 0
+    value:
+      modifiedValue: 0
+  savePath: Stat

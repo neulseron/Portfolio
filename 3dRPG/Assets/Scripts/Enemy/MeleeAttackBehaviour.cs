@@ -11,7 +11,7 @@ public class MeleeAttackBehaviour : AttackBehaviour
         Collider[] colliders = attackCollision?.ChkOverlapBox(targetMask);
 
         foreach (Collider col in colliders) {    // 광역 공격
-            col.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage, effectPrefab);
+            col.gameObject.GetComponent<IDamageable>()?.TakeDamage(damage + addDamage, effectPrefab);
         }
     }
 }

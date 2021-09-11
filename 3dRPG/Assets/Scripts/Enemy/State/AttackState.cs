@@ -57,7 +57,7 @@ public class AttackState : State<EnemyController>
     }
 
     public override void OnEnter()
-    {
+    {   
         if (attackable == null || attackable.CurrentAttackBehaviour == null) {
             stateMachine.ChangeState<IdleState>();
             return;
@@ -82,10 +82,12 @@ public class AttackState : State<EnemyController>
 
     public void OnEnterAttackState()
     {
+            //UnityEngine.Debug.Log("OnEnterAttackState()");
     }
 
     public void OnExitAttackState()
     {
+            //UnityEngine.Debug.Log("OnExitAttackState()");
         stateMachine.ChangeState<IdleState>();
     }
 

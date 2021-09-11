@@ -18,7 +18,6 @@ public static class MouseData
 public abstract class InventoryUI : MonoBehaviour
 {
     public InventoryObject inventoryObject;
-    InventoryObject prevInventoryObject;
 
     public Dictionary<GameObject, InventorySlot> slotUIs = new Dictionary<GameObject, InventorySlot>();
 
@@ -37,8 +36,19 @@ public abstract class InventoryUI : MonoBehaviour
 
     protected virtual void Start()
     {
+        Debug.Log("=========[" + gameObject.name + " 초기화]=========");
+        InitInventory();
+        Debug.Log("===========================");
+        Debug.Log("");
+    }
+
+    public void InitInventory()
+    {
         for (int i = 0; i < inventoryObject.Slots.Length; i++) {
             inventoryObject.Slots[i].UpdateSlot(inventoryObject.Slots[i].item, inventoryObject.Slots[i].amount);
+
+            //if (inventoryObject.Slots[i].item.id != -1 && inventoryObject.Slots[i].item.buffs.Length > 0)
+            //Debug.Log("@[InitInventory] Buff : " + inventoryObject.Slots[i].item.buffs[0].stat + "/" + inventoryObject.Slots[i].item.buffs[0].value);
         }
     }
 
@@ -57,7 +67,12 @@ public abstract class InventoryUI : MonoBehaviour
         trigger.triggers.Add(eventTrigger);
     }
 
-    public void OnPostUpdate(InventorySlot slot)
+    public void Clear()
+    {
+        inventoryObject.Clear();
+    }
+
+    public virtual void OnPostUpdate(InventorySlot slot)
     {
         slot.slotUI.transform.GetChild(0).GetComponent<Image>().sprite = slot.item.id < 0 ? null : slot.ItemObject.icon;
         slot.slotUI.transform.GetChild(0).GetComponent<Image>().color = slot.item.id < 0 ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1);
@@ -72,6 +87,7 @@ public abstract class InventoryUI : MonoBehaviour
 
     public void OnExitInterface(GameObject go)
     {
+        //Debug.Log(go.name + "인터페이스 exit");
         MouseData.interfaceMouseIsOver = null;
     }
 

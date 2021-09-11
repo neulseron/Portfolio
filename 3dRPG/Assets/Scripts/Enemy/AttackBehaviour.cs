@@ -8,17 +8,20 @@ public abstract class AttackBehaviour : MonoBehaviour
 [Multiline]
 public string developDescription = "";
 #endif
+
     #region Variables
     public int animationIndex;
-    public int priority;
+    public int priority;    // 높은 것 부터
     public int damage = 10;
+    public int addDamage = 0;
     public float range = 3f;
 
     [SerializeField]
     protected float coolTime;
-    protected float calcCoolTime = 0f;
+    public float calcCoolTime = 0f;
 
     [SerializeField]
+    //public bool IsAvailable = false;
     public bool IsAvailable => (calcCoolTime >= coolTime);
 
     public GameObject effectPrefab;
@@ -30,13 +33,14 @@ public string developDescription = "";
 
     void Start()
     {
-        calcCoolTime = coolTime;
+        calcCoolTime = 0;
     }
 
     void Update()
-    {
+    {   
         if (calcCoolTime < coolTime) {
             calcCoolTime += Time.deltaTime;
+            //calcCoolTime += 1;
         }
     }
 

@@ -5,28 +5,30 @@ using UnityEngine;
 
 public class PlayerEquipment : MonoBehaviour
 {
+    public StatsObject playerStats;
     public InventoryObject equipment;
     EquipmentCombiner combiner;
     ItemInstances[] itemInstances = new ItemInstances[5];
     public ItemObject[] defaultItemObjects = new ItemObject[5];
-    public GameObject equipPoint;
+
 
     void Awake() {
         combiner = new EquipmentCombiner(gameObject);
-
-        for (int i = 0; i < equipment.Slots.Length; i++) {
-            equipment.Slots[i].OnPreUpdate += OnRemoveItem;
-            equipment.Slots[i].OnPostUpdate += OnEquipItem;
-        }
     }
 
     void Start()
     {
+        for (int i = 0; i < equipment.Slots.Length; i++) {
+            equipment.Slots[i].OnPreUpdate += OnRemoveItem;
+            equipment.Slots[i].OnPostUpdate += OnEquipItem;
+        }
+
+        Debug.Log("==========[Player Equipment]==========");
         foreach (InventorySlot slot in equipment.Slots) {
             OnEquipItem(slot);
         }
+        Debug.Log("==============================");
     }
-
 
     void OnDestroy() {
         foreach (ItemInstances item in itemInstances) {
@@ -39,14 +41,22 @@ public class PlayerEquipment : MonoBehaviour
         ItemObject itemObject = slot.ItemObject;
 
         if (itemObject == null) {
-            EquipDefaultItem(slot.allowedItems[0]);
+            //EquipDefaultItem(slot.allowedItems[0]);
             return;
         }
 
         int index = (int)slot.allowedItems[0];
         switch (slot.allowedItems[0]) {
-            case ItemType.LeftWeapon:
-            case ItemType.RightWeapon:
+            case ItemType.Helmet:
+            case ItemType.Boots:
+            case ItemType.Armor:
+                equipment.OnUseItem(itemObject);
+                break;
+            case ItemType.LeftWeapon:   // 방패
+                itemInstances[index] = EquipMeshItem(itemObject);
+                equipment.OnUseItem(itemObject);
+                break;
+            case ItemType.RightWeapon:  // 무기
                 itemInstances[index] = EquipMeshItem(itemObject);
                 break;
         }
@@ -84,12 +94,14 @@ public class PlayerEquipment : MonoBehaviour
     void OnRemoveItem(InventorySlot slot)
     {
         ItemObject itemObject = slot.ItemObject;
+
         if (itemObject == null) {
             RemoveItemBy(slot.allowedItems[0]);
             return;
         }
 
         if (slot.ItemObject.modelPrefab != null) {
+            equipment.OnRemoveItem(itemObject);
             RemoveItemBy(slot.allowedItems[0]);
         }
     }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum QuestType { DestroyEnemy, AcquireItem, }
+public enum QuestType { DestroyEnemy, AcquireItem, Main, }
 
 [Serializable]
 public class Quest
@@ -15,9 +15,7 @@ public class Quest
     public int count;
     public int completeCnt;
 
-    public int rewardExp;
-    public int rewardGold;
-    public int rewardItemId;
+    public int rewardItemId = -1;
 
     public string title;
     public string description;

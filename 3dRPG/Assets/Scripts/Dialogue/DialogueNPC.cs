@@ -15,11 +15,13 @@ public class DialogueNPC : MonoBehaviour, IInteractable
     [SerializeField]
     float distance = 2f;
     public float Distance => distance;
+    bool isInteractable = true;
+    public bool IsInteractable => isInteractable;
 
 
     public void Interact(GameObject other)
     {
-        float calcDistance = Vector3.Distance(other.transform.position, transform.position) - 0.2f;
+        float calcDistance = Vector3.Distance(other.transform.position, transform.position);
         if (calcDistance > distance)    return;
         if (isStartDialogue)    return;
 

@@ -42,11 +42,11 @@ public class InventorySlot
         if (amount <= 0) {
             item = new Item();
         }
-        
-        OnPreUpdate?.Invoke(this);
 
-        this.item = _item;
-        this.amount = _amount;
+        OnPreUpdate?.Invoke(this);      // <== 여기서 적용
+
+        item = _item;
+        amount = _amount;
 
         OnPostUpdate?.Invoke(this);
     }

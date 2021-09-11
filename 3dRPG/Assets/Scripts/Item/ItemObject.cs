@@ -9,7 +9,9 @@ public enum ItemType: int
     Boots = 2, 
     LeftWeapon = 3,
     RightWeapon = 4,
+    Gem,
     Food,
+    Key,
     Default
     }
 
@@ -23,6 +25,8 @@ public class ItemObject : ScriptableObject
     public GameObject modelPrefab;
 
     public Item data = new Item();
+
+    public int amount = 1;
 
     public List<string> boneNames = new List<string>();
 
@@ -39,7 +43,7 @@ public class ItemObject : ScriptableObject
 
         SkinnedMeshRenderer renderer = modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
         Transform[] bones = renderer.bones;
-
+        // *** 사용 되는지 확인 ***
         foreach (Transform t in bones) {
             boneNames.Add(t.name);
         }

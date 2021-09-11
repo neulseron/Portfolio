@@ -23,21 +23,6 @@ public class StaticInventoryUI : InventoryUI
 
             inventoryObject.Slots[i].slotUI = slot;
             slotUIs.Add(slot, inventoryObject.Slots[i]);
-
-            slot.name += ": " + i;
-        }
-    }
-
-    public override void OnEndDrag(GameObject go)
-    {
-        //base.OnEndDrag(go);
-        Destroy(MouseData.tmpItemBeingDragged);
-
-        if (MouseData.interfaceMouseIsOver == null) {
-            slotUIs[go].RemoveItem();
-        } else if (MouseData.slotHoveredOver) {
-            InventorySlot mouseHoverSlotData = MouseData.interfaceMouseIsOver.slotUIs[MouseData.slotHoveredOver];
-            inventoryObject.SwapItems(slotUIs[go], mouseHoverSlotData);
         }
     }
 }

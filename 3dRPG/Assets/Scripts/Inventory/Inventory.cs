@@ -9,8 +9,20 @@ public class Inventory
 {
     public InventorySlot[] slots = new InventorySlot[24];
 
-    public void Clear()
+    public void Clear(StatsObject playerStats)
     {
+        foreach (InventorySlot slot in slots) {
+            if (slot.item.buffs != null && slot.parent.type == InterfaceType.Equipment) {
+                foreach (ItemBuff buff in slot.item.buffs) {
+                    foreach (Attribute attribute in playerStats.attributes) {
+                        if (attribute.type == buff.stat) {
+                            attribute.value.RemoveModifier(buff);
+                        }
+                    }
+                }
+            }
+        }
+
         foreach (InventorySlot slot in slots) {
             slot.RemoveItem();
         }
