@@ -1,50 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("매니저")]
-    public GameManager gameManager;
-    public ObjectManager objectManager;
-
-
+#region Variables
     [Header("Player")]
     Animator animator;
     SpriteRenderer spriteRenderer;
-    public float speed;
+    [SerializeField]
+    float speed;
     public int score;
     int life;
-    public Transform firePos;
+    [SerializeField]
+    Transform firePos;
     public bool isHit;
-    public bool isRespawnTime;
+    [SerializeField]
+    bool isRespawnTime;
 
 
+    #region Item
     [Header("Item")]
-    public int power; // 파워 단계
+    [SerializeField]
+    int power; // 파워 단계
     int MaxPower;
-    public int boom; // 폭탄 개수
+    [SerializeField]
+    int boom; // 폭탄 개수
     bool isBoomTIme;
     int MaxBoom;
-    public GameObject boomEffect;
-    public GameObject[] followers;
+    [SerializeField]
+    GameObject boomEffect;
+    [SerializeField]
+    GameObject[] followers;
+    #endregion Item
 
 
+    #region Fire
     [Header("Fire")]
     // 코드 변수
     float curShotDelay;
-    public float maxShotDelay;
+    [SerializeField]
+    float maxShotDelay;
     string[] powerBullets;
+    #endregion Fire
 
 
+    #region Move
     [Header("Move")]
     bool isTop, isBottom, isLeft, isRight;      // 경계에 닿았는지 여부
     public bool[] joyControl;
     public bool isControl;
     public bool isBtnA, isBtnB;
-    //---------------------
+    #endregion Move
+
     public int currStarNum;
-    //=====================
+#endregion Variables
+
+
+#region Unity Methods
     void Awake() 
     {
         animator = GetComponent<Animator>();
@@ -61,6 +72,107 @@ public class Player : MonoBehaviour
         Invoke("Unbeatable", 3);
     }
 
+    void Update()
+    {
+        Move();
+        Fire();
+        Reload();
+        Boom();
+    }
+
+    void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (other.gameObject.tag == "Border") { // ** 경계
+            switch(other.gameObject.name) {
+                case "Top":
+                    isTop = true;
+                    break;
+                case "Bottom":
+                    isBottom = true;
+                    break;
+                case "Left":
+                    isLeft = true;
+                    break;
+                case "Right":
+                    isRight = true;
+                    break;
+            } 
+        } else if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "EnemyBullet") { // ** 적
+            if (isRespawnTime)
+                return;
+
+            if (isHit)
+                return;
+
+            isHit = true;
+            life--;
+            GameManager.Instance.UpdateLife(life);
+
+            if (life == 0) {
+                if (GameManager.Instance.stage == 99) {
+                    GameManager.Instance.GameClear2();
+                } else {
+                    GameManager.Instance.GameOver();
+                }
+
+                GameManager.Instance.CallExplosion(transform.position, "P");
+            } else
+                GameManager.Instance.RespawnPlayer();
+            
+            gameObject.SetActive(false);
+            other.gameObject.SetActive(false);
+        } else if (other.gameObject.tag == "Item") { // ** 아이템
+            Item item = other.gameObject.GetComponent<Item>();
+            switch (item.type) {
+                case "Coin":
+                    score += 1000;
+                    break;
+                case "Power":
+                    if (power == MaxPower)
+                        score += 500;
+                    else {
+                        power++;
+                        AddFollower();
+                    }
+                    break;
+                case "Boom":
+                    if (boom == MaxBoom)
+                        boom += 500;
+                    else {
+                        boom++;
+                        GameManager.Instance.UpdateBoom(boom);
+                    }
+                    break;
+            }
+            other.gameObject.SetActive(false);
+        } else if (other.gameObject.tag == "Star") { // ** 별
+            currStarNum++;
+            other.gameObject.SetActive(false);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject.tag == "Border") {
+            switch(other.gameObject.name) {
+                case "Top":
+                    isTop = false;
+                    break;
+                case "Bottom":
+                    isBottom = false;
+                    break;
+                case "Left":
+                    isLeft = false;
+                    break;
+                case "Right":
+                    isRight = false;
+                    break;
+            }
+        }
+    }
+#endregion Unity Methods
+
+
+#region Methods
     void Unbeatable()
     {
         isRespawnTime = !isRespawnTime;
@@ -78,14 +190,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Update()
+    void AddFollower()
     {
-        Move();
-        Fire();
-        Reload();
-        Boom();
+        if (power == 4)
+            followers[0].SetActive(true);
+        else if (power == 5)
+            followers[1].SetActive(true);
+        else if (power == 6)
+            followers[2].SetActive(true);
     }
-
+    
+    
+    #region Move
     public void JoyPanel(int type)
     {
         for (int i = 0; i < 9; i++) {
@@ -127,11 +243,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void BtnADown()  { isBtnA = true; }
-    public void BtnAUp()    { isBtnA = false; }
-    public void BtnBDown()  { isBtnB = true; }
-    public void BtnBUp()    { isBtnB = false; }
+    public void BtnADown() => isBtnA = true; 
+    public void BtnAUp() => isBtnA = false; 
+    public void BtnBDown() => isBtnB = true; 
+    public void BtnBUp() => isBtnB = false; 
+    #endregion Move
 
+
+    #region Attack
     void Fire()
     {
         if (!isBtnA)
@@ -141,7 +260,7 @@ public class Player : MonoBehaviour
             return;
 
         // power
-        GameObject bullet = objectManager.MakeObj(powerBullets[power]);
+        GameObject bullet = ObjectManager.Instance.MakeObj(powerBullets[power]);
         bullet.transform.position = firePos.position;
 
         Rigidbody2D bulletRigid = bullet.GetComponent<Rigidbody2D>();
@@ -165,15 +284,15 @@ public class Player : MonoBehaviour
 
         boom--;
         isBoomTIme = true;
-        gameManager.UpdateBoom(boom);
+        GameManager.Instance.UpdateBoom(boom);
 
         boomEffect.SetActive(true);
         Invoke("OffBoomEffect", 2f);
 
         // 필드에 나와있는 몬스터 제거
-        GameObject[] enemiesL = objectManager.GetPool("EnemyL");
-        GameObject[] enemiesM = objectManager.GetPool("EnemyM");
-        GameObject[] enemiesS = objectManager.GetPool("EnemyS");
+        GameObject[] enemiesL = ObjectManager.Instance.GetPool("EnemyL");
+        GameObject[] enemiesM = ObjectManager.Instance.GetPool("EnemyM");
+        GameObject[] enemiesS = ObjectManager.Instance.GetPool("EnemyS");
 
         for (int i = 0; i < enemiesL.Length; i++) {
             if (enemiesL[i].activeSelf) {
@@ -197,8 +316,8 @@ public class Player : MonoBehaviour
         }
 
         // 필드에 나와있는 총알 제거
-        GameObject[] bulletsA = objectManager.GetPool("EnemyBulletA");
-        GameObject[] bulletsB = objectManager.GetPool("EnemyBulletB");
+        GameObject[] bulletsA = ObjectManager.Instance.GetPool("EnemyBulletA");
+        GameObject[] bulletsB = ObjectManager.Instance.GetPool("EnemyBulletB");
 
         for (int i = 0; i < bulletsA.Length; i++) {
             if (bulletsA[i].activeSelf) 
@@ -211,109 +330,13 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other) 
-    {
-        if (other.gameObject.tag == "Border") { // ** 경계
-            switch(other.gameObject.name) {
-                case "Top":
-                    isTop = true;
-                    break;
-                case "Bottom":
-                    isBottom = true;
-                    break;
-                case "Left":
-                    isLeft = true;
-                    break;
-                case "Right":
-                    isRight = true;
-                    break;
-            } 
-        } else if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "EnemyBullet") { // ** 적
-            if (isRespawnTime)
-                return;
-
-            if (isHit)
-                return;
-
-            isHit = true;
-            life--;
-            gameManager.UpdateLife(life);
-
-            if (life == 0) {
-                if (gameManager.stage == 99) {
-                    gameManager.GameClear2();
-                } else {
-                    gameManager.GameOver();
-                }
-
-                gameManager.CallExplosion(transform.position, "P");
-            } else
-                gameManager.RespawnPlayer();
-            
-            gameObject.SetActive(false);
-            other.gameObject.SetActive(false);
-        } else if (other.gameObject.tag == "Item") { // ** 아이템
-            Item item = other.gameObject.GetComponent<Item>();
-            switch (item.type) {
-                case "Coin":
-                    score += 1000;
-                    break;
-                case "Power":
-                    if (power == MaxPower)
-                        score += 500;
-                    else {
-                        power++;
-                        AddFollower();
-                    }
-                    break;
-                case "Boom":
-                    if (boom == MaxBoom)
-                        boom += 500;
-                    else {
-                        boom++;
-                        gameManager.UpdateBoom(boom);
-                    }
-                    break;
-            }
-            other.gameObject.SetActive(false);
-        } else if (other.gameObject.tag == "Star") { // ** 별
-            currStarNum++;
-            other.gameObject.SetActive(false);
-        }
-    }
-
-    void AddFollower()
-    {
-        if (power == 4)
-            followers[0].SetActive(true);
-        else if (power == 5)
-            followers[1].SetActive(true);
-        else if (power == 6)
-            followers[2].SetActive(true);
-    }
-
     void OffBoomEffect()
     {
         boomEffect.SetActive(false);
         isBoomTIme = false;
     }
+    #endregion Attack
 
-    void OnTriggerExit2D(Collider2D other) {
-        if (other.gameObject.tag == "Border") {
-            switch(other.gameObject.name) {
-                case "Top":
-                    isTop = false;
-                    break;
-                case "Bottom":
-                    isBottom = false;
-                    break;
-                case "Left":
-                    isLeft = false;
-                    break;
-                case "Right":
-                    isRight = false;
-                    break;
-            }
-        }
-    }
+    
+#endregion Methods
 }

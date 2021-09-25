@@ -144,18 +144,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7173ba23f58f74aaf77417c8178640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   enemyName: L
+  bulletName: EnemyBulletB
   speed: 2
-  health: 50
-  enemyScore: 500
   sprites:
   - {fileID: -8421458170528590454, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: 3714015224569861163, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
-  bulletName: EnemyBulletB
-  maxShotDelay: 0.8
-  curShotDelay: 0
-  patternIndex: 0
-  currPatternCount: 0
-  maxPatternCount: 
-  player: {fileID: 0}
-  objectManager: {fileID: 0}

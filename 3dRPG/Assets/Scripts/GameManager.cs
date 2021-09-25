@@ -5,15 +5,15 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
-#region Variables
-    #region Singletone
+#region Singletone
     static GameManager instance;
     public static GameManager Instance => instance;
     GameData data;
     public GameData Data => data;
-    #endregion Singletone
+#endregion Singletone
 
 
+#region Variables
     #region Sync Position
     public Transform[] syncMiddlePos;
     public Transform startPos;

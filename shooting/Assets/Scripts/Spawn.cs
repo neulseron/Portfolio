@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-// txt 파일 읽어오기 위함
+﻿// txt 파일 읽어오기 위함
 public class Spawn
 {
     public float delay;

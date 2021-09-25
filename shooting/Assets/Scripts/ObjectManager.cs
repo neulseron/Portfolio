@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
+#region Singletone
+    static ObjectManager instance;
+    public static ObjectManager Instance => instance;
+#endregion Singletone
+
+
+#region Prefabs
     public GameObject enemyLPrefab;
     public GameObject enemyMPrefab;
     public GameObject enemySPrefab;
@@ -23,8 +30,10 @@ public class ObjectManager : MonoBehaviour
 
     public GameObject explosionPrefab;
     public GameObject starPrefab;
+#endregion Prefabs
 
 
+#region Arrs
     GameObject[] boss;
     GameObject[] enemyL;
     GameObject[] enemyM;
@@ -50,8 +59,12 @@ public class ObjectManager : MonoBehaviour
     GameObject[] star;
 
     GameObject[] targetPool;
+#endregion Arrs
+
 
     void Awake() {
+        instance = this;
+
         boss = new GameObject[10];
         enemyL = new GameObject[10];
         enemyM = new GameObject[10];

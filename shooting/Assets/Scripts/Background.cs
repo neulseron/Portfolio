@@ -1,17 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Background : MonoBehaviour
 {
+#region Variables
     public float speed;
+
     public int startIndex;      // 2
     public int endIndex;        // 0
-    //---------------------
+    
     public Transform[] sprites;
-    //---------------------
+    
     float viewHeight;
+#endregion Variables
 
+
+#region Unity Methods
     private void Awake() {
         viewHeight = Camera.main.orthographicSize * 2;  // 10
     }
@@ -21,7 +24,10 @@ public class Background : MonoBehaviour
         Move();
         Scrolling();
     }
+#endregion Unity Methods
 
+
+#region Methods
     void Move()
     {
         Vector3 curPos = transform.position;
@@ -41,4 +47,5 @@ public class Background : MonoBehaviour
             endIndex = tmp - 1 == -1 ? sprites.Length - 1 : tmp - 1;
         }
     }
+#endregion Methods
 }

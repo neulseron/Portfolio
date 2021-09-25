@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    [HideInInspector]
+#region Variables
     public int stageNum;
 
     public int maxStage;    // 총 레벨 수
@@ -18,6 +14,7 @@ public class LevelManager : MonoBehaviour
     public int[] highScoreArr;  // 레벨마다 하이스코어 저장
     public bool[] allClearArr;  // 레벨마다 별 전부 회득 + 클리어 했는지 여부 저장
     public int unlimitScore;    // 무한 모드 하이스코어 저장
+#endregion Variables
 
     private void Awake() {
         // 씬 전환시 계속 생성되는 것 방지

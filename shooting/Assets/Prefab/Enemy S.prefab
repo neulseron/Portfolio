@@ -46,21 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7173ba23f58f74aaf77417c8178640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   enemyName: S
+  bulletName: EnemyBulletA
   speed: 3
-  health: 5
-  enemyScore: 50
   sprites:
   - {fileID: 8414478535512612329, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: 4326287474489854147, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
-  bulletName: EnemyBulletA
-  maxShotDelay: 0.4
-  curShotDelay: 0
-  patternIndex: 0
-  currPatternCount: 0
-  maxPatternCount: 
-  player: {fileID: 0}
-  objectManager: {fileID: 0}
 --- !u!212 &6906577801953071934
 SpriteRenderer:
   m_ObjectHideFlags: 0

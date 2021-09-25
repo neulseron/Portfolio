@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Boss : MonoBehaviour
 {
-    [Header("매니저")]
-    public GameManager gameManager;
-    public ObjectManager objectManager;
+#region Variables
     public GameObject player;
 
     [Header("보스")]
@@ -19,8 +15,10 @@ public class Boss : MonoBehaviour
     public int[] maxPatternCount;   // 패턴 당 반복 횟수
     int currPatternCount;
     int patternIndex;
+#endregion Variables
 
-    //=======================
+
+#region Unity Methods
     void Awake() 
     {
         animator = GetComponent<Animator>();
@@ -34,6 +32,19 @@ public class Boss : MonoBehaviour
         Invoke("Stop", 2);
     }
 
+    void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (other.gameObject.tag == "PlayerBullet") {
+            Bullet bullet = other.gameObject.GetComponent<Bullet>();
+            OnHit(bullet.dmg);
+
+            other.gameObject.SetActive(false);
+        }    
+    }
+#endregion Unity Methods
+
+
+#region Methods
     void Stop()
     {
         if (!gameObject.activeSelf)
@@ -68,7 +79,7 @@ public class Boss : MonoBehaviour
 
     void BossFire(string name, Vector3 posVec, Vector2 dirVec)
     {
-        GameObject bullet = objectManager.MakeObj(name);
+        GameObject bullet = ObjectManager.Instance.MakeObj(name);
         bullet.transform.position = transform.position + posVec;
 
         Rigidbody2D bulletRigid = bullet.GetComponent<Rigidbody2D>();
@@ -76,6 +87,33 @@ public class Boss : MonoBehaviour
         bulletRigid.AddForce(dirVec.normalized * 8, ForceMode2D.Impulse);
     }
 
+    public void OnHit(int damage)
+    {
+        if (health <= 0)
+            return;
+
+        health -= damage;
+
+        animator.SetTrigger("OnHit");
+        
+        if (health <= 0) {
+            ObjectManager.Instance.DeleteAllObj("Boss");
+            
+            Player playerLogic = player.GetComponent<Player>();
+            playerLogic.score += enemyScore;
+
+            gameObject.SetActive(false);
+            CancelInvoke();
+            GameManager.Instance.CallExplosion(transform.position, "B");
+
+            if (GameManager.Instance.stage != 99)    // 무한 모드가 아니면 다음 스테이지로
+                GameManager.Instance.GameClear();
+        }
+    }
+#endregion Methods
+
+
+#region Fire Pattern
     void FireForward()
     {
         if (health <= 0)
@@ -140,7 +178,7 @@ public class Boss : MonoBehaviour
         int roundNum = currPatternCount % 2 == 0 ? roundA : roundB;
 
         for (int i = 0; i < roundNum; i++) {
-            GameObject bullet = objectManager.MakeObj("BossBulletA");
+            GameObject bullet = ObjectManager.Instance.MakeObj("BossBulletA");
             bullet.transform.position = transform.position;
             bullet.transform.rotation = Quaternion.identity;
 
@@ -157,38 +195,5 @@ public class Boss : MonoBehaviour
         else
             Invoke("Think", 3);
     }
-
-    void OnTriggerEnter2D(Collider2D other) 
-    {
-        if (other.gameObject.tag == "PlayerBullet") {
-            Bullet bullet = other.gameObject.GetComponent<Bullet>();
-            OnHit(bullet.dmg);
-
-            other.gameObject.SetActive(false);
-        }    
-    }
-
-    public void OnHit(int damage)
-    {
-        if (health <= 0)
-            return;
-
-        health -= damage;
-
-        animator.SetTrigger("OnHit");
-        
-        if (health <= 0) {
-            objectManager.DeleteAllObj("Boss");
-            
-            Player playerLogic = player.GetComponent<Player>();
-            playerLogic.score += enemyScore;
-
-            gameObject.SetActive(false);
-            CancelInvoke();
-            gameManager.CallExplosion(transform.position, "B");
-
-            if (gameManager.stage != 99)    // 무한 모드가 아니면 다음 스테이지로
-                gameManager.GameClear();
-        }
-    }
+#endregion Fire Pattern
 }

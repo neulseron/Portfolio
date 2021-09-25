@@ -1,19 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Follwer : MonoBehaviour
 {
-    public ObjectManager objectManager;
-    //---------------------
+#region Variables
     public float maxShotDelay;
     float curShotDelay;
 
-    public Transform parent;
+    [SerializeField]
+    Transform parent;
     Vector3 followPos;
     Queue<Vector3> parentPos;
     int followDelay;
-    //=====================
+#endregion Variables
+
+
+#region Unity Methods
     void Awake() 
     {
         parentPos = new Queue<Vector3>();
@@ -27,7 +29,10 @@ public class Follwer : MonoBehaviour
         Fire();
         Reload();
     }
+#endregion Unity Methods
 
+
+#region Methods
     void Watch()
     {
         if (!parentPos.Contains(parent.position))
@@ -39,14 +44,14 @@ public class Follwer : MonoBehaviour
             followPos = parent.position;
     }
 
-    void Follow()    { transform.position = followPos; }
+    void Follow() => transform.position = followPos; 
 
     void Fire()
     {
         if (curShotDelay < maxShotDelay)
             return;
 
-        GameObject bullet = objectManager.MakeObj("FollwerBullet");
+        GameObject bullet = ObjectManager.Instance.MakeObj("FollwerBullet");
         bullet.transform.position = transform.position;
 
         Rigidbody2D bulletRigid = bullet.GetComponent<Rigidbody2D>();
@@ -55,5 +60,6 @@ public class Follwer : MonoBehaviour
         curShotDelay = 0;
     }
 
-    void Reload()    { curShotDelay += Time.deltaTime; }
+    void Reload() => curShotDelay += Time.deltaTime; 
+#endregion Methods
 }

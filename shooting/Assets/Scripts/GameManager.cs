@@ -7,44 +7,75 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
+#region Singletone
+    static GameManager instance;
+    public static GameManager Instance => instance;
+#endregion Singletone
+
+#region Variables
+    #region Stage
     [Header("Stage")]
     public int stage;
     bool isEnd;
+    #endregion Stage
 
-
+    #region UI
     [Header("UI")]
-    public Text scoreTxt;
-    public Text highScoreTxt;
-    public Text endScoreTxt;
-    public Text over_highScoreTxt;
-    public Text over_endScoreTxt;
-    public GameObject gameOver;
-    public GameObject gameClear;
-    public GameObject gameClear2;
-    public Image[] lifeImg;
-    public Image[] boomImg;
-    public Animator stageAnim;
-    public Animator fadeAnim;
+    [SerializeField]
+    Text scoreTxt;
+    [SerializeField]
+    Text highScoreTxt;
+    [SerializeField]
+    Text endScoreTxt;
+    [SerializeField]
+    Text over_highScoreTxt;
+    [SerializeField]
+    Text over_endScoreTxt;
+
+    [SerializeField]
+    GameObject gameOver;
+    [SerializeField]
+    GameObject gameClear;
+    [SerializeField]
+    GameObject gameClear2;
+
+    [SerializeField]
+    Image[] lifeImg;
+    [SerializeField]
+    Image[] boomImg;
+    [SerializeField]
+    Animator stageAnim;
+    [SerializeField]
+    Animator fadeAnim;
+    #endregion UI
 
 
-    [Header("매니저")]
     public GameObject player;
     Player playerLogic;
-    public ObjectManager objectManager;
     LevelManager levelManager;
 
-
+    #region Enemy
     [Header("Enemy")]
     string[] enemyObjs;
-    public Transform[] spawnPoints;
-    public float nextSpawnDelay;
-    public float curSpawnDelay;
-    public List<Spawn> spawnList;
+
+    [SerializeField]
+    Transform[] spawnPoints;
+    [SerializeField]
+    float nextSpawnDelay;
+    [SerializeField]
+    float curSpawnDelay;
+    [SerializeField]
+    List<Spawn> spawnList;
     public int spawnIndex;
     public bool spawnEnd;
-    //=====================
+    #endregion Enemy
+#endregion Variables
 
+
+#region Unity Methods
     private void Awake() {
+        instance = this;
+
         playerLogic = player.GetComponent<Player>();
         enemyObjs = new string[] { "EnemyL", "EnemyM", "EnemyS", "Boss", "Star" };
         spawnList = new List<Spawn>();
@@ -70,8 +101,11 @@ public class GameManager : MonoBehaviour
             scoreTxt.text = string.Format("{0:n0}", playerLogic.score);
         }
     }
+#endregion Unity Methods
 
 
+#region Methods
+    #region Stage
     public void StageStart()
     {
         // fain in
@@ -97,7 +131,10 @@ public class GameManager : MonoBehaviour
         
         GameOver();
     }
+    #endregion Stage
 
+
+    #region Spawn Enemy
     void ReadSpawnFile()
     {
         // 초기화
@@ -155,7 +192,7 @@ public class GameManager : MonoBehaviour
             enemyPoint = Random.Range(0, 5);
 
 
-        GameObject enemy = objectManager.MakeObj(enemyObjs[enemyIndex]);
+        GameObject enemy = ObjectManager.Instance.MakeObj(enemyObjs[enemyIndex]);
         Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
 
         enemy.transform.position = spawnPoints[enemyPoint].position;
@@ -164,8 +201,6 @@ public class GameManager : MonoBehaviour
         if (enemyIndex == 3) { // 보스
             Boss bossLogic = enemy.GetComponent<Boss>();
             bossLogic.player = player;
-            bossLogic.objectManager = objectManager;
-            bossLogic.gameManager = this;
 
             rigid.velocity = new Vector2(0, bossLogic.speed * (-1));
         } else if (enemyIndex == 4) { // 별
@@ -173,8 +208,6 @@ public class GameManager : MonoBehaviour
         } else { // enemy
             Enemy enemyLogic = enemy.GetComponent<Enemy>();
             enemyLogic.player = player;
-            enemyLogic.objectManager = objectManager;
-            enemyLogic.gameManager = this;
 
             if (enemyPoint == 5) { // 왼쪽->오른쪽
                 rigid.velocity = new Vector2(enemyLogic.speed, -1);
@@ -193,7 +226,10 @@ public class GameManager : MonoBehaviour
 
         nextSpawnDelay = spawnList[spawnIndex].delay;
     }
+    #endregion Spawn Enemy
 
+
+    #region Player
     // ** UI **
     public void UpdateLife(int life)
     {
@@ -230,17 +266,20 @@ public class GameManager : MonoBehaviour
 
         playerLogic.isHit = false;
     }
+    #endregion Player
+
 
     public void CallExplosion(Vector3 pos, string type)
     {
-        GameObject explosion = objectManager.MakeObj("Explosion");
+        GameObject explosion = ObjectManager.Instance.MakeObj("Explosion");
         Explosion explosionLogic = explosion.GetComponent<Explosion>();
 
         explosion.transform.position = pos;
         explosionLogic.StartExplosion(type);
     }
 
-    // ** game control **
+
+    #region Game
     public void GameOver()
     {
         if (isEnd)
@@ -310,7 +349,11 @@ public class GameManager : MonoBehaviour
 
         gameClear2.SetActive(true);
     }
+    #endregion Game
+#endregion Methods
 
+
+#region Menu
     public void GameRetry()
     {
         isEnd = false;
@@ -344,4 +387,5 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
     }
+#endregion Menu
 }

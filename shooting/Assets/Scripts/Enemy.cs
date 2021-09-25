@@ -1,35 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("매니저")]
-    public GameManager gameManager;
-    public ObjectManager objectManager;
-    [HideInInspector]
+#region Variables
     public GameObject player;
 
-
-    [Header("Enemy")]
+    #region Enemy
     SpriteRenderer spriteRenderer;
-    public string enemyName;
-    public string bulletName;
+    [SerializeField]
+    string enemyName;
+    [SerializeField]
+    string bulletName;
     public float speed;
     int health;
     int enemyScore;
-    public Sprite[] sprites;
+    [SerializeField]
+    Sprite[] sprites;
+    #endregion Enemy
 
-
-    [Header("Fire")]
+    #region Fire
     float maxShotDelay;
     float curShotDelay;
+    #endregion Fire
 
-
-    [Header("Etc")]
     string[] items;
+#endregion Variables
     
-    //============================
+
+#region Unity Methods
     void Awake() 
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -66,13 +64,28 @@ public class Enemy : MonoBehaviour
             Reload();
         }
     }
+
+    void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (other.gameObject.tag == "BorderBullet")
+            gameObject.SetActive(false);
+        else if (other.gameObject.tag == "PlayerBullet") {
+            Bullet bullet = other.gameObject.GetComponent<Bullet>();
+            OnHit(bullet.dmg);
+
+            other.gameObject.SetActive(false);
+        }    
+    }
+#endregion Unity Methods
+
     
+#region Methods
     void Fire()
     {
         if (curShotDelay < maxShotDelay)
             return;
         
-        GameObject bullet = objectManager.MakeObj(bulletName);
+        GameObject bullet = ObjectManager.Instance.MakeObj(bulletName);
         bullet.transform.position = transform.position;
 
         Rigidbody2D bulletRigid = bullet.GetComponent<Rigidbody2D>();
@@ -86,18 +99,6 @@ public class Enemy : MonoBehaviour
         bulletRigid.AddForce(dirVec.normalized * 7, ForceMode2D.Impulse); 
         
         curShotDelay = 0;
-    }
-
-    void OnTriggerEnter2D(Collider2D other) 
-    {
-        if (other.gameObject.tag == "BorderBullet")
-            gameObject.SetActive(false);
-        else if (other.gameObject.tag == "PlayerBullet") {
-            Bullet bullet = other.gameObject.GetComponent<Bullet>();
-            OnHit(bullet.dmg);
-
-            other.gameObject.SetActive(false);
-        }    
     }
 
     public void OnHit(int damage)
@@ -118,22 +119,23 @@ public class Enemy : MonoBehaviour
             // item 확률 생성
             int ran = Random.Range(1, 11);
             if (ran == 10) { // boom
-                GameObject boom = objectManager.MakeObj(items[0]);
+                GameObject boom = ObjectManager.Instance.MakeObj(items[0]);
                 boom.transform.position = transform.position;
             } else if (ran % 3 == 0) { // power
-                GameObject power = objectManager.MakeObj(items[1]);
+                GameObject power = ObjectManager.Instance.MakeObj(items[1]);
                 power.transform.position = transform.position;
             } else if (ran % 2 == 0) { // coin
-                GameObject coin = objectManager.MakeObj(items[2]);
+                GameObject coin = ObjectManager.Instance.MakeObj(items[2]);
                 coin.transform.position = transform.position;
             }
 
             gameObject.SetActive(false);
-            gameManager.CallExplosion(transform.position, enemyName);
+            GameManager.Instance.CallExplosion(transform.position, enemyName);
         }
     }
 
-    void Reload()   { curShotDelay += Time.deltaTime; }
+    void Reload() => curShotDelay += Time.deltaTime; 
 
-    void ReturnSprite()     { spriteRenderer.sprite = sprites[0]; }
+    void ReturnSprite() => spriteRenderer.sprite = sprites[0]; 
+#endregion Methods
 }
