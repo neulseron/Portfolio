@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class DamageTxt : MonoBehaviour
@@ -15,6 +13,7 @@ public class DamageTxt : MonoBehaviour
             dmgTxt.text = value.ToString();
         }
     }
+    
     TextMeshProUGUI dmgTxt;
 
     void Awake() {

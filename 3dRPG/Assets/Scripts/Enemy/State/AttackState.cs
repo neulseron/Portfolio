@@ -1,54 +1,18 @@
-﻿// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-
-// public class AttackState : State<EnemyController>
-// {
-//     Animator animator;
-//     AttackStateController attackStateController;
-//     IAttackable attackable;
-
-//     protected int attackHash = Animator.StringToHash("Attack");
-
-//     public override void OnInitialized()
-//     {
-//         animator = context.GetComponent<Animator>();
-//         attackStateController = context.GetComponent<AttackStateController>();
-//         attackable = context.GetComponent<IAttackable>();
-//     }
-
-//     public override void OnEnter()
-//     {
-//         if (context.IsAvailableAttack) {
-//             animator.SetTrigger(attackHash);
-//         } else {
-//             stateMachine.ChangeState<IdleState>();
-//         }
-//     }
-
-//     public override void Update(float deltaTime)
-//     {
-//         Debug.Log("Attack 상태입니당");
-//     }
-
-//     public override void OnExit()
-//     {
-//     }
-// }
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AttackState : State<EnemyController>
 {
+#region Variables
     Animator animator;
     AttackStateController attackStateController;
     IAttackable attackable;
 
     protected int attackHash = Animator.StringToHash("Attack");
     protected int attackIndexHash = Animator.StringToHash("AttackIndex");
+#endregion Variables
 
+
+#region Methods
     public override void OnInitialized()
     {
         animator = context.GetComponent<Animator>();
@@ -82,14 +46,11 @@ public class AttackState : State<EnemyController>
 
     public void OnEnterAttackState()
     {
-            //UnityEngine.Debug.Log("OnEnterAttackState()");
     }
 
     public void OnExitAttackState()
     {
-            //UnityEngine.Debug.Log("OnExitAttackState()");
         stateMachine.ChangeState<IdleState>();
     }
-
-    
+#endregion Methods
 }

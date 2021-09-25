@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
 {
+#region Variables
     public float viewRadius = 5f;
     [Range(0, 360)]
     public float viewAngle = 90f;
@@ -20,7 +21,10 @@ public class FieldOfView : MonoBehaviour
     public float delay = 0.2f;
 
     float distanceToTarget = 0f;
+#endregion Variables
 
+
+#region Methods
     void Start()
     {
         StartCoroutine("FindTargetsWithDelay", delay);
@@ -70,4 +74,5 @@ public class FieldOfView : MonoBehaviour
 
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
+#endregion Methods
 }

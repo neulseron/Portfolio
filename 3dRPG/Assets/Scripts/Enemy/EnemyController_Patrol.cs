@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
 {
-    #region Variables
+#region Variables
     [SerializeField]
     int monsterID = -1;
 
@@ -22,12 +21,6 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
 
     int hitTriggerHash = Animator.StringToHash("Hit");
 
-
-
-    #endregion Variables
-
-
-    #region Properties
     public override bool IsAvailableAttack  
     {
         get {
@@ -36,10 +29,10 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
             return (distance <= AttackRange);
         }
     }   // 공격 거리가 되는지 확인
-    #endregion Properties
+#endregion Variables
 
 
-    #region Unity Methods
+#region Unity Methods
     protected override void Start()
     {
         base.Start();
@@ -47,7 +40,6 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
         stateMachine.AddState(new MoveState());
         stateMachine.AddState(new AttackState());
         stateMachine.AddState(new DeadState());
-        //stateMachine.AddState(new IdleState());
         stateMachine.AddState(new PatrolState());
 
         InitAttackBehaviour();
@@ -66,10 +58,10 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
 
         base.Update();
     }
-    #endregion Unity Methods
+#endregion Unity Methods
 
 
-    #region Helper Methods
+#region Methods
     void InitAttackBehaviour()
     {
         foreach (AttackBehaviour behaviour in attackBehaviours) {
@@ -95,14 +87,10 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
             }
         }
     }
-    #endregion Helper Methods
+#endregion Methods
 
 
-    #region Other Methods
-    #endregion Other Methods
-
-
-    #region IAttackable
+#region IAttackable
     public AttackBehaviour CurrentAttackBehaviour
     {
         get;
@@ -117,10 +105,10 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
             CurrentAttackBehaviour = null;
         }
     }
-    #endregion IAttackable
+#endregion IAttackable
 
 
-    #region IDamageable
+#region IDamageable
     public bool IsAlive => (health > 0);
 
     public void TakeDamage(int damage, GameObject hitEffectPrefabs)
@@ -138,7 +126,6 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
         }
 
         if (IsAlive) {
-        //if (health > 0) {
             animator?.SetTrigger(hitTriggerHash);
         } else {
             if (battleUI != null) {
@@ -146,10 +133,9 @@ public class EnemyController_Patrol : EnemyController, IAttackable, IDamageable
             }
 
             stateMachine.ChangeState<DeadState>();
-            //Instantiate(dropItem, transform);
 
             QuestManager.Instance.ProcessQuest(QuestType.DestroyEnemy, monsterID);    
         }
     }
-    #endregion IDamageable
+#endregion IDamageable
 }

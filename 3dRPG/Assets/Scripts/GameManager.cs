@@ -1,11 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using System.Collections;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public class GameManager : MonoBehaviour
 {
@@ -146,8 +142,6 @@ public class GameManager : MonoBehaviour
 
         PlayerCharacter playerLogic = player.GetComponent<PlayerCharacter>();
         data.chkGetItem = playerLogic.hadGetList;
-        //foreach (int id in data.chkGetItem)
-            //Debug.Log(id + ", ");
 
         SaveGameData();
 
@@ -173,7 +167,6 @@ public class GameManager : MonoBehaviour
         gem.Load();
         Debug.Log("---------[인벤 로드 완료]--------");
         playerStat.Load();
-        //Debug.Log("---------[스탯 완료]--------");
         QuestManager.Instance.Load();
         Debug.Log("---------[퀘스트 로드 완료]--------");
 
@@ -188,7 +181,6 @@ public class GameManager : MonoBehaviour
         systemMsg.SetActive(true);
         Invoke("disappearSystemMsg", 1f);
 
-        //player.GetComponent<CharacterController>().enabled = true;
         Debug.Log("===========================");
     }
 
@@ -260,7 +252,6 @@ public class GameManager : MonoBehaviour
         playerStat.OnChangedStats.Invoke(playerStat);
 
         MapManager.Instance.OnMesh();
-        //LoadPosition();
         SyncPosition(startPos.position);
     }
 
@@ -281,7 +272,6 @@ public class GameManager : MonoBehaviour
         // ** 1. 목적지~맵시작지점, 목적지~맵끝지점 까지의 거리 비교
         float fromStart = Vector3.Distance(newPosition, startPos.position);
         float fromEnd = Vector3.Distance(newPosition, endPos.position);
-        //Debug.Log("시작부터 : " + fromStart + ", 끝부터 : " + fromEnd);
         // ** 1-1. 시작지점과 가까울 때
         if (fromStart < fromEnd) {
             SyncPosition(startPos.position);
@@ -326,8 +316,6 @@ public class GameManager : MonoBehaviour
         player.GetComponent<NavMeshAgent>().ResetPath();
 
         player.GetComponent<CharacterController>().enabled = true;
-
-        //Debug.Log("현재위치 : " + player.transform.position + "\n이동위치 : " + newPos);
     }
 
 #endregion GameData Save/Load

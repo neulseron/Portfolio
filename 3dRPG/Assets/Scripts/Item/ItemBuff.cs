@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
 [Serializable]
 public class ItemBuff : IModifier
 {
+#region Variables
     public AttributeType stat;
     public int value;
 
@@ -15,6 +14,8 @@ public class ItemBuff : IModifier
 
     public int Min => min;
     public int Max => max;
+#endregion Variables
+
 
     public ItemBuff(int _min, int _max) 
     {
@@ -24,6 +25,8 @@ public class ItemBuff : IModifier
         GenerateValue();
     }
 
+
+#region Methods
     public void GenerateValue()
     {
         value = UnityEngine.Random.Range(min, max);
@@ -35,4 +38,5 @@ public class ItemBuff : IModifier
         Debug.Log("[ItemBuff/AddValue] Buff : " + stat + "/" + value);
         v += value;
     }
+#endregion Methods
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController_Chest : EnemyController, IAttackable, IDamageable, IInteractable
@@ -73,10 +72,10 @@ public class EnemyController_Chest : EnemyController, IAttackable, IDamageable, 
 
         base.Update();
     }
-    #endregion Unity Methods
+#endregion Unity Methods
 
 
-    #region Helper Methods
+#region Methods
     void InitAttackBehaviour()
     {
         foreach (AttackBehaviour behaviour in attackBehaviours) {
@@ -102,7 +101,7 @@ public class EnemyController_Chest : EnemyController, IAttackable, IDamageable, 
             }
         }
     }
-#endregion Helper Methods
+#endregion Methods
 
 
 #region IInteractable
@@ -162,7 +161,6 @@ public class EnemyController_Chest : EnemyController, IAttackable, IDamageable, 
             Instantiate(hitEffectPrefabs, hitTransform);
         }
 
-        //if (IsAlive) {
         if (health > 0) {
             animator?.SetTrigger(hitTriggerHash);
         } else {
@@ -171,7 +169,6 @@ public class EnemyController_Chest : EnemyController, IAttackable, IDamageable, 
             }
 
             stateMachine.ChangeState<DeadState>();
-            //Instantiate(dropItem, transform);
 
             QuestManager.Instance.ProcessQuest(QuestType.DestroyEnemy, monsterID);    
         }

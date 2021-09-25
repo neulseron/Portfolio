@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerInGameUI : MonoBehaviour
 {
+#region Variables
     public StatsObject playerStats;
 
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite halfHeart;
     public Sprite dmgHeart;
+#endregion Variables
 
 
+#region Unity Methods
     void Start()
     {
         FillHeart(playerStats.Health);
@@ -25,7 +26,10 @@ public class PlayerInGameUI : MonoBehaviour
     void OnDisable() {
         playerStats.OnChangedStats -= OnChangedStats;
     }
+#endregion Unity Methods
 
+
+#region Methods
     void OnChangedStats(StatsObject statsObject)
     {
         FillHeart(statsObject.Health);
@@ -34,7 +38,6 @@ public class PlayerInGameUI : MonoBehaviour
     public void FillHeart(int currHP)
     {   
         int currMaxHeart = playerStats.GetModifiedValue(AttributeType.MaxHealth) / 2;
-        Debug.Log("[FillHeart] Max HP : " + (currMaxHeart * 2) + ", HP: " + currHP);
         int halfHP = currHP % 2;
         currHP = currHP / 2;
 
@@ -55,4 +58,5 @@ public class PlayerInGameUI : MonoBehaviour
             }
         }
     }
+#endregion Methods
 }

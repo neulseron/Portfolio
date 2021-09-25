@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public abstract class State<T>
 {
+#region Variables
     protected StateMachine<T> stateMachine;
     protected T context;
+#endregion Variables
 
     public State() { }
 
+#region Methods
     internal void SetStateMachineAndContext(StateMachine<T> _stateMachine, T _context)
     {
         this.stateMachine = _stateMachine;
@@ -25,22 +26,25 @@ public abstract class State<T>
     public abstract void Update(float deltaTime);
 
     public virtual void OnExit() { }
+#endregion Methods
 }
 
 public sealed class StateMachine<T>
 {
+#region Variables
     T context;
 
     State<T> currState;
-    public State<T> CurrState => currState;   // 외부에서 수정하지 못하도록
+    public State<T> CurrState => currState;
 
     State<T> prevState;
     public State<T> PrevState => prevState;
 
-    float elapsedTimeInState = 0f;    // 흐른 시간
+    float elapsedTimeInState = 0f;
     public float ElapsedTimeInState => elapsedTimeInState;
 
     Dictionary<Type, State<T>> states = new Dictionary<Type, State<T>>();
+#endregion Variables
 
     public StateMachine(T _context, State<T> _initialState)
     {
@@ -52,6 +56,7 @@ public sealed class StateMachine<T>
         currState.OnEnter();
     }
 
+#region Methods
     public void AddState(State<T> state)
     {
         state.SetStateMachineAndContext(this, context);
@@ -80,4 +85,5 @@ public sealed class StateMachine<T>
 
         return currState as R;
     }
+#endregion Methods
 }

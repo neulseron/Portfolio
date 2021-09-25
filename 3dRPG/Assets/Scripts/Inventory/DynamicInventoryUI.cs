@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DynamicInventoryUI : InventoryUI
 {
+#region Variables
     [SerializeField]
     protected GameObject slotPrefab;
 
@@ -13,7 +13,10 @@ public class DynamicInventoryUI : InventoryUI
 
     [Min(1), SerializeField]
     protected int numOfCol = 4;
+#endregion Variables
 
+
+#region Methods
     public override void CreateSlotUIs()
     {
         slotUIs = new Dictionary<GameObject, InventorySlot>();
@@ -46,7 +49,7 @@ public class DynamicInventoryUI : InventoryUI
 
     protected override void OnRightClick(InventorySlot slot)
     {
-        Debug.Log("우클릭");
         inventoryObject.UseItem(slot);
     }
+#endregion Methods
 }

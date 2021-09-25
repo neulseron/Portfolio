@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class ModifiableInt
 {
+#region Variables
     event Action<ModifiableInt> OnModifiedValue;
     List<IModifier> modifiers = new List<IModifier>();
 
@@ -29,7 +29,7 @@ public class ModifiableInt
         get => modifiedValue;
         set => modifiedValue = value;
     }
-    
+#endregion Variables
 
 
     public ModifiableInt(Action<ModifiableInt> method = null) {
@@ -37,6 +37,8 @@ public class ModifiableInt
         RegisterModEvent(method);
     }
 
+
+#region Methods
     public void RegisterModEvent(Action<ModifiableInt> method)
     {
         if (method != null) {
@@ -76,8 +78,8 @@ public class ModifiableInt
         }
 
         ModifiedValue = baseValue + valueToAdd;
-        //Debug.Log(baseValue + ", " + valueToAdd + "//");
 
         OnModifiedValue.Invoke(this);
     }
+#endregion Methods
 }

@@ -1,19 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class MapManager : MonoBehaviour
 {
-    #region Singletone
+#region Singletone
     static MapManager instance;
     public static MapManager Instance => instance;
-    #endregion Singletone
+#endregion Singletone
 
-    [SerializeField]
-    NavMeshData warpMeshData;
-    [SerializeField]
-    NavMeshData gameMeshData;
+
+#region Variables
     [SerializeField]
     NavMeshSurface warpMeshSurface;
     [SerializeField]
@@ -21,6 +17,7 @@ public class MapManager : MonoBehaviour
 
     [SerializeField]
     GameObject warpRoute;
+#endregion Variables
 
 
     void Awake() {
@@ -29,8 +26,6 @@ public class MapManager : MonoBehaviour
 
     public void OffMesh()
     {
-        //warpMeshSurface.RemoveData();
-        //warpMeshSurface.gameObject.SetActive(false);
         warpMeshSurface.enabled = false;
         gameMeshSurface.enabled = true;
         warpRoute.SetActive(false);
@@ -38,7 +33,6 @@ public class MapManager : MonoBehaviour
 
     public void OnMesh()
     {
-        //warpMeshSurface.gameObject.SetActive(true);
         warpMeshSurface.enabled = true;
         gameMeshSurface.enabled = false;
         warpRoute.SetActive(false);

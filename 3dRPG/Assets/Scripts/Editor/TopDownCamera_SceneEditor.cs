@@ -6,9 +6,7 @@ using UnityEditor;
 [CustomEditor(typeof(TopDownCamera))]
 public class TopDownCamera_SceneEditor : Editor
 {
-    #region Variables
     TopDownCamera targetCamera;
-    #endregion Variables
 
     public override void OnInspectorGUI()
     {

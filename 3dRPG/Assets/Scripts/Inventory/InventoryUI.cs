@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
@@ -14,6 +12,7 @@ public static class MouseData
     public static GameObject tmpItemBeingDragged;
 }
 
+
 [RequireComponent(typeof(EventTrigger))]
 public abstract class InventoryUI : MonoBehaviour
 {
@@ -22,6 +21,7 @@ public abstract class InventoryUI : MonoBehaviour
     public Dictionary<GameObject, InventorySlot> slotUIs = new Dictionary<GameObject, InventorySlot>();
 
     
+#region Unity Methods
     void Awake() {
         CreateSlotUIs();
 
@@ -41,14 +41,14 @@ public abstract class InventoryUI : MonoBehaviour
         Debug.Log("===========================");
         Debug.Log("");
     }
+#endregion Unity Methods
 
+
+#region Methods
     public void InitInventory()
     {
         for (int i = 0; i < inventoryObject.Slots.Length; i++) {
             inventoryObject.Slots[i].UpdateSlot(inventoryObject.Slots[i].item, inventoryObject.Slots[i].amount);
-
-            //if (inventoryObject.Slots[i].item.id != -1 && inventoryObject.Slots[i].item.buffs.Length > 0)
-            //Debug.Log("@[InitInventory] Buff : " + inventoryObject.Slots[i].item.buffs[0].stat + "/" + inventoryObject.Slots[i].item.buffs[0].value);
         }
     }
 
@@ -78,8 +78,10 @@ public abstract class InventoryUI : MonoBehaviour
         slot.slotUI.transform.GetChild(0).GetComponent<Image>().color = slot.item.id < 0 ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1);
         slot.slotUI.GetComponentInChildren<TextMeshProUGUI>().text = slot.item.id < 0 ? string.Empty : (slot.amount == 1 ? string.Empty : slot.amount.ToString());
     }
+#endregion Methods
 
 
+#region Hovering
     public void OnEnterInterface(GameObject go)
     {
         MouseData.interfaceMouseIsOver = go.GetComponent<InventoryUI>();
@@ -87,7 +89,6 @@ public abstract class InventoryUI : MonoBehaviour
 
     public void OnExitInterface(GameObject go)
     {
-        //Debug.Log(go.name + "인터페이스 exit");
         MouseData.interfaceMouseIsOver = null;
     }
 
@@ -101,8 +102,10 @@ public abstract class InventoryUI : MonoBehaviour
     {
         MouseData.slotHoveredOver = null;
     }
+#endregion Hovering
 
 
+#region Drag
     public void OnStartDrag(GameObject go)
     {
         MouseData.tmpItemBeingDragged = CreateDragImage(go);
@@ -145,8 +148,10 @@ public abstract class InventoryUI : MonoBehaviour
 
         return dragImageGO;
     }
+#endregion Drag
 
 
+#region Click
     public void OnClick(GameObject go, PointerEventData data)
     {
         InventorySlot slot = slotUIs[go];
@@ -170,4 +175,5 @@ public abstract class InventoryUI : MonoBehaviour
     {
 
     }
+#endregion Click
 }

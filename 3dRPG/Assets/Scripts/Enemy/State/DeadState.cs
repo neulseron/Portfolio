@@ -1,14 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.AI;
+﻿using UnityEngine;
 
 public class DeadState : State<EnemyController>
 {
+#region Variables
     Animator animator;
 
     protected int isAliveHash = Animator.StringToHash("IsAlive");
+#endregion Variables
 
+
+#region Methods
     public override void OnInitialized()
     {
         animator = context.GetComponent<Animator>();
@@ -33,4 +34,5 @@ public class DeadState : State<EnemyController>
     {
         
     }
+#endregion Methods
 }

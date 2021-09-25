@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class InventorySlot
 {
+#region Variables
     public ItemType[] allowedItems = new ItemType[0];
 
     [NonSerialized]
@@ -27,12 +26,16 @@ public class InventorySlot
             return item.id >= 0 ? parent?.dB.itemObjects[item.id] : null;
         }
     }
+#endregion Variables
 
 
     public InventorySlot() => UpdateSlot(new Item(), 0);
     public InventorySlot(Item _item, int _amount) => UpdateSlot(_item, _amount);
 
+
+#region Methods
     public void AddItem(Item _item, int _amount) => UpdateSlot(_item, _amount);
+    
     public void RemoveItem() => UpdateSlot(new Item(), 0);
 
     public void AddAmount(int val) => UpdateSlot(item, amount += val);
@@ -63,4 +66,5 @@ public class InventorySlot
 
         return false;
     }
+#endregion Methods
 }

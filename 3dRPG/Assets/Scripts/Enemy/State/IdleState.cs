@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class IdleState : State<EnemyController>
 {
+#region Variables
     Animator animator;
     CharacterController controller;
 
@@ -14,7 +13,10 @@ public class IdleState : State<EnemyController>
 
     protected int hasMove = Animator.StringToHash("Move");
     protected int hasMoveSpeed = Animator.StringToHash("MoveSpeed");
+#endregion Variables
 
+
+#region Methods
     public override void OnInitialized()
     {
         animator = context.GetComponent<Animator>();
@@ -49,4 +51,5 @@ public class IdleState : State<EnemyController>
     public override void OnExit()
     {
     }
+#endregion Methods
 }

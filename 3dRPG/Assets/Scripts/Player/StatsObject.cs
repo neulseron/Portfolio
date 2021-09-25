@@ -1,22 +1,24 @@
 ﻿using UnityEngine;
 using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 [CreateAssetMenu(fileName = "New Stats", menuName ="Stats System/Stats/New Character Stats")]
 public class StatsObject : ScriptableObject
 {
+#region Variables
     public Attribute[] attributes;
 
     public Action<StatsObject> OnChangedStats;
 
-    public int Health { get; set; }     //Serialize 안되게 하도록 property로 선언
+    public int Health { get; set; }  
     public int MaxHealth { get; set; }
 
 
     [NonSerialized]
     bool isInitialize = false;
+#endregion Variables
+
+
+#region Methods
     public void OnEnable()
     {
         InitializeAttribute();
@@ -42,15 +44,11 @@ public class StatsObject : ScriptableObject
         SetBaseValue(AttributeType.MaxHealth, 8);
 
         Health = GetModifiedValue(AttributeType.Health);
-        //MaxHealth = GetModifiedValue(AttributeType.MaxHealth);
-
-        //Debug.Log("initialize : " + Health + ", " + MaxHealth);
     }
 
     public void RestartInitAttribute()
     {
         Health = GetBaseValue(AttributeType.Health);
-        //MaxHealth = GetBaseValue(AttributeType.MaxHealth);
     }
 
     void OnModifiedValue(ModifiableInt value)
@@ -92,7 +90,6 @@ public class StatsObject : ScriptableObject
     public int AddHealth(int value)
     {
         Health += value;
-        //Debug.Log("AddHealth : " + Health);
 
         OnChangedStats?.Invoke(this);
 
@@ -116,6 +113,7 @@ public class StatsObject : ScriptableObject
 
         return MaxHealth;
     }
+#endregion Methods
 
 
 #region Save/Load

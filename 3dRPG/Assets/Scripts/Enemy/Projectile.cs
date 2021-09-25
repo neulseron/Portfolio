@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    #region Variables
+#region Variables
     public float speed;
     public GameObject muzzlePrefab;    // 발사 이펙트
     public GameObject hitPrefab;
@@ -22,9 +22,10 @@ public class Projectile : MonoBehaviour
     public GameObject owner;
     [HideInInspector]
     public GameObject target;
-    #endregion Variables
+#endregion Variables
 
 
+#region Methods
     protected virtual void Start() 
     {
         if (target != null) {
@@ -133,4 +134,5 @@ public class Projectile : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         Destroy(gameObject);
     }
+#endregion Methods
 }

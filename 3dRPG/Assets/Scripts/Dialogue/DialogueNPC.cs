@@ -1,24 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DialogueNPC : MonoBehaviour, IInteractable
 {
+#region Variables
     [SerializeField]
     Dialogue dialogue;
-
     bool isStartDialogue = false;
-
     GameObject interactGO;
 
 
     [SerializeField]
     float distance = 2f;
     public float Distance => distance;
+
     bool isInteractable = true;
     public bool IsInteractable => isInteractable;
+#endregion Variables
 
 
+#region Methods
     public void Interact(GameObject other)
     {
         float calcDistance = Vector3.Distance(other.transform.position, transform.position);
@@ -41,4 +41,5 @@ public class DialogueNPC : MonoBehaviour, IInteractable
     {
         StopInteract(interactGO);
     }
+#endregion Methods
 }

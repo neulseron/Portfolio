@@ -39,18 +39,4 @@ public class TopDownCamera : MonoBehaviour
         transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref refVelocity, smoothSpeed);
         transform.LookAt(target.position);
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = new Color(1f, 0f, 0f, 0.5f);
-        if (target)
-        {
-            Vector3 lookAtPosition = target.position;
-            lookAtPosition.y += lookAtHeight;
-            Gizmos.DrawLine(transform.position, lookAtPosition);
-            Gizmos.DrawSphere(lookAtPosition, 0.25f);
-        }
-
-        Gizmos.DrawSphere(transform.position, 0.25f);
-    }
 }

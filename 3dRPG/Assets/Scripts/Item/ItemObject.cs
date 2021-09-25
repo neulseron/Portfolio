@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum ItemType: int   
@@ -43,7 +42,6 @@ public class ItemObject : ScriptableObject
 
         SkinnedMeshRenderer renderer = modelPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
         Transform[] bones = renderer.bones;
-        // *** 사용 되는지 확인 ***
         foreach (Transform t in bones) {
             boneNames.Add(t.name);
         }

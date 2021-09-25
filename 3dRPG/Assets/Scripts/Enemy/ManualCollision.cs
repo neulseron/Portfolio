@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ManualCollision : MonoBehaviour
 {  
@@ -8,16 +6,6 @@ public class ManualCollision : MonoBehaviour
 
     public Collider[] ChkOverlapBox(LayerMask layerMask) {
         return Physics.OverlapBox(transform.position, boxSize * 0.5f, transform.rotation, layerMask);
-    }
-
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
     }
 
     void OnDrawGizmos() {

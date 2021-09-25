@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -29,14 +28,15 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
     CharacterController controller;
     NavMeshAgent agent;
     public NavMeshAgent Agent => agent;
-    
     Camera cm;
     #endregion Components
 
+    #region Clicker
     public ClickPointer clicker;
     Vector3 clickerInitPos = new Vector3(0, -100, 0);
     [SerializeField]
     LayerMask groundLayerMask;
+    #endregion Clicker
 
     #region Animator Hash
     readonly int moveHash = Animator.StringToHash("Move");
@@ -47,22 +47,24 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
     readonly int isAliveHash = Animator.StringToHash("IsAlive");
     #endregion Animator Hash
 
+    #region Attack
     public bool IsInAttackState => GetComponent<AttackStateController>()?.IsInAttackState ?? false;
     public Transform target;
     [SerializeField]
     LayerMask targetMask;
+    [SerializeField]
+    Transform hitPoint;
+    #endregion Attack
 
     #region UI
     [SerializeField]
     public StatsObject playerStats;
     #endregion UI
-
-    [SerializeField]
-    Transform hitPoint;
+    
 #endregion Variables
 
 
-#region Main Methods
+#region Unity Methods
     private void Awake() {
         InitAttackBehaviour();
     }
@@ -80,10 +82,6 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
         agent.updateRotation = true;
 
         cm = Camera.main;
-
-        //health = maxHealth;
-
-        //InitAttackBehaviour();
     }
 
     void Update()
@@ -134,7 +132,6 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
             // ** 1. 오브젝트와 상호작용 가능한 거리까지 접근했는지
             if (target.GetComponent<IInteractable>() != null && target.GetComponent<IInteractable>().IsInteractable) {
                 float calcDistance = Vector3.Distance(target.position, transform.position);
-                //Debug.Log(calcDistance);
                 float range = target.GetComponent<IInteractable>().Distance;
                 if (calcDistance > range) { // 타겟과 상호작용 가능한 거리보다 더 남았으면
                     Debug.Log("거리 부족"); 
@@ -197,26 +194,15 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
         transform.position = position;
     }
     
-#endregion Main Methods
+#endregion Unity Methods
 
 
 #region Inventory Methods
     void OnUseItem(ItemObject itemObject)
     {
-        //int calMaxHealth = playerStats.GetBaseValue(AttributeType.MaxHealth);
-        //int calMaxHealth = playerStats.MaxHealth;
-
         foreach(ItemBuff buff in itemObject.data.buffs) {
             if (buff.stat == AttributeType.Health) {
                 playerStats.AddHealth(buff.value);
-            } else if (buff.stat == AttributeType.MaxHealth) {
-                /*
-                calMaxHealth += buff.value;
-                if (playerStats.MaxHealth < calMaxHealth) {
-                    playerStats.AddMaxHealth(buff.value);
-                    playerStats.AddHealth(buff.value);
-                }
-                */
             }
         }
     }
@@ -230,25 +216,13 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
         }
     }
 
-    void OnTriggerEnter(Collider other) {
-        var item = other.GetComponent<GroundItem>();
-        if (item) {
-            if (inventory.AddItem(new Item(item.itemObject), 1)) {
-                Destroy(other.gameObject);
-            }
-        }
-    }
-
     public bool PickupItem(ItemObject itemObject, int amount = 1)
     {
-                Debug.Log("픽업입니다");
         if (itemObject != null) {
             if (itemObject.type == ItemType.Gem) {
-                Debug.Log("젬입니다");
                 return gemSlot.AddGem(new Item(itemObject));
             }
 
-            //if (itemObject.type == ItemType.Key/* || itemObject.type == ItemType.LeftWeapon || itemObject.type == ItemType.RightWeapon*/) {
             if (itemObject.type == ItemType.Key || itemObject.type == ItemType.LeftWeapon || itemObject.type == ItemType.RightWeapon) {
                 hadGetList.Add(itemObject.data.id);
             }
@@ -276,16 +250,13 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
     {
         foreach (AttackBehaviour behaviour in attackBehaviours)
         {
-            /**/
             if (CurrentAttackBehaviour == null) {
                 CurrentAttackBehaviour = behaviour;
             }
-            /**/
+
             behaviour.targetMask = targetMask;
         }
 
-        //GetComponent<AttackStateController>().enterAttackHandler += OnEnterAttackState;
-        //GetComponent<AttackStateController>().exitAttackHandler += OnExitAttackState;
     }
     
     void ChkAttackBehaviour()
@@ -360,17 +331,15 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
 
     public void OnEnterAttackState()
     {
-        Debug.Log("enter attack state");
     }
 
     public void OnExitAttackState()
     {
-        
     }
 #endregion Helper Methods
 
 
-    #region IAttackable
+#region IAttackable
     [SerializeField]
     List<AttackBehaviour> attackBehaviours = new List<AttackBehaviour>();
 
@@ -389,31 +358,28 @@ public class PlayerCharacter : MonoBehaviour, IDamageable, IAttackable
             CurrentAttackBehaviour = null;
         }
     }
-    #endregion IAttackable
+#endregion IAttackable
 
 
-    #region IDamageable
+#region IDamageable
     public bool IsAlive => (playerStats.Health > 0);
 
     public void TakeDamage(int damage, GameObject damageEffectPrefabs)
     {
         if (!IsAlive)   return;
 
-        //health -= damage;
         playerStats.AddHealth(-damage);
 
         // ** 이펙트 효과 
         if (damageEffectPrefabs) {
             Instantiate(damageEffectPrefabs, hitPoint);
-            //Destroy(damageEffectPrefabs, 0.5f);
         }
 
-        //if (IsAlive) {
         if (playerStats.Health > 0) {
             animator.SetTrigger(hitHash);
         } else {
             animator.SetBool(isAliveHash, false);
         }
     }
-    #endregion IDamageable
+#endregion IDamageable
 }

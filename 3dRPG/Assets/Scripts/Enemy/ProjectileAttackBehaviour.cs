@@ -1,6 +1,4 @@
-﻿ using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ProjectileAttackBehaviour : AttackBehaviour
 {
@@ -15,11 +13,9 @@ public class ProjectileAttackBehaviour : AttackBehaviour
 
             Projectile projectile = projectileGO.GetComponent<Projectile>();
             if (projectile) {
-                //projectile.owner = this.gameObject;
                 projectile.target = target;
                 projectile.attackBehaviour = this;
             }
         }
-        //calcCoolTime = 0f;
     }
 }

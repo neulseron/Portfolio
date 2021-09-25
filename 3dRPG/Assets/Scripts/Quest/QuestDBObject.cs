@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "QuestDB", menuName = "Quest System/Quests/New Quest Database")]
 public class QuestDBObject : ScriptableObject

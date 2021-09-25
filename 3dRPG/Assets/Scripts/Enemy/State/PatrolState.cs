@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class PatrolState : State<EnemyController>
 {
-    #region Variables
+#region Variables
     Animator animator;
     CharacterController controller;
     NavMeshAgent agent;
@@ -19,9 +17,10 @@ public class PatrolState : State<EnemyController>
     [HideInInspector]
     public Transform targetWaypoint = null;
     int waypointIndex = 0;
-    #endregion Variables
+#endregion Variables
 
 
+#region Methods
     public override void OnInitialized()
     {
         animator = context.GetComponent<Animator>();
@@ -57,14 +56,7 @@ public class PatrolState : State<EnemyController>
             }
         } else {
             if (!agent.pathPending && (agent.remainingDistance <= agent.stoppingDistance)) {    // 이동할 거리가 안남았으면
-                
-                /*
-                Transform nextDest =  FindNextWaypoint();
-                if (nextDest != null) {
-                    agent.SetDestination(nextDest.position);
-                } 
-                */
-                /**/FindNextWaypoint();
+                FindNextWaypoint();
                 stateMachine.ChangeState<IdleState>();
             } else {
                 controller.Move(agent.velocity * deltaTime);
@@ -75,7 +67,7 @@ public class PatrolState : State<EnemyController>
 
     public override void OnExit()
     {
-        /**/agent.stoppingDistance = context.AttackRange;
+        agent.stoppingDistance = context.AttackRange;
         animator.SetBool(hasMove, false);
         agent.ResetPath();
     }
@@ -88,7 +80,6 @@ public class PatrolState : State<EnemyController>
             targetWaypoint = Waypoints[waypointIndex];
         }
         waypointIndex = (waypointIndex + 1) % Waypoints.Length;
-
-        //return targetWaypoint;
     }
+#endregion Methods
 }

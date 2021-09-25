@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class GemInventoryUI : InventoryUI
 {
+#region Variables
     [SerializeField]
     protected GameObject[] gemSlots;
+#endregion Variables
 
+
+#region Methods
     public override void CreateSlotUIs()
     {
         slotUIs = new Dictionary<GameObject, InventorySlot>();
@@ -21,11 +23,10 @@ public class GemInventoryUI : InventoryUI
         }
     }
 
-
     public override void OnPostUpdate(InventorySlot slot)
     {
-        //base.OnPostUpdate(slot);
         slot.slotUI.transform.GetChild(0).GetComponent<Image>().sprite = slot.item.id < 0 ? null : slot.ItemObject.icon;
         slot.slotUI.transform.GetChild(0).GetComponent<Image>().color = slot.item.id < 0 ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1);
     }
+#endregion Methods
 }

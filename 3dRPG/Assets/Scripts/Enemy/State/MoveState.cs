@@ -1,17 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class MoveState : State<EnemyController>
 {
+#region Variables
     Animator animator;
     CharacterController controller;
     NavMeshAgent agent;
 
     protected int hasMove = Animator.StringToHash("Move");
     protected int hasMoveSpeed = Animator.StringToHash("MoveSpeed");
+#endregion Variables
 
+
+#region Methods
     public override void OnInitialized()
     {
         animator = context.GetComponent<Animator>();
@@ -44,8 +46,8 @@ public class MoveState : State<EnemyController>
     public override void OnExit()
     {
         animator.SetBool(hasMove, false);
-        //animator.SetFloat(hasMoveSpeed, 0f);
         
         agent.ResetPath();
     }
+#endregion Methods
 }

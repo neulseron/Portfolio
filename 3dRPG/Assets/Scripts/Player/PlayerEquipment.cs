@@ -1,17 +1,16 @@
-﻿using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerEquipment : MonoBehaviour
 {
-    public StatsObject playerStats;
+#region Variables
     public InventoryObject equipment;
     EquipmentCombiner combiner;
     ItemInstances[] itemInstances = new ItemInstances[5];
     public ItemObject[] defaultItemObjects = new ItemObject[5];
+#endregion Variables
 
 
+#region Unity Methods
     void Awake() {
         combiner = new EquipmentCombiner(gameObject);
     }
@@ -35,15 +34,15 @@ public class PlayerEquipment : MonoBehaviour
             item?.Destroy();
         }
     }
+#endregion Unity Methods
 
+
+#region Methods
     void OnEquipItem(InventorySlot slot)
     {
         ItemObject itemObject = slot.ItemObject;
 
-        if (itemObject == null) {
-            //EquipDefaultItem(slot.allowedItems[0]);
-            return;
-        }
+        if (itemObject == null)     return;
 
         int index = (int)slot.allowedItems[0];
         switch (slot.allowedItems[0]) {
@@ -82,7 +81,6 @@ public class PlayerEquipment : MonoBehaviour
         Transform itemTransform = combiner.AddMesh(itemObject.modelPrefab, itemObject.type);
         if (itemTransform != null) {
             ItemInstances instance = new GameObject().AddComponent<ItemInstances>();
-            //instance.itemTransforms.AddRange(itemTransform.ToList<Transform>());
             instance.itemTransforms.Add(itemTransform);
 
             return instance;
@@ -114,4 +112,5 @@ public class PlayerEquipment : MonoBehaviour
             itemInstances[index] = null;
         }
     }
+#endregion Methods
 }

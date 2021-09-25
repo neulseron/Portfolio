@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EquipmentCombiner
@@ -8,6 +7,7 @@ public class EquipmentCombiner
     private readonly Transform transform;
 
 
+#region Methods
     public EquipmentCombiner(GameObject rootGO)
     {
         transform = rootGO.transform;
@@ -37,4 +37,5 @@ public class EquipmentCombiner
 
         return itemGO.transform;
     }
+#endregion Methods
 }

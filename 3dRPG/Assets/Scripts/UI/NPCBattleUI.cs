@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class NPCBattleUI : MonoBehaviour
@@ -33,6 +31,7 @@ public class NPCBattleUI : MonoBehaviour
             hpSlider.value = value;
         }
     }
+
 
     void Awake() {
         hpSlider = gameObject.GetComponentInChildren<Slider>();
