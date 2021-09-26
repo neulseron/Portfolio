@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
+#region Singletone
+    static ObjectManager instance;
+    public static ObjectManager Instance => instance;
+#endregion Singletone
+
     // ** Prefab **
     public GameObject[] PlayerPrefabs;
     public GameObject[] NPCPrefabs;
@@ -27,12 +32,12 @@ public class ObjectManager : MonoBehaviour
     GameObject[] targetPool;
     GameObject target;
 
-    public GameManager gameManager;
-    public SwitchManager switchManager;
 
 
     // ** 초기화 **
     void Awake() {
+        instance = this;
+        
         players = new GameObject[4];
         npcs = new GameObject[13];
 
@@ -57,8 +62,6 @@ public class ObjectManager : MonoBehaviour
             players[i] = Instantiate(PlayerPrefabs[i]);
 
             playerLogic = players[i].GetComponent<PlayerAction>();
-            playerLogic.gameManager = gameManager;
-            playerLogic.switchManager = switchManager;
 
             players[i].SetActive(false);
         }

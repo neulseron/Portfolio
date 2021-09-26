@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class MapUI : MonoBehaviour
 {
-    public GameManager gameManager;
     public GameObject[] maps;
     int showIndex;
 
     void OnEnable() {
         maps[showIndex].SetActive(false);
         
-        switch (gameManager.currMapIndex) {
+        switch (GameManager.Instance.currMapIndex) {
             case 13:
             case 15:
                 showIndex = 0;

@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class SwitchManager : MonoBehaviour
 {
+#region Singletone
+    static SwitchManager instance;
+    public static SwitchManager Instance => instance;
+#endregion Singletone
+
+
     public Dictionary<string, SwitchData> switchdata;
     public bool ing;
     //======================================
@@ -23,6 +29,8 @@ public class SwitchManager : MonoBehaviour
     //======================================
     
     private void Awake() {
+        instance = this;
+        
         switchdata = new Dictionary<string, SwitchData>();
     }
 

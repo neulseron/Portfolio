@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Reflection;
 
 public class Dialog
 {
@@ -28,15 +25,6 @@ public class Mail
     public string Content { get; set; }
 }
 
-public class Card
-{
-    public int Index { get; set; }
-    public string Btn1 { get; set; }
-    public string Btn2 { get; set; }
-    public string Btn3 { get; set; }
-    public string Btn4 { get; set; }
-}
-
 public class SystemMsg
 {
     public int Index { get; set; }
@@ -48,26 +36,37 @@ public class ItemInfo
     public int Index { get; set; }
     public string Txt { get; set; }
 }
-//==========================================================
+
+
 public class CSVManager : MonoBehaviour
 {
+#region Singletone
+    static CSVManager instance;
+    public static CSVManager Instance => instance;
+#endregion Singletone
+
+
+#region Data Dictionary
     Dictionary<int, Dictionary<int, Dictionary<int, Dialog>>> sceneDic;
     Dictionary<int, Dictionary<int, Dictionary<int, Obj>>> objDic;
     Dictionary<int, Dictionary<int, Dictionary<int, SystemMsg>>> systemDic;
     Dictionary<int, ItemInfo> itemDic;
     Dictionary<int, Dictionary<int, Mail>> mailDic;
-    //List<object> list;
+#endregion Data Dictionary
 
+
+#region Methods
     private void Awake() {
+        instance = this;
+        
         sceneDic = new Dictionary<int, Dictionary<int, Dictionary<int, Dialog>>>();
         objDic = new Dictionary<int, Dictionary<int, Dictionary<int, Obj>>>();
         systemDic = new Dictionary<int, Dictionary<int, Dictionary<int, SystemMsg>>>();
         itemDic = new Dictionary<int, ItemInfo>();
         mailDic = new Dictionary<int, Dictionary<int, Mail>>();
-        //list = new List<object>();
     }
 
-    //------------------------------------------------------
+    #region # Dialog #
     //** 대화 **
     public void SetDialog()
     {
@@ -111,8 +110,6 @@ public class CSVManager : MonoBehaviour
             sceneDic.Add(sceneIndex, cutDic);
             sceneIndex += 100;
         }
-
-        //list.Add(sceneDic);
     }
 
     public Dialog GetDialog(int _sceneIndex, int _cutIndex, int _index)
@@ -123,8 +120,10 @@ public class CSVManager : MonoBehaviour
 
         return null;
     }
+    #endregion # Dialog #
 
-    //------------------------------------------------------
+
+    #region # Object #
     //** 오브젝트 상호작용 **
     public void SetObjDialog()
     {
@@ -165,8 +164,6 @@ public class CSVManager : MonoBehaviour
             objDic.Add(sceneIndex, cutDic);
             sceneIndex += 100;
         }
-
-        //list.Add(objDic);
     }
 
     public Obj GetObj(int _objIndex, int _cutIndex, int _index)
@@ -177,8 +174,10 @@ public class CSVManager : MonoBehaviour
 
         return null;
     }
+    #endregion Object
 
-    //------------------------------------------------------
+
+    #region # System #
     public void SetSystemDialog()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("CSV/SystemMsg");
@@ -217,8 +216,6 @@ public class CSVManager : MonoBehaviour
             systemDic.Add(sceneIndex, cutDic);
             sceneIndex += 100;
         }
-
-        //list.Add(objDic);
     }
 
     public SystemMsg GetSystem(int _sceneIndex, int _cutIndex, int _index)
@@ -229,7 +226,10 @@ public class CSVManager : MonoBehaviour
 
         return null;
     }
-    //------------------------------------------------------
+    #endregion System
+
+
+    #region # Item #
     public void SetItemText()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("CSV/ItemInfo");
@@ -259,7 +259,10 @@ public class CSVManager : MonoBehaviour
 
         return null;
     }
-    //------------------------------------------------------
+    #endregion # Item #
+
+
+    #region # Mail #
     public void SetMailText()
     {
         TextAsset textAsset = Resources.Load<TextAsset>("CSV/Mail");
@@ -299,4 +302,6 @@ public class CSVManager : MonoBehaviour
 
         return null;
     }
+    #endregion # Mail #
+#endregion Methods
 }

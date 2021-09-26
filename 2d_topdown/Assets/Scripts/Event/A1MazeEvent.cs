@@ -1,29 +1,25 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class A1MazeEvent : MonoBehaviour
+public class A1MazeEvent : MapEvent
 {
-    public GameManager gameManager;
-    public SceneManager sceneManager;
-    public SwitchManager switchManager;
-    GameObject player;
-    PlayerAction playerLogic;
-    //--------------------------------------
+#region Variables
     string ans = "";
     int turn = 0;
     public Switch appearJH;
 
     GameObject Jihyeon;
     NPCMove JihyeonLogic;
-    //--------------------------------------
+    
     public Transform[] spawnPoints;
-    //======================================
-    void Start() {
-        player = gameManager.player;
-        playerLogic = player.GetComponent<PlayerAction>();
+#endregion Variables
 
-        Jihyeon = sceneManager.PlayNPC("N_Jihyeon", spawnPoints[0].position);
+
+#region Unity Methods
+    protected override void Start() {
+        base.Start();
+
+        Jihyeon = SceneManager.Instance.PlayNPC("N_Jihyeon", spawnPoints[0].position);
         JihyeonLogic = Jihyeon.GetComponent<NPCMove>();
 
         JihyeonLogic.Turn("right");
@@ -32,16 +28,16 @@ public class A1MazeEvent : MonoBehaviour
     }
 
     void Update() {
-        if (switchManager.switchdata["A1Maze_InitTalk"].on) {
-            gameManager.dontSave = true;
-            switchManager.switchdata["A1Maze_InitTalk"].on = false;
+        if (SwitchManager.Instance.switchdata["A1Maze_InitTalk"].on) {
+            GameManager.Instance.dontSave = true;
+            SwitchManager.Instance.switchdata["A1Maze_InitTalk"].on = false;
             playerLogic.Turn("left");
             StartCoroutine(InitTalk());
         }
 
-        if (switchManager.switchdata["A1MazeOn"].on && ans != switchManager.A1MazeAns) {
+        if (SwitchManager.Instance.switchdata["A1MazeOn"].on && ans != SwitchManager.Instance.A1MazeAns) {
             if (appearJH.on && !appearJH.ing) {
-                gameManager.scanObj = null;
+                GameManager.Instance.scanObj = null;
                 appearJH.on = false;
                 StartCoroutine(SMAppear());
             }
@@ -52,16 +48,19 @@ public class A1MazeEvent : MonoBehaviour
             }
         }
 
-        if (ans == switchManager.A1MazeAns) {
+        if (ans == SwitchManager.Instance.A1MazeAns) {
             ans = "";
-            gameManager.OffPlayer(player);
-            gameManager.ChangeMap(5, "P_Jaeha", new Vector3(-0.5f, 0, 0), "up", 4);
-            gameManager.dontSave = false;
+            GameManager.Instance.OffPlayer(player);
+            GameManager.Instance.ChangeMap(5, "P_Jaeha", new Vector3(-0.5f, 0, 0), "up", 4);
+            GameManager.Instance.dontSave = false;
         }
     }
+#endregion Unity Methods
 
+
+#region Event
     IEnumerator InitTalk() {
-        switchManager.ing = true;
+        SwitchManager.Instance.ing = true;
         //=====================================================
         playerLogic.Turn("up");
         yield return new WaitForSeconds(0.5f);
@@ -69,26 +68,26 @@ public class A1MazeEvent : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         playerLogic.Turn("left");
         //-----------------------------------------------------
-        sceneManager.PlayTalk(0, 200);
-        yield return new WaitUntil(() => gameManager.isTalking == false);
+        SceneManager.Instance.PlayTalk(0, 200);
+        yield return new WaitUntil(() => GameManager.Instance.isTalking == false);
         //=====================================================
-        switchManager.ing = false;
-        switchManager.switchdata["A1Maze_InitTalk"].off = true;
+        SwitchManager.Instance.ing = false;
+        SwitchManager.Instance.switchdata["A1Maze_InitTalk"].off = true;
 
-        switchManager.switchdata["A1MazeOn"].on = true;
+        SwitchManager.Instance.switchdata["A1MazeOn"].on = true;
     }
 
     IEnumerator SMAppear()
     {
-        if (switchManager.A1MazeAns[turn] == 'L') {
+        if (SwitchManager.Instance.A1MazeAns[turn] == 'L') {
             Jihyeon.transform.position = spawnPoints[0].position;
             Jihyeon.SetActive(true);
             JihyeonLogic.SetWaypoint(2, spawnPoints[0].position, Jihyeon.transform.position + new Vector3(-5, 0, 0));
-        } else if (switchManager.A1MazeAns[turn] == 'R') {
+        } else if (SwitchManager.Instance.A1MazeAns[turn] == 'R') {
             Jihyeon.transform.position = spawnPoints[1].position;
             Jihyeon.SetActive(true);
             JihyeonLogic.SetWaypoint(2, spawnPoints[1].position, Jihyeon.transform.position + new Vector3(5, 0, 0));
-        } else if (switchManager.A1MazeAns[turn] == 'U') {
+        } else if (SwitchManager.Instance.A1MazeAns[turn] == 'U') {
             Jihyeon.transform.position = spawnPoints[2].position;
             Jihyeon.SetActive(true);
             JihyeonLogic.SetWaypoint(2, spawnPoints[2].position, Jihyeon.transform.position + new Vector3(0, 5, 0));
@@ -104,24 +103,25 @@ public class A1MazeEvent : MonoBehaviour
     {
         appearJH.ing = true;
 
-        if (gameManager.scanObj != null && gameManager.scanObj.tag == "Maze") {
+        if (GameManager.Instance.scanObj != null && GameManager.Instance.scanObj.tag == "Maze") {
             JihyeonLogic.isOff = false;
 
-            if (switchManager.A1MazeAns[turn] == gameManager.scanObj.name[0]) {
-                ans += gameManager.scanObj.name[0];
+            if (SwitchManager.Instance.A1MazeAns[turn] == GameManager.Instance.scanObj.name[0]) {
+                ans += GameManager.Instance.scanObj.name[0];
                 turn++;
             } else {
                 turn = 0;
                 ans = "";
             }
 
-            gameManager.OffPlayer(player);
-            gameManager.ChangeMap(6, "P_Jaeha", new Vector3(-0.5f, -3f, 0), "up", 4);
-            gameManager.scanObj = null;
+            GameManager.Instance.OffPlayer(player);
+            GameManager.Instance.ChangeMap(6, "P_Jaeha", new Vector3(-0.5f, -3f, 0), "up", 4);
+            GameManager.Instance.scanObj = null;
             
             appearJH.on = true;
         }
 
         appearJH.ing = false;
     }
+#endregion Event
 }

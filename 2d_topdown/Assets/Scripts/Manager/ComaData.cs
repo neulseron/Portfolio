@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class comaDataForm
@@ -25,17 +24,17 @@ public class medicalDataForm
 
 public class ComaData : MonoBehaviour
 {
-    public SwitchManager switchManager;
-
-    public Sprite[] portraits;
+#region Variables
     public string inputComaId;
     public bool searchComaEnd = false;
-    //------------------------------------------------------
-    //------------------------------------------------------
+
     Dictionary<string, comaDataForm> ComaDic;
     Dictionary<string, medicalDataForm> MedicalDic;
     List<int> idList;
+#endregion Variables
 
+
+#region Unity Methods
     void Start() {
         idList = new List<int>();
         ComaDic = new Dictionary<string, comaDataForm>();
@@ -45,7 +44,10 @@ public class ComaData : MonoBehaviour
         GenerateComaData();
         GenerateMeicalData();
     }
+#endregion Unity Methods
 
+
+#region Generate Data
     void GenerateIdList()
     {
         idList.Add(378951); //이수민
@@ -257,7 +259,10 @@ public class ComaData : MonoBehaviour
         data.content.Add("-프로젝트 미아 등록");
         MedicalDic.Add("256492", data);
     }
+#endregion Generate Data
 
+
+#region Methods
     public bool ChkID()
     {
         int id = int.Parse(inputComaId);
@@ -275,13 +280,9 @@ public class ComaData : MonoBehaviour
         return ComaDic[_id];
     }
 
-    public void ChangeComaData(string _id)
-    {
-
-    }
-
     public medicalDataForm medicalID(string _id)
     {
         return MedicalDic[_id];
     }
+#endregion Methods
 }

@@ -19,7 +19,6 @@ public class FadeController : MonoBehaviour
     FadeState fadeState;
     public bool endFade;
 
-    public GameManager gameManager;
 
     public SimpleTypingEffect nameTxtTE;
     public SimpleTypingEffect timeTxtTE;
@@ -37,8 +36,8 @@ public class FadeController : MonoBehaviour
     {
         fadeState = _state;
         endFade = false;
-        gameManager.dontSave = true;
-        gameManager.dontMove = true;
+        GameManager.Instance.dontSave = true;
+        GameManager.Instance.dontMove = true;
 
         switch (fadeState) {
             case FadeState.FadeIn:
@@ -135,10 +134,10 @@ public class FadeController : MonoBehaviour
         endFade = true;
 
         yield return StartCoroutine(Fade(1, 0));    // Fade In
-        gameManager.dontSave = false;
-        gameManager.dontMove = false;
+        GameManager.Instance.dontSave = false;
+        GameManager.Instance.dontMove = false;
         
-        Debug.Log(gameManager.currTime);
+        Debug.Log(GameManager.Instance.currTime);
     }
 
 }

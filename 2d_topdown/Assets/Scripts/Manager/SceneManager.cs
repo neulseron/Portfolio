@@ -5,7 +5,12 @@ using UnityEngine.UI;
 
 public class SceneManager : MonoBehaviour
 {
-    public GameManager gameManager;
+#region Singletone
+    static SceneManager instance;
+    public static SceneManager Instance => instance;
+#endregion Singletone
+
+
     public Animator JR_monitorAnimator;
     public TypingEffect textBoxTE;
     //============================
@@ -19,42 +24,46 @@ public class SceneManager : MonoBehaviour
     public bool D_newMail;
     //============================
 
-    private void Start() {
-        gameManager.selectIndex = -1;
+    void Awake() {
+        instance = this;
+    }
+
+    void Start() {
+        GameManager.Instance.selectIndex = -1;
         D_newMail = false;
     }
 
     public void PlayTalk(int _talkNum, int _sceneIndex, string _allignment = "UL")
     {
-        gameManager.currSceneIndex = _sceneIndex;
-        gameManager.currCutIndex = _talkNum;
+        GameManager.Instance.currSceneIndex = _sceneIndex;
+        GameManager.Instance.currCutIndex = _talkNum;
         textBoxTE.allignment = _allignment;
-        gameManager.Action();
+        GameManager.Instance.Action();
     }
 
     public void PlaySystemTalk(int _talkNum, int _sceneIndex)
     {
-        gameManager.currSceneIndex = _sceneIndex;
-        gameManager.currCutIndex = _talkNum;
-        gameManager.SystemAction();
+        GameManager.Instance.currSceneIndex = _sceneIndex;
+        GameManager.Instance.currCutIndex = _talkNum;
+        GameManager.Instance.SystemAction();
     }
 
     public void PlayObj(int _obj, int _Index, string _allignment = "UL")
     {
-        gameManager.objIndex = _Index;
-        gameManager.objCutIndex = _obj;
+        GameManager.Instance.objIndex = _Index;
+        GameManager.Instance.objCutIndex = _obj;
         textBoxTE.allignment = _allignment;
-        gameManager.InterAction();
+        GameManager.Instance.InterAction();
     }
 
     public GameObject PlayNPC(string _who, Vector3 _pos)
     {
-        return gameManager.SpawnNPC(_who, _pos);
+        return GameManager.Instance.SpawnNPC(_who, _pos);
     }
 
     public GameObject spawnNPC(string _who, Vector3 _pos)
     {
-        return gameManager.SpawnRandomNPC(_who, _pos);
+        return GameManager.Instance.SpawnRandomNPC(_who, _pos);
     }
 
     public void SetSelectBtnTxt(string _btn1, string _btn2, string _btn3, string _btn4)
@@ -63,7 +72,7 @@ public class SceneManager : MonoBehaviour
         Btn2Txt.text = _btn2;
         Btn3Txt.text = _btn3;
         Btn4Txt.text = _btn4;
-        gameManager.selectBox.SetActive(true);
+        GameManager.Instance.selectBox.SetActive(true);
     }    
 
     public void SetSelectTxt(string _txt = "")

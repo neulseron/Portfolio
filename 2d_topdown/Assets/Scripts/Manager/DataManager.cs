@@ -1,34 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System;
 
 public class DataManager : MonoBehaviour
 {
-    //=====================================================
-    // ** 싱글톤 **
-    static GameObject _container;
-    static GameObject Container
-    {
-        get {
-            return _container;
-        }
-    }
-    static DataManager _instance;
+#region Singletone
+    static GameObject container;
+    static GameObject Container => container;
+    
+    static DataManager instance;
     public static DataManager Instance
     {
         get {
-            if (!_instance) {
-                _container = new GameObject();
-                _container.name = "DataManager";
-                _instance = _container.AddComponent(typeof(DataManager)) as DataManager;
-                DontDestroyOnLoad(_container);
+            if (!instance) {
+                container = new GameObject();
+                container.name = "DataManager";
+                instance = container.AddComponent(typeof(DataManager)) as DataManager;
+                DontDestroyOnLoad(container);
             }
-            return _instance;
+            return instance;
         }
     }
-    //=====================================================
+#endregion Singletone
+
+
+#region Game Data
     public string GameDataFileName = "SaveFile.json";
 
     public GameData _gameData;
@@ -65,7 +61,10 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(filePath, ToJsonData);
         Debug.Log("저장완료");
     }
+#endregion Game Data
 
+
+#region Switch Data
     public Dictionary<string, SwitchData> switchDic;
 
     public void InitializeDic()
@@ -76,12 +75,5 @@ public class DataManager : MonoBehaviour
             switchDic.Add(gameData.switchList[i].name, gameData.switchList[i]);
         }
     }
-
-/* 자동저장
-    private void OnApplicationQuit() {
-        SaveGameData();
-    }
-    */
-
-
+#endregion Switch Data
 }

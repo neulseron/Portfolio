@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 
 public class PressCom : MonoBehaviour
 {
-    public SwitchManager switchManager;
-    public CSVManager csvManager;
 
     public GameObject mainWindow;
     public GameObject pressWindow;
@@ -39,9 +37,9 @@ public class PressCom : MonoBehaviour
         currentScreen = 2;
 
         GameObject btn = EventSystem.current.currentSelectedGameObject;
-        headline.text = csvManager.GetObj(0, int.Parse(btn.name), 1).Txt;
-        date.text = csvManager.GetObj(0, int.Parse(btn.name), 2).Txt;
-        content.text = csvManager.GetObj(0, int.Parse(btn.name), 3).Txt.Replace("\\n", "\n");
+        headline.text = CSVManager.Instance.GetObj(0, int.Parse(btn.name), 1).Txt;
+        date.text = CSVManager.Instance.GetObj(0, int.Parse(btn.name), 2).Txt;
+        content.text = CSVManager.Instance.GetObj(0, int.Parse(btn.name), 3).Txt.Replace("\\n", "\n");
 
         pressWindow.SetActive(false);
         articleWindow.SetActive(true);
@@ -82,6 +80,6 @@ public class PressCom : MonoBehaviour
         backBtn.GetComponent<Button>().interactable = false;
 
         gameObject.SetActive(false);
-        switchManager.ing = false;
+        SwitchManager.Instance.ing = false;
     }
 }

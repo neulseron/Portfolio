@@ -1,20 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
+#region Singletone
+    static GameManager instance;
+    public static GameManager Instance => instance;
+    GameData data;
+    public GameData Data => data;
+#endregion Singletone
+
     //=====================================================
     // ** 컨트롤 매니저 **
-    public ObjectManager objectManager;
-    public SceneManager sceneManager;
-    public CSVManager csvManager;
-    public DialogManager dialogManager;
-    public SwitchManager switchManager;
-    public ItemManager itemManager;
     //public QuestManager questManager;
     public MainCamera main_camera;
     public FadeController fadeEffect;
@@ -64,6 +65,8 @@ public class GameManager : MonoBehaviour
         
     // ** 초기화 **
     void Awake() {
+        instance = this;
+        
         GameLoad();
         //questTxt.text = questManager.CheckQuest();
         //SpawnPlayer("P_Jaei", new Vector3(25f, 5f, 0));
@@ -103,9 +106,9 @@ public class GameManager : MonoBehaviour
         }
 
         // ** 게임 시작 **
-        if (!switchManager.switchdata["JR_callDr"].off) {      // 저장된 데이터 없으면
-            switchManager.AddDic(new SwitchData("JR_callDr", false, false));
-            switchManager.switchdata["JR_callDr"].on = true;
+        if (!SwitchManager.Instance.switchdata["JR_callDr"].off) {      // 저장된 데이터 없으면
+            SwitchManager.Instance.AddDic(new SwitchData("JR_callDr", false, false));
+            SwitchManager.Instance.switchdata["JR_callDr"].on = true;
         }
     }
 
@@ -170,7 +173,7 @@ public class GameManager : MonoBehaviour
             player.SetActive(false);
         }
 
-        player = objectManager.MakeObj(type);
+        player = ObjectManager.Instance.MakeObj(type);
         player.transform.position = pos;
         main_camera.target = player.transform;
     }
@@ -183,13 +186,13 @@ public class GameManager : MonoBehaviour
     public void ChangePlayer(string type)
     {
         player.SetActive(false);
-        player = objectManager.MakeObj(type);
+        player = ObjectManager.Instance.MakeObj(type);
         main_camera.target = player.transform;
     }
 
     public GameObject SpawnNPC(string _type, Vector3 _pos)
     {
-        GameObject npc = objectManager.MakeObj(_type);
+        GameObject npc = ObjectManager.Instance.MakeObj(_type);
         npc.transform.position = _pos;
 
         return npc;
@@ -197,7 +200,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject SpawnRandomNPC(string _type, Vector3 _pos)
     {
-        GameObject npc = objectManager.MakeNPC(_type);
+        GameObject npc = ObjectManager.Instance.MakeNPC(_type);
         npc.transform.position = _pos;
 
         return npc;
@@ -206,27 +209,27 @@ public class GameManager : MonoBehaviour
     // ** 상호작용 **
     public void Action()
     {
-        dialogManager.Talk(currSceneIndex, currCutIndex);
+        DialogManager.Instance.Talk(currSceneIndex, currCutIndex);
         talkBox.SetBool("isShow", isTalking);
     }
 
     public void InterAction()
     {
         isInterAction = true;
-        dialogManager.ObjTalk(objIndex, objCutIndex);
+        DialogManager.Instance.ObjTalk(objIndex, objCutIndex);
         talkBox.SetBool("isShow", isInterAction);
     }
 
     public void SystemAction()
     {
         isSystem = true;
-        dialogManager.SystemTalk(currSceneIndex, currCutIndex);
+        DialogManager.Instance.SystemTalk(currSceneIndex, currCutIndex);
         systemBox.SetBool("isShow", isSystem);
     }
 
     public void AddItem(int _id)
     {
-        Item item = itemManager.itemDic[_id];
+        Item item = ItemManager.Instance.itemDic[_id];
         inventory.GetComponent<Inventory>().AddItem(_id);
         Debug.Log(item.itemName);
 
@@ -235,7 +238,7 @@ public class GameManager : MonoBehaviour
 
         currSceneIndex = 100;
         currCutIndex = 0;
-        dialogManager.itemName = item.itemName;
+        DialogManager.Instance.itemName = item.itemName;
 
         //if (item.destroyable)
             //isSystem = true;
@@ -270,7 +273,7 @@ public class GameManager : MonoBehaviour
 
     public void SwitchManagerToDataManager()
     {
-        foreach (KeyValuePair<string, SwitchData> p in switchManager.switchdata) {
+        foreach (KeyValuePair<string, SwitchData> p in SwitchManager.Instance.switchdata) {
             if (DataManager.Instance.switchDic.ContainsKey(p.Key)) {
                 DataManager.Instance.switchDic[p.Key].on = p.Value.on;
                 DataManager.Instance.switchDic[p.Key].off = p.Value.off;
@@ -285,11 +288,11 @@ public class GameManager : MonoBehaviour
     public void DataManagerToSwitchManager()
     {
         foreach (KeyValuePair<string, SwitchData> p in DataManager.Instance.switchDic) {
-            if (switchManager.switchdata.ContainsKey(p.Key)) {
-                switchManager.switchdata[p.Key].on = p.Value.on;
-                switchManager.switchdata[p.Key].off = p.Value.off;
+            if (SwitchManager.Instance.switchdata.ContainsKey(p.Key)) {
+                SwitchManager.Instance.switchdata[p.Key].on = p.Value.on;
+                SwitchManager.Instance.switchdata[p.Key].off = p.Value.off;
             } else
-                switchManager.AddDic(p.Value);
+                SwitchManager.Instance.AddDic(p.Value);
         }
     }
 
@@ -314,7 +317,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator cantUseFunc()
     {
-        sceneManager.PlaySystemTalk(10, 400);
+        SceneManager.Instance.PlaySystemTalk(10, 400);
         yield return new WaitUntil(() => isSystem == false);
     }
 
@@ -368,7 +371,7 @@ public class GameManager : MonoBehaviour
     {
 
         // ** 플레이어 **
-        player = objectManager.MakeObj(DataManager.Instance.gameData.playerName);
+        player = ObjectManager.Instance.MakeObj(DataManager.Instance.gameData.playerName);
         float x = DataManager.Instance.gameData.playerX;
         float y = DataManager.Instance.gameData.playerY;
         player.transform.position = new Vector3(x, y, 0);

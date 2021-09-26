@@ -6,10 +6,6 @@ using UnityEngine.EventSystems;
 
 public class Monitor : MonoBehaviour
 {
-    public GameManager gameManager;
-    public SwitchManager switchManager;
-    public CSVManager csvManager;
-    public SceneManager sceneManager;
     //-----------------------------------------------------
     public Inventory inventory;
     public Animator monitorAnimator;
@@ -37,29 +33,29 @@ public class Monitor : MonoBehaviour
         currWindow = 0;
         ReceiveMailSet.SetActive(true);
 
-        roomNum = gameManager.currMapIndex == 0 ? 0 : 1;
+        roomNum = GameManager.Instance.currMapIndex == 0 ? 0 : 1;
 
-        if (roomNum == 0 && switchManager.switchdata["SecondF_mail9"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_mail9"].on) {
             mail9.SetActive(true);
         }
 
-        if (roomNum == 0 && switchManager.switchdata["SecondF_mail10"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_mail10"].on) {
             mail10.SetActive(true);
         }
 
-        if (roomNum == 0 && switchManager.switchdata["SecondF_mailAttached"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_mailAttached"].on) {
             mail6.SetActive(false);
             mail8.SetActive(true);
             mail7.SetActive(true);
         }
 
-        if (roomNum == 0 && switchManager.switchdata["SecondF_readMail7"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_readMail7"].on) {
             mail7.transform.Find("icon").gameObject.GetComponent<Image>().sprite = readIcon;
         }
-        if (roomNum == 0 && switchManager.switchdata["SecondF_readMail9"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_readMail9"].on) {
             mail9.transform.Find("icon").gameObject.GetComponent<Image>().sprite = readIcon;
         }
-        if (roomNum == 0 && switchManager.switchdata["SecondF_readMail10"].on) {
+        if (roomNum == 0 && SwitchManager.Instance.switchdata["SecondF_readMail10"].on) {
             mail10.transform.Find("icon").gameObject.GetComponent<Image>().sprite = readIcon;
         }
     }
@@ -75,8 +71,8 @@ public class Monitor : MonoBehaviour
                 ReceiveMailSet.SetActive(false);
                 gameObject.SetActive(false);
                 monitorAnimator.SetTrigger("isOff");
-                gameManager.dontMove = false;
-                switchManager.ing = false;
+                GameManager.Instance.dontMove = false;
+                SwitchManager.Instance.ing = false;
                 break;
             case 1:
                 currWindow = 0;
@@ -95,7 +91,7 @@ public class Monitor : MonoBehaviour
         Image icon = btn.transform.Find("icon").gameObject.GetComponent<Image>();
         icon.sprite = readIcon;
         
-        Mail mail = csvManager.GetMailInfo(roomNum * 100, int.Parse(btn.name));
+        Mail mail = CSVManager.Instance.GetMailInfo(roomNum * 100, int.Parse(btn.name));
         mailName.text = "보낸 사람 : " + mail.Name;
         mailTitle.text = mail.Title;
         mailDate.text = mail.Date;
@@ -103,18 +99,18 @@ public class Monitor : MonoBehaviour
 
         ReceiveMailSet.SetActive(false);
 
-        if (roomNum == 0 && btn.name == "7" && !switchManager.switchdata["SecondF_readMail7"].on) {
-            switchManager.switchdata["SecondF_readMail7"].on = true;
+        if (roomNum == 0 && btn.name == "7" && !SwitchManager.Instance.switchdata["SecondF_readMail7"].on) {
+            SwitchManager.Instance.switchdata["SecondF_readMail7"].on = true;
         }
-        if (roomNum == 0 && btn.name == "9" && !switchManager.switchdata["SecondF_readMail9"].on) {
-            switchManager.switchdata["SecondF_readMail9"].on = true;
+        if (roomNum == 0 && btn.name == "9" && !SwitchManager.Instance.switchdata["SecondF_readMail9"].on) {
+            SwitchManager.Instance.switchdata["SecondF_readMail9"].on = true;
         }
-        if (roomNum == 0 && btn.name == "10" && !switchManager.switchdata["SecondF_readMail10"].on) {
-            switchManager.switchdata["SecondF_readMail10"].on = true;
+        if (roomNum == 0 && btn.name == "10" && !SwitchManager.Instance.switchdata["SecondF_readMail10"].on) {
+            SwitchManager.Instance.switchdata["SecondF_readMail10"].on = true;
         }
 
-        if (roomNum == 0 && btn.name == "10" && !switchManager.switchdata["JR_ChkMail"].off) {
-            switchManager.switchdata["JR_ChkMail"].on = true;
+        if (roomNum == 0 && btn.name == "10" && !SwitchManager.Instance.switchdata["JR_ChkMail"].off) {
+            SwitchManager.Instance.switchdata["JR_ChkMail"].on = true;
         }
 
         if (roomNum == 0 && btn.name == "6") {

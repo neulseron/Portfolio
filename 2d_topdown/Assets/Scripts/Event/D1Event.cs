@@ -1,50 +1,47 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class D1Event : MonoBehaviour
+public class D1Event : MapEvent
 {
-    public GameManager gameManager;
-    public SceneManager sceneManager;
-    public SwitchManager switchManager;
-    GameObject player;
-    //--------------------------------------
-    public GameObject sumin;
+#region Variables
+    [SerializeField]
+    GameObject sumin;
     NPCMove suminLogic;
-    //--------------------------------------
-    public Transform[] spawnPoints;
-    //======================================
-    void Start() {
-        player = gameManager.player;
+#endregion Variables
 
-        if (!switchManager.D1_TalkSumin.off) {
+
+#region Unity Methods
+    protected override void Start() {
+        base.Start();
+
+        if (!SwitchManager.Instance.D1_TalkSumin.off) {
             suminLogic = sumin.GetComponent<NPCMove>();
             suminLogic.Turn("up");
         }
     }
 
     void Update() {
-        if (switchManager.D1_TalkSumin.on) {
-            switchManager.D1_TalkSumin.on = false;
+        if (SwitchManager.Instance.D1_TalkSumin.on) {
+            SwitchManager.Instance.D1_TalkSumin.on = false;
             StartCoroutine(talkSumin());
         }
-
-        
     }
+#endregion Unity Methods
 
+
+#region Event
     IEnumerator talkSumin()
     {
-        switchManager.D1_TalkSumin.ing = true;
+        SwitchManager.Instance.D1_TalkSumin.ing = true;
         //=====================================================x
         suminLogic.Turn("down");
         //-----------------------------------------------------
-        sceneManager.PlayTalk(0, 500);
-        yield return new WaitUntil(() => gameManager.isTalking == false);
+        SceneManager.Instance.PlayTalk(0, 500);
+        yield return new WaitUntil(() => GameManager.Instance.isTalking == false);
         //-----------------------------------------------------
         //=====================================================x
-        switchManager.D1_TalkSumin.ing = false;
-        switchManager.D1_TalkSumin.off = true;
+        SwitchManager.Instance.D1_TalkSumin.ing = false;
+        SwitchManager.Instance.D1_TalkSumin.off = true;
     }
-
-    
+#endregion Event
 }

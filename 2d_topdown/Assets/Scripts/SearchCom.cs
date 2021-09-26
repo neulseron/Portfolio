@@ -6,9 +6,6 @@ using UnityEngine.EventSystems;
 
 public class SearchCom : MonoBehaviour
 {
-    public GameManager gameManager;
-    public SwitchManager switchManager;
-    public SceneManager sceneManager;
     public GameObject SearchComUI;
     public GameObject inventory;
     public GameObject tutorialSet;
@@ -26,7 +23,7 @@ public class SearchCom : MonoBehaviour
     //------------------------------------------------------
     public void BtnSearcher()
     {
-        if (!switchManager.switchdata["Tutorial_SearchCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_SearchCom"].off)
             return;
         currentScreen = 2;
         Main.SetActive(false);
@@ -36,7 +33,7 @@ public class SearchCom : MonoBehaviour
 
     public void BtnComa()
     {
-        if (!switchManager.switchdata["Tutorial_SearchCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_SearchCom"].off)
             return;
         currentScreen = 3;
         Main.SetActive(false);
@@ -46,7 +43,7 @@ public class SearchCom : MonoBehaviour
 
     public void BtnWatch()
     {
-        if (!switchManager.switchdata["Tutorial_SearchCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_SearchCom"].off)
             return;
         currentScreen = 5;
         Main.SetActive(false);
@@ -83,7 +80,7 @@ public class SearchCom : MonoBehaviour
         searcherTxt.text = "수색자 : " + cdf.search;
         noteTxt.text = "가장 기억에 남는 물건/장소/사건 : " + cdf.note;
 
-        if (btn.name == "456871" && switchManager.switchdata["A1Maze_InitTalk"].off) {
+        if (btn.name == "456871" && SwitchManager.Instance.switchdata["A1Maze_InitTalk"].off) {
             searcherTxt.text = "수색자 : 서재하(수색)";
         } else
             searcherTxt.text = "수색자 : " + cdf.search;
@@ -103,9 +100,9 @@ public class SearchCom : MonoBehaviour
         GameObject btn = EventSystem.current.currentSelectedGameObject;
 
         if (btn.name == "740682") {     // 김채은(송지운)
-            sceneManager.PlaySystemTalk(20, 400);
+            SceneManager.Instance.PlaySystemTalk(20, 400);
         } else if (btn.name == "521791") {      // 박형서(강선우)
-            gameManager.dontSave = true;
+            GameManager.Instance.dontSave = true;
 
             //안내멘트
 
@@ -116,20 +113,20 @@ public class SearchCom : MonoBehaviour
         Watch.SetActive(false);
         SearchComUI.SetActive(false);
         currentScreen = 0;
-        switchManager.ing = false;
+        SwitchManager.Instance.ing = false;
 
     }
 
     IEnumerator FadeAndChangeMap2()
     {
-        gameManager.currTime = 8;
-        gameManager.fadeEffect.nameStr = "강선우";
-        gameManager.fadeEffect.timeStr = "2030-03-06(수) 오후  3:10:00";
-        gameManager.fadeEffect.OnFade(FadeState.FadeOut);
-        yield return new WaitUntil(() => gameManager.fadeEffect.endFade == true);
+        GameManager.Instance.currTime = 8;
+        GameManager.Instance.fadeEffect.nameStr = "강선우";
+        GameManager.Instance.fadeEffect.timeStr = "2030-03-06(수) 오후  3:10:00";
+        GameManager.Instance.fadeEffect.OnFade(FadeState.FadeOut);
+        yield return new WaitUntil(() => GameManager.Instance.fadeEffect.endFade == true);
         //=====================================================
-        gameManager.OffPlayer(gameManager.player);
-        gameManager.ChangeMap(8, "P_Sunwoo", new Vector3(2, 1, 0), "up", 4);
+        GameManager.Instance.OffPlayer(GameManager.Instance.player);
+        GameManager.Instance.ChangeMap(8, "P_Sunwoo", new Vector3(2, 1, 0), "up", 4);
     }
     //=====================================================
     public GameObject ChooseBox;
@@ -144,7 +141,7 @@ public class SearchCom : MonoBehaviour
     public void BtnEnd()
     {
         SearchComUI.SetActive(false);
-        switchManager.ing = false;
+        SwitchManager.Instance.ing = false;
 
         switch(currentScreen) {
             case 1:
@@ -204,25 +201,25 @@ public class SearchCom : MonoBehaviour
 
             StartCoroutine(FadeAndChangeMap());
 
-            switchManager.switchdata["A1Maze_InitTalk"].on = true;
-            switchManager.switchdata["Searchcom_signupJihyeon"].on = true;
+            SwitchManager.Instance.switchdata["A1Maze_InitTalk"].on = true;
+            SwitchManager.Instance.switchdata["Searchcom_signupJihyeon"].on = true;
         } else {
-            gameManager.currSceneIndex = 400;
-            gameManager.currCutIndex = 0;
-            gameManager.SystemAction();
+            GameManager.Instance.currSceneIndex = 400;
+            GameManager.Instance.currCutIndex = 0;
+            GameManager.Instance.SystemAction();
         }
     }
 
     IEnumerator FadeAndChangeMap()
     {
-        gameManager.currTime = 1;
-        gameManager.fadeEffect.nameStr = "서재하";
-        gameManager.fadeEffect.timeStr = "2030-03-06(수)\n오후  3:41:00";
-        gameManager.fadeEffect.OnFade(FadeState.FadeOut);
-        yield return new WaitUntil(() => gameManager.fadeEffect.endFade == true);
+        GameManager.Instance.currTime = 1;
+        GameManager.Instance.fadeEffect.nameStr = "서재하";
+        GameManager.Instance.fadeEffect.timeStr = "2030-03-06(수)\n오후  3:41:00";
+        GameManager.Instance.fadeEffect.OnFade(FadeState.FadeOut);
+        yield return new WaitUntil(() => GameManager.Instance.fadeEffect.endFade == true);
 
-        gameManager.OffPlayer(gameManager.player);
-        gameManager.ChangeMap(4, "P_Jaeha", new Vector3(27.5f, -2, 0), "up", 3);
+        GameManager.Instance.OffPlayer(GameManager.Instance.player);
+        GameManager.Instance.ChangeMap(4, "P_Jaeha", new Vector3(27.5f, -2, 0), "up", 3);
     }
 
     //=====================================================
@@ -235,26 +232,26 @@ public class SearchCom : MonoBehaviour
     }
 
     void Update() {
-        if (switchManager.switchdata["SecondF_movingSM"].off) {
+        if (SwitchManager.Instance.switchdata["SecondF_movingSM"].off) {
             ListHS.transform.Find("state").gameObject.GetComponent<Text>().text = "업무중";
         }
 
-        if (switchManager.switchdata["ThirdF_SearchCom"].on) {
-            switchManager.switchdata["ThirdF_SearchCom"].on = false;
+        if (SwitchManager.Instance.switchdata["ThirdF_SearchCom"].on) {
+            SwitchManager.Instance.switchdata["ThirdF_SearchCom"].on = false;
 
-            switchManager.switchdata["Tutorial_OffMarkSearchCom"].on = true;
+            SwitchManager.Instance.switchdata["Tutorial_OffMarkSearchCom"].on = true;
 
             SearchComUI.SetActive(true);
             Login.SetActive(true);
-            switchManager.ing = true;
+            SwitchManager.Instance.ing = true;
         }
         
-        if (switchManager.switchdata["Tutorial_SearchCom"].on && !Login.activeSelf) {
-            switchManager.switchdata["Tutorial_SearchCom"].on = false;
+        if (SwitchManager.Instance.switchdata["Tutorial_SearchCom"].on && !Login.activeSelf) {
+            SwitchManager.Instance.switchdata["Tutorial_SearchCom"].on = false;
             StartCoroutine(Tutorial());
         }
 
-        if (switchManager.ing) {
+        if (SwitchManager.Instance.ing) {
             if (loginEnd) {
                 currentScreen = 1;
                 Main.SetActive(true);
@@ -269,18 +266,18 @@ public class SearchCom : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.SetActive(true);
-            sceneManager.PlaySystemTalk(30, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(30, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.transform.position = new Vector3(Main.transform.Find("Btn_Coma").gameObject.transform.position.x, tutorialSet.transform.Find("mark").gameObject.transform.position.y, 0);
-            sceneManager.PlaySystemTalk(40, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(40, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.transform.position = new Vector3(Main.transform.Find("Btn_Watch").gameObject.transform.position.x, Main.transform.Find("Btn_Watch").gameObject.transform.position.y, 0) + new Vector3(0, 1, 0);
-            sceneManager.PlaySystemTalk(50, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(50, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //=====================================================
-            switchManager.switchdata["Tutorial_SearchCom"].off = true;
+            SwitchManager.Instance.switchdata["Tutorial_SearchCom"].off = true;
             tutorialSet.transform.Find("mark").gameObject.SetActive(false);
         }
     }

@@ -1,43 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class DialogManager : MonoBehaviour
 {
-    public CSVManager csvManager;
-    public GameManager gameManager;
-    //---------------------------------------------
+#region Singletone
+    static DialogManager instance;
+    public static DialogManager Instance => instance;
+#endregion Singletone
+
+
+#region Variables
     public Image nameBox;
     public TypingEffect talkText;
     public Text npcName;
     public Sprite[] portraitArr;
     public Image portraitImg;
-    //---------------------------------------------
+
     public TypingEffect SystemTxt;
     public string itemName;
-    //---------------------------------------------
+
     int dialogIndex = 1;
+#endregion Variables
 
 
+#region Methods
     void Awake()
     {
+        instance = this;
+        
         GenerateData();
     }
 
-    // Update is called once per frame
+    #region Generate Dialogue Data
     void GenerateData()
     {
         // Talk Data
         // line : + 1 ('\n')
         // cut : + 10 (&)
         // scene : + 100 (/)
-        csvManager.SetDialog();
-        csvManager.SetObjDialog();
-        csvManager.SetSystemDialog();
-        csvManager.SetItemText();
-        csvManager.SetMailText();
+        CSVManager.Instance.SetDialog();
+        CSVManager.Instance.SetObjDialog();
+        CSVManager.Instance.SetSystemDialog();
+        CSVManager.Instance.SetItemText();
+        CSVManager.Instance.SetMailText();
     }
 
     public Sprite GetPortrait(int index)
@@ -46,27 +52,24 @@ public class DialogManager : MonoBehaviour
         // 0 : Normal, 1 : Smile, 2 : Angry, 3 : ?
         return portraitArr[index];
     }
+    #endregion Generate Dialogue Data
 
     public void Talk(int _sceneIndex, int _cutIndex)
     {
-        //int questDialogIndex = 0;
         RectTransform textRect = talkText.gameObject.GetComponent<RectTransform>();
         textRect.anchoredPosition = new Vector2(40, -16);
-        var data = csvManager.GetDialog(_sceneIndex, _cutIndex, dialogIndex);
+        var data = CSVManager.Instance.GetDialog(_sceneIndex, _cutIndex, dialogIndex);
 
 
         if (talkText.isAnim) {
             talkText.SetMsg("");
             return;
-        } else {
-            //questDialogIndex = q_manager.GetQuestDialogIndex(id);
         }
 
         // ** End Dialog **
         if (data == null) {
-            gameManager.isTalking = false;
+            GameManager.Instance.isTalking = false;
             dialogIndex = 1;
-            //questTxt.text = q_manager.CheckQuest(id);
             return;
         }
 
@@ -120,11 +123,10 @@ public class DialogManager : MonoBehaviour
             }
         }
 
-        gameManager.isTalking = true;
+        GameManager.Instance.isTalking = true;
         if (!talkText.isPortraitDiff)
             dialogIndex++;
     }
-    //---------------------------------------------
 
     public void ObjTalk(int _objIndex, int _cutIndex)
     {
@@ -132,7 +134,7 @@ public class DialogManager : MonoBehaviour
         textRect.sizeDelta = new Vector2(700, 120);
         textRect.anchoredPosition = new Vector2(40, -8);
 
-        var data = csvManager.GetObj(_objIndex, _cutIndex, dialogIndex);
+        var data = CSVManager.Instance.GetObj(_objIndex, _cutIndex, dialogIndex);
 
         if (talkText.isAnim) {
             talkText.SetMsg("");
@@ -141,7 +143,7 @@ public class DialogManager : MonoBehaviour
 
         // ** End Dialog **
         if (data == null) {
-            gameManager.isInterAction = false;
+            GameManager.Instance.isInterAction = false;
             dialogIndex = 1;
             return;
         }
@@ -156,12 +158,10 @@ public class DialogManager : MonoBehaviour
 
         dialogIndex++;
     }
-    //---------------------------------------------
    
     public void SystemTalk(int _sceneIndex, int _cutIndex)
     {
-        //int questDialogIndex = 0;
-        var data = csvManager.GetSystem(_sceneIndex, _cutIndex, dialogIndex);
+        var data = CSVManager.Instance.GetSystem(_sceneIndex, _cutIndex, dialogIndex);
 
         if (SystemTxt.isAnim) {
             SystemTxt.SetMsg("");
@@ -171,13 +171,12 @@ public class DialogManager : MonoBehaviour
         // ** End Dialog **
         if (data == null) {
             dialogIndex = 1;
-            gameManager.isSystem = false;
+            GameManager.Instance.isSystem = false;
             return;
         }
 
         // ** Set Data **
         data.Txt = data.Txt.Replace("\\n", "\n");
-        //string[] txts = data.Txt.Split(':');
 
         if (_sceneIndex == 100) { // ** 아이템 추가 메세지
             string str = itemName + data.Txt;
@@ -189,25 +188,25 @@ public class DialogManager : MonoBehaviour
         dialogIndex++;
     }
     
-    //---------------------------------------------
     public void SelectBoxClick()
     {
         GameObject btn = EventSystem.current.currentSelectedGameObject;
         switch (btn.name) {
             case "Btn1":
-                gameManager.selectIndex = 1;
+                GameManager.Instance.selectIndex = 1;
                 break;
             case "Btn2":
-                gameManager.selectIndex = 2;
+                GameManager.Instance.selectIndex = 2;
                 break;
             case "Btn3":
-                gameManager.selectIndex = 3;
+                GameManager.Instance.selectIndex = 3;
                 break;
             case "Btn4":
-                gameManager.selectIndex = 4;
+                GameManager.Instance.selectIndex = 4;
                 break;
         }
 
         btn.transform.parent.gameObject.SetActive(false);
     }
+#endregion Methods
 }

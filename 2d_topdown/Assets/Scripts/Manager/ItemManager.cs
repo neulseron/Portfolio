@@ -1,14 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
+#region Singletone
+    static ItemManager instance;
+    public static ItemManager Instance => instance;
+#endregion Singletone
+
     public Sprite[] itemImages;
     
     public Dictionary<int, Item> itemDic;
 
     private void Awake() {
+        instance = this;
+        
         itemDic = new Dictionary<int, Item>();
     }
 

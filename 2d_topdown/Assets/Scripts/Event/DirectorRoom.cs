@@ -1,47 +1,43 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DirectorRoom : MonoBehaviour
+public class DirectorRoom : MapEvent
 {
-    public GameManager gameManager;
-    public SceneManager sceneManager;
-    public SwitchManager switchManager;
-    GameObject player;
-    PlayerAction playerLogic;
-    //--------------------------------------
+#region Variables
     public GameObject Director;
     NPCMove DirectorLogic;
-    //--------------------------------------
-    public Transform[] spawnPoints;
-    //======================================s
+#endregion Variables
 
-    void Start() {
-        player = gameManager.player;
-        playerLogic = player.GetComponent<PlayerAction>();
+
+#region Unity Methods
+    protected override void Start() {
+        base.Start();
 
         DirectorLogic = Director.GetComponent<NPCMove>();
         DirectorLogic.Turn("left");
     }
 
     void Update() {
-        if (switchManager.switchdata["DR_callHS"].on) {
-            switchManager.switchdata["DR_callHS"].on = false;
+        if (SwitchManager.Instance.switchdata["DR_callHS"].on) {
+            SwitchManager.Instance.switchdata["DR_callHS"].on = false;
             StartCoroutine(CallHyeonSeok());
         }
     }
+#endregion Unity Methods
 
+
+#region Event
     IEnumerator CallHyeonSeok()
     {
-        switchManager.ing = true;
+        SwitchManager.Instance.ing = true;
         //=====================================================
         playerLogic.SetWaypoint(2, player.transform.position, player.transform.position + new Vector3(1, 0, 0));
         playerLogic.isOn = true;
         yield return new WaitUntil(() => playerLogic.isOff == true);
         playerLogic.isOff = false;
         //-----------------------------------------------------
-        sceneManager.PlayTalk(0, 600);
-        yield return new WaitUntil(() => gameManager.isTalking == false);
+        SceneManager.Instance.PlayTalk(0, 600);
+        yield return new WaitUntil(() => GameManager.Instance.isTalking == false);
         //-----------------------------------------------------
         player.GetComponent<CapsuleCollider2D>().isTrigger = true;
         playerLogic.SetWaypoint(2, player.transform.position, player.transform.position + new Vector3(1.5f, 0, 0));
@@ -49,41 +45,31 @@ public class DirectorRoom : MonoBehaviour
         yield return new WaitUntil(() => playerLogic.isOff == true);
         playerLogic.isOff = false;
 
-        sceneManager.PlayTalk(10, 600);
-        yield return new WaitUntil(() => gameManager.isTalking == false);
+        SceneManager.Instance.PlayTalk(10, 600);
+        yield return new WaitUntil(() => GameManager.Instance.isTalking == false);
         //-----------------------------------------------------
-        /*
-        player.GetComponent<CapsuleCollider2D>().isTrigger = true;
-        playerLogic.SetWaypoint(2, player.transform.position, player.transform.position + new Vector3(-1, 0, 0));
-        playerLogic.isOn = true;
-        yield return new WaitUntil(() => playerLogic.isOff == true);
-        playerLogic.isOff = false;
-
-        sceneManager.PlayTalk(20, 600);
-        yield return new WaitUntil(() => gameManager.isTalking == false);
-        //-----------------------------------------------------
-*/
         player.GetComponent<CapsuleCollider2D>().isTrigger = false;
         StartCoroutine(FadeAndChangeMap());
         //=====================================================
-        switchManager.switchdata["SecondF_dischargedJH"].on = true;
+        SwitchManager.Instance.switchdata["SecondF_dischargedJH"].on = true;
 
-        switchManager.ing = false;
-        switchManager.switchdata["DR_callHS"].off = true;
+        SwitchManager.Instance.ing = false;
+        SwitchManager.Instance.switchdata["DR_callHS"].off = true;
     }
 
     IEnumerator FadeAndChangeMap()
     {
-        gameManager.currTime = 6;
-        gameManager.fadeEffect.nameStr = "서재이";
-        gameManager.fadeEffect.timeStr = "2030-03-07(목)\n오후  1:40:00";
-        gameManager.fadeEffect.OnFade(FadeState.FadeOut);
-        yield return new WaitUntil(() => gameManager.fadeEffect.endFade == true);
+        GameManager.Instance.currTime = 6;
+        GameManager.Instance.fadeEffect.nameStr = "서재이";
+        GameManager.Instance.fadeEffect.timeStr = "2030-03-07(목)\n오후  1:40:00";
+        GameManager.Instance.fadeEffect.OnFade(FadeState.FadeOut);
+        yield return new WaitUntil(() => GameManager.Instance.fadeEffect.endFade == true);
 
-        gameManager.OffPlayer(gameManager.player);
-        gameManager.ChangeMap(1, "P_Jaei", new Vector3(3.6f, 15f, 0), "left", 1);
+        GameManager.Instance.OffPlayer(GameManager.Instance.player);
+        GameManager.Instance.ChangeMap(1, "P_Jaei", new Vector3(3.6f, 15f, 0), "left", 1);
 
-        gameManager.inventory.GetComponent<Inventory>().TempClearInven();
-        gameManager.inventory.GetComponent<Inventory>().InitInven(DataManager.Instance.gameData.itemList);
+        GameManager.Instance.inventory.GetComponent<Inventory>().TempClearInven();
+        GameManager.Instance.inventory.GetComponent<Inventory>().InitInven(DataManager.Instance.gameData.itemList);
     }
+#endregion Event
 }

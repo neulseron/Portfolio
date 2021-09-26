@@ -6,8 +6,6 @@ public class PlayerAction : MonoBehaviour
 {
     //=====================================================
     // ** 매니저 **
-    public GameManager gameManager;
-    public SwitchManager switchManager;
     //=====================================================
     // ** 컴포넌트 **
     public string myName;
@@ -57,12 +55,12 @@ public class PlayerAction : MonoBehaviour
                                     Invoke("DelayCall", 0.5f);
                                 }
                             } else // ** 구멍
-                                gameManager.ChangeMap(to.moveToMapIndex, myName, to.movePos, to.turn, to.showMap);
+                                GameManager.Instance.ChangeMap(to.moveToMapIndex, myName, to.movePos, to.turn, to.showMap);
                         break;
                     case "Switch":
-                        if (!switchManager.ing && !switchManager.switchdata[scanObj.name].off) {
+                        if (!SwitchManager.Instance.ing && !SwitchManager.Instance.switchdata[scanObj.name].off) {
                             tmpName = scanObj.name;
-                            switchManager.switchdata[scanObj.name].on = true;
+                            SwitchManager.Instance.switchdata[scanObj.name].on = true;
                             StartCoroutine(WaitSwitchOn());
                         }
                         break;
@@ -80,14 +78,14 @@ public class PlayerAction : MonoBehaviour
     
     void DelayCall()
     {
-        gameManager.ChangeMap(to.moveToMapIndex, myName, to.movePos, to.turn, to.showMap);
+        GameManager.Instance.ChangeMap(to.moveToMapIndex, myName, to.movePos, to.turn, to.showMap);
     }
 
     IEnumerator WaitSwitchOn() 
     {
         yield return new WaitForSeconds(0.2f);
-        if (switchManager.switchdata[tmpName].on) {
-            switchManager.switchdata[tmpName].on = false;
+        if (SwitchManager.Instance.switchdata[tmpName].on) {
+            SwitchManager.Instance.switchdata[tmpName].on = false;
         }
         
         yield return null;
@@ -95,18 +93,18 @@ public class PlayerAction : MonoBehaviour
 
     void ChkAction()
     {
-        if (gameManager.isInterAction) {
-            gameManager.InterAction();
-        } else if (gameManager.isSystem) {
-            gameManager.SystemAction();
-        } else if (gameManager.isTalking) {
-            gameManager.Action();
+        if (GameManager.Instance.isInterAction) {
+            GameManager.Instance.InterAction();
+        } else if (GameManager.Instance.isSystem) {
+            GameManager.Instance.SystemAction();
+        } else if (GameManager.Instance.isTalking) {
+            GameManager.Instance.Action();
         }
     }
 
     bool ChkDontMove()
     {
-        if (gameManager.isTalking || gameManager.isInterAction || gameManager.isSystem || gameManager.isSelecting || gameManager.dontMove)
+        if (GameManager.Instance.isTalking || GameManager.Instance.isInterAction || GameManager.Instance.isSystem || GameManager.Instance.isSelecting || GameManager.Instance.dontMove)
             return true;
         
         return false;
@@ -124,7 +122,7 @@ public class PlayerAction : MonoBehaviour
         RaycastHit2D rayHit = Physics2D.Raycast(rayPos, dirVec, 2f, LayerMask.GetMask("Object"));
         if (rayHit.collider != null) {  // 스캔한 오브젝트가 있으면
             scanObj = rayHit.collider.gameObject;
-            gameManager.scanObj = scanObj;
+            GameManager.Instance.scanObj = scanObj;
         } else
             scanObj = null;
     }
@@ -228,11 +226,11 @@ public class PlayerAction : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other) {
         switch (other.tag) {
             case "AutoSwitch":
-                if (switchManager.switchdata[scanObj.name].off || switchManager.ing)     
+                if (SwitchManager.Instance.switchdata[scanObj.name].off || SwitchManager.Instance.ing)     
                     return;
                 else {                    
                     tmpName = scanObj.name;
-                    switchManager.switchdata[scanObj.name].on = true;
+                    SwitchManager.Instance.switchdata[scanObj.name].on = true;
                 }
                 
                 StartCoroutine(WaitSwitchOn());

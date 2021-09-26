@@ -6,9 +6,6 @@ using UnityEngine.EventSystems;
 
 public class DataCom : MonoBehaviour
 {
-    public GameManager gameManager;
-    public SwitchManager switchManager;
-    public SceneManager sceneManager;
     public GameObject DataComUI;
     public GameObject inventory;
     public GameObject tutorialSet;
@@ -26,7 +23,7 @@ public class DataCom : MonoBehaviour
     //------------------------------------------------------
     public void BtnCurrComa()
     {
-        if (!switchManager.switchdata["Tutorial_DataCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_DataCom"].off)
             return;
 
         currentScreen = 2;
@@ -37,7 +34,7 @@ public class DataCom : MonoBehaviour
 
     public void BtnTotalComa()
     {
-        if (!switchManager.switchdata["Tutorial_DataCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_DataCom"].off)
             return;
 
         currentScreen = 3;
@@ -48,7 +45,7 @@ public class DataCom : MonoBehaviour
 
     public void BtnMiaList()
     {
-        if (!switchManager.switchdata["Tutorial_DataCom"].off)
+        if (!SwitchManager.Instance.switchdata["Tutorial_DataCom"].off)
             return;
 
         currentScreen = 7;
@@ -103,7 +100,7 @@ public class DataCom : MonoBehaviour
     public void BtnEnd()
     {
         DataComUI.SetActive(false);
-        switchManager.ing = false;
+        SwitchManager.Instance.ing = false;
 
         switch(currentScreen) {
             case 1:
@@ -178,21 +175,21 @@ public class DataCom : MonoBehaviour
         if (comaData.inputComaId == "378951") {
             // 가지고 있으면
             if (inventory.GetComponent<Inventory>().havingItem(4)) {
-                gameManager.currSceneIndex = 300;
-                gameManager.currCutIndex = 10;
-                gameManager.SystemAction();
+                GameManager.Instance.currSceneIndex = 300;
+                GameManager.Instance.currCutIndex = 10;
+                GameManager.Instance.SystemAction();
                 return;
             }
             // 가지고 있지 않으면
             inventory.GetComponent<Inventory>().AddItem(4);
-            gameManager.currSceneIndex = 300;
-            gameManager.currCutIndex = 0;
-            gameManager.SystemAction();
+            GameManager.Instance.currSceneIndex = 300;
+            GameManager.Instance.currCutIndex = 0;
+            GameManager.Instance.SystemAction();
             
         } else {
-            gameManager.currSceneIndex = 100;
-            gameManager.currCutIndex = 0;
-            gameManager.Action();
+            GameManager.Instance.currSceneIndex = 100;
+            GameManager.Instance.currCutIndex = 0;
+            GameManager.Instance.Action();
         }
     }
 
@@ -205,32 +202,32 @@ public class DataCom : MonoBehaviour
     }
 
     void Update() {
-        if (switchManager.switchdata["SecondF_movingSM"].off) {
+        if (SwitchManager.Instance.switchdata["SecondF_movingSM"].off) {
             ListHS.transform.Find("state").gameObject.GetComponent<Text>().text = "-";
         }
 
-        if (switchManager.switchdata["DataCom_JHsearchEnd"].on) {
+        if (SwitchManager.Instance.switchdata["DataCom_JHsearchEnd"].on) {
             comaDataForm cdf = comaData.comaID("456871");
             cdf.search = "서재하(수색)";
             cdf.state = "입원(수색종료)";
         }
         
-        if (switchManager.switchdata["SecondF_DataCom"].on) {
-            switchManager.switchdata["SecondF_DataCom"].on = false;
+        if (SwitchManager.Instance.switchdata["SecondF_DataCom"].on) {
+            SwitchManager.Instance.switchdata["SecondF_DataCom"].on = false;
 
-            switchManager.switchdata["Tutorial_OffMarkDataCom"].on = true;
+            SwitchManager.Instance.switchdata["Tutorial_OffMarkDataCom"].on = true;
 
             DataComUI.SetActive(true);
             Login.SetActive(true);
-            switchManager.ing = true;
+            SwitchManager.Instance.ing = true;
         }
 
-        if (switchManager.switchdata["Tutorial_DataCom"].on && !Login.activeSelf) {
-            switchManager.switchdata["Tutorial_DataCom"].on = false;
+        if (SwitchManager.Instance.switchdata["Tutorial_DataCom"].on && !Login.activeSelf) {
+            SwitchManager.Instance.switchdata["Tutorial_DataCom"].on = false;
             StartCoroutine(Tutorial());
         }
         
-        if (switchManager.ing) {
+        if (SwitchManager.Instance.ing) {
             if (loginEnd) {
                 currentScreen = 1;
                 Main.SetActive(true);
@@ -238,8 +235,8 @@ public class DataCom : MonoBehaviour
             } else if (comaData.searchComaEnd) {
                 if (comaData.ChkID()) {
                     
-                    if (comaData.inputComaId == "103015" && !switchManager.switchdata["DataCom_Chk103015"].off) {
-                        switchManager.switchdata["DataCom_Chk103015"].on = true;
+                    if (comaData.inputComaId == "103015" && !SwitchManager.Instance.switchdata["DataCom_Chk103015"].off) {
+                        SwitchManager.Instance.switchdata["DataCom_Chk103015"].on = true;
                     }
                     
                     currentScreen = 6;
@@ -261,18 +258,18 @@ public class DataCom : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.SetActive(true);
-            sceneManager.PlaySystemTalk(0, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(0, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.transform.position = new Vector3(Main.transform.Find("Btn_TotalComaList").gameObject.transform.position.x, tutorialSet.transform.Find("mark").gameObject.transform.position.y, 0);
-            sceneManager.PlaySystemTalk(10, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(10, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //-----------------------------------------------------
             tutorialSet.transform.Find("mark").gameObject.transform.position = new Vector3(Main.transform.Find("Btn_MiaList").gameObject.transform.position.x, Main.transform.Find("Btn_MiaList").gameObject.transform.position.y, 0) + new Vector3(0, 1, 0);
-            sceneManager.PlaySystemTalk(20, 600);
-            yield return new WaitUntil(() => gameManager.isSystem == false);
+            SceneManager.Instance.PlaySystemTalk(20, 600);
+            yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
             //=====================================================
-            switchManager.switchdata["Tutorial_DataCom"].off = true;
+            SwitchManager.Instance.switchdata["Tutorial_DataCom"].off = true;
             tutorialSet.transform.Find("mark").gameObject.SetActive(false);
         }
     }

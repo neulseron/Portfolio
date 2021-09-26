@@ -1,17 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+#region Variables
     public int moveToMapIndex;
     public Vector3 movePos;
     public string turn;
     public int showMap;
 
     public Animator anim;
+#endregion Variables
 
-    private void Awake() {
+
+#region Methods
+    void Awake() {
         anim = GetComponent<Animator>();
     }
 
@@ -23,5 +25,5 @@ public class Door : MonoBehaviour
 
         return false;
     }   
-
+#endregion Methods
 }

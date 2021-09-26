@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MailAttach : MonoBehaviour
 {
-    public GameManager gameManager;
 
     public Monitor monitor;
     public Inventory inventory;
@@ -17,7 +16,7 @@ public class MailAttach : MonoBehaviour
         if (inventory.selectedItemIndex == 4) {
             inventory.selectedItemIndex = 0;
 
-            monitor.switchManager.switchdata["SecondF_mailAttached"].on = true;
+            SwitchManager.Instance.switchdata["SecondF_mailAttached"].on = true;
             mail6.SetActive(false);
             mail8.SetActive(true);
             mail7.SetActive(true);
@@ -38,11 +37,11 @@ public class MailAttach : MonoBehaviour
 
     IEnumerator ErrorMsg()
     {
-        gameManager.currSceneIndex = 200;
-        gameManager.currCutIndex = 0;
-        gameManager.SystemAction();
+        GameManager.Instance.currSceneIndex = 200;
+        GameManager.Instance.currCutIndex = 0;
+        GameManager.Instance.SystemAction();
 
-        yield return new WaitUntil(() => gameManager.isSystem == false);
+        yield return new WaitUntil(() => GameManager.Instance.isSystem == false);
         StopAllCoroutines();
     }
 }

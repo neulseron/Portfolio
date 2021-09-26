@@ -1,29 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class Inventory : MonoBehaviour
 {
-    public GameManager gameManager;
-    public CSVManager csvManager;
-    public ItemManager itemManager;
-
+#region Variables
     public List<GameObject> allSlots;
     public List<int> itemIndexList;
     public GameObject originalSlot;
     public RectTransform invenRect;
     
-    public GameObject infoWindow;
     public Image infoImage;
     public Text infoName;
     public Text infoContent;
 
-    public float slotSize;              // 슬롯의 사이즈.
-    public float slotGap;               // 슬롯간 간격.
-    public float slotCountX;            // 슬롯의 가로 개수.
-    public float slotCountY;            // 슬롯의 세로 개수
+    [SerializeField]
+    float slotSize;              // 슬롯의 사이즈.
+    [SerializeField]
+    float slotGap;               // 슬롯간 간격.
+    [SerializeField]
+    float slotCountX;            // 슬롯의 가로 개수.
+    [SerializeField]
+    float slotCountY;            // 슬롯의 세로 개수
 
     float invenWidth;           // 인벤토리 가로길이.
     float invenHeight;          // 인밴토리 세로길이.
@@ -33,7 +33,11 @@ public class Inventory : MonoBehaviour
     Slot selectedSlot = null;
     public bool nowUsing;
     public int selectedItemIndex = -1;
+#endregion Variables
 
+
+#region Unity Methods
+    // ** 설정한 크기대로 인벤 생성
     void Awake() {
         invenWidth = (slotCountX * slotSize) + (slotCountX * slotGap) + slotGap;
         invenHeight = (slotCountY * slotSize) + (slotCountY * slotGap) + slotGap;
@@ -69,6 +73,21 @@ public class Inventory : MonoBehaviour
         itemIndexList = new List<int>();
     }
 
+    // ** 정보창 초기화
+    void OnEnable() {
+        infoName.text = "-";
+        infoImage.sprite = originalSlot.GetComponent<Slot>().defaultImage;
+        infoContent.text = "(아이템을 선택해 주십시오.)";
+
+        clickCnt = 0;
+        if (selectedSlot != null)
+            selectedSlot.borderImage.SetActive(false);
+    }
+#endregion Unity Methods
+
+
+#region Methods
+    #region Initialize
     public void InitInven(List<int> _list)
     {
         for (int i = 0; i < _list.Count; i++) {
@@ -87,20 +106,11 @@ public class Inventory : MonoBehaviour
             slot.UseItem();
         }
     }
-
-    void OnEnable() {
-        infoName.text = "-";
-        infoImage.sprite = originalSlot.GetComponent<Slot>().defaultImage;
-        infoContent.text = "(아이템을 선택해 주십시오.)";
-
-        clickCnt = 0;
-        if (selectedSlot != null)
-            selectedSlot.borderImage.SetActive(false);
-    }
+    #endregion Initialize
 
     public bool AddItem(int _id)
     {
-        Item item = itemManager.itemDic[_id];
+        Item item = ItemManager.Instance.itemDic[_id];
         
         for (int i = 0; i < allSlots.Count; i++) {
             Slot slot = allSlots[i].GetComponent<Slot>();
@@ -133,6 +143,7 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    #region Click Item
     public void ItemClick()
     {
         clickCnt++;
@@ -158,7 +169,7 @@ public class Inventory : MonoBehaviour
         Item item = slot.ItemReturn();
         infoName.text = item.itemName;
         infoImage.sprite = item.itemImage;
-        infoContent.text = csvManager.GetItemInfo(item.itemIndex).Replace("\\n", "\n");
+        infoContent.text = CSVManager.Instance.GetItemInfo(item.itemIndex).Replace("\\n", "\n");
 
         selectedSlot = slot;
         if (clickCnt == 2 && nowUsing) {
@@ -184,10 +195,12 @@ public class Inventory : MonoBehaviour
         clickCnt--;
         selectedSlot.itemMenu.SetActive(false);
     }
+    #endregion Click Item
 
     public void BtnClose()
     {
-        gameManager.dontMove = false;
+        GameManager.Instance.dontMove = false;
         gameObject.SetActive(false);
     }
+#endregion Methods
 }

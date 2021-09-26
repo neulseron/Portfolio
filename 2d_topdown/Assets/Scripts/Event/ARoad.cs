@@ -1,43 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ARoad : MonoBehaviour
+public class ARoad : MapEvent
 {
-    public GameManager gameManager;
-    public SceneManager sceneManager;
-    public SwitchManager switchManager;
-    GameObject player;
-    PlayerAction playerLogic;
-    //--------------------------------------
-    public GameObject screenUI;
-    //======================================
+#region Variables
+    [SerializeField]
+    GameObject screenUI;
+#endregion Variables
 
-    void Start()
-    {
-        player = gameManager.player;
-        playerLogic = player.GetComponent<PlayerAction>();
-    }
 
+#region Unity Methods
     void Update()
     {
-        if (switchManager.switchdata["A_Screen"].on) {
-            switchManager.switchdata["A_Screen"].on = false;
+        if (SwitchManager.Instance.switchdata["A_Screen"].on) {
+            SwitchManager.Instance.switchdata["A_Screen"].on = false;
             Screen();
         }
     }
+#endregion Unity Methods
 
+
+#region Event
     void Screen()
     {
-        switchManager.ing = true;
+        SwitchManager.Instance.ing = true;
         //=====================================================
         screenUI.SetActive(true);
         //=====================================================
-        switchManager.ing = false;
+        SwitchManager.Instance.ing = false;
     }
 
     public void BtnExit()
     {
         screenUI.SetActive(false);
     }
+#endregion Event
 }

@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 
 public class OldList : MonoBehaviour
 {
-    public SwitchManager switchManager;
-    public GameManager gameManager;
 
     public GameObject[] lists;
     public GameObject nextBtn;
@@ -25,8 +23,8 @@ public class OldList : MonoBehaviour
     }
 
     private void Start() {
-        if (!switchManager.switchdata["Record_Page1"].off) {
-            switchManager.switchdata["Record_Page1"].on = true;
+        if (!SwitchManager.Instance.switchdata["Record_Page1"].off) {
+            SwitchManager.Instance.switchdata["Record_Page1"].on = true;
         }
     }
 
@@ -34,7 +32,7 @@ public class OldList : MonoBehaviour
     {
         lists[pageIndex].SetActive(false);
 
-        if (pageIndex > 0 && !switchManager.ing) {
+        if (pageIndex > 0 && !SwitchManager.Instance.ing) {
             pageIndex--;
             nextBtn.GetComponent<Button>().interactable = true;
         }
@@ -50,7 +48,7 @@ public class OldList : MonoBehaviour
     {
         lists[pageIndex].SetActive(false);
 
-        if (pageIndex < lists.Length && !switchManager.ing) {
+        if (pageIndex < lists.Length && !SwitchManager.Instance.ing) {
             pageIndex++;
             prevBtn.GetComponent<Button>().interactable = true;
         }
@@ -61,8 +59,8 @@ public class OldList : MonoBehaviour
         
         lists[pageIndex].SetActive(true);
 
-        if (pageIndex == 1 && !switchManager.switchdata["Record_Page2"].off) {
-            switchManager.switchdata["Record_Page2"].on = true;
+        if (pageIndex == 1 && !SwitchManager.Instance.switchdata["Record_Page2"].off) {
+            SwitchManager.Instance.switchdata["Record_Page2"].on = true;
         }
     }
 
@@ -73,6 +71,6 @@ public class OldList : MonoBehaviour
         pageIndex = 0;
 
         gameObject.SetActive(false);
-        gameManager.dontMove = false;
+        GameManager.Instance.dontMove = false;
     }
 }

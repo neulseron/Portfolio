@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Minimap : MonoBehaviour
 {
-    public GameManager gameManager;
     public GameObject[] miniMaps;
 
     int currMinimap;
@@ -12,10 +11,10 @@ public class Minimap : MonoBehaviour
 
     void Update()
     {
-        if (currMinimap != gameManager.currShowMinimapIndex) {
+        if (currMinimap != GameManager.Instance.currShowMinimapIndex) {
             miniMaps[currMinimap].SetActive(false);
 
-            currMinimap = gameManager.currShowMinimapIndex;
+            currMinimap = GameManager.Instance.currShowMinimapIndex;
             miniMaps[currMinimap].SetActive(true);
         }
     }
