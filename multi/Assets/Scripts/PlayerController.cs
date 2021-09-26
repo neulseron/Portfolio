@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 using Photon.Pun;
@@ -11,45 +9,54 @@ using Cinemachine;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunInstantiateMagicCallback
 {
-    #region Variables
-    [Header("Game")]
+#region Variables
+    #region Game
+    [Header("[Game]")]
     public bool decide;
     public bool gameStart;  // master 변수
     public bool ready;
+    #endregion Game
 
-
-    [Header("Audio")]
+    #region Audio
+    [Header("[Audio]")]
     public AudioClip audioJump;
     public AudioClip audioAttack;
     public AudioClip audioDamaged;
+    #endregion Audio
 
+    #region Move
+    [Header("[Move]")]
+    [SerializeField]
+    float maxSpeed;
+    [SerializeField]
+    float jumpPower;
+    #endregion Move
 
-    [Header("Move")]
-    public float maxSpeed;
-    public float jumpPower;
-
-
-    [Header("UI")]
-    public Text nickNameTxt;
+    #region UI
+    [Header("[UI]")]
+    [SerializeField]
+    Text nickNameTxt;
     public FaceUI face;
+    #endregion UI
 
-
-    [Header("Fruit")]
+    #region Fruit
+    [Header("[Fruit]")]
     public string fruitName;
-    public bool active;
+    bool active;
+    #endregion Fruit
 
-
-    [Header("Etc")]
+    #region Component
     public PhotonView PV;
     Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Animator animator;
     AudioSource audioSource;
     Vector3 currPos;
-    #endregion Variables
+    #endregion Component
+#endregion Variables
 
 
-
+#region Photon Methods
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting) { // isMine인 경우
@@ -65,7 +72,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
     {
         info.Sender.TagObject = gameObject;
     }
+#endregion Photon Methods
 
+
+#region Unity Methods
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -97,9 +107,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
         Reactive();
     }
 
-    void Update() // 단발적 키입력 (60프레임)
+    void Update() 
     {
         if (PV.IsMine) {
+            #region # Move #
             // Jump(위 방향키)
             if (Input.GetButtonDown("Jump") && !animator.GetBool("isJumping")) {
                 rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
@@ -112,6 +123,20 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
                 rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.25f, rigid.velocity.y); // nomalized : 방향 구할때
             }
 
+            // 방향 전환
+            if (Input.GetButton("Horizontal")) {
+                float axis = Input.GetAxisRaw("Horizontal");
+                PV.RPC("FlipXRPC", RpcTarget.AllBuffered, axis);
+            }
+
+            // Animation
+            if (Mathf.Abs(rigid.velocity.x) < 0.3) 
+                animator.SetBool("isWalking", false);
+            else
+                animator.SetBool("isWalking", true);
+            #endregion Move
+
+            #region # Fire Fruit #
             // ** 과일 발사
             GameObject fruitUI = GameObject.Find("Canvas").transform.Find("fruitInfo").gameObject;
             if (Input.GetKeyDown(KeyCode.Space) && fruitUI.activeSelf) {  
@@ -127,20 +152,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
                     fruitUI.SetActive(false);
                 }
             }
-
-            // 방향 전환
-            if (Input.GetButton("Horizontal")) {
-                float axis = Input.GetAxisRaw("Horizontal");
-                PV.RPC("FlipXRPC", RpcTarget.AllBuffered, axis);
-            }
-            
-
-            // Animation
-            if (Mathf.Abs(rigid.velocity.x) < 0.3) 
-                animator.SetBool("isWalking", false);
-            else
-                animator.SetBool("isWalking", true);
-        } else if ((transform.position - currPos).sqrMagnitude >= 100) {    // 위치 동기화 (많이 떨어져 있으면 순간이동)
+            #endregion Fire Fruit
+        }
+        // *** 위치 동기화 ***
+        else if ((transform.position - currPos).sqrMagnitude >= 100) {    // 위치 동기화 (많이 떨어져 있으면 순간이동)
             transform.position = currPos;
         } else {    
             // 별로 많이 안떨어져 있으면 부드럽게 이동
@@ -148,11 +163,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
         }
     }
 
-    [PunRPC]
-    void FlipXRPC(float axis) => spriteRenderer.flipX = axis == -1;
-
-
-    void FixedUpdate() // 지속적 키 입력 (50프레임)
+    void FixedUpdate() 
     {
         if (PV.IsMine) {
             // Move Speed
@@ -173,18 +184,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
         }
     }
 
-    bool isLandingPlatform() {
-        RaycastHit2D raycastHit = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
-        if (raycastHit.collider != null && raycastHit.distance < 0.96f) {
-            return true;
-        }
-        return false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other) {
+    void OnTriggerEnter2D(Collider2D other) {
         if (PV.IsMine) {
             // ** 깃발 **
-            if (other.gameObject.tag == "Flag" && GameObject.Find("GameManager").GetComponent<GameManager>().gameStart && other.IsTouching(GetComponent<BoxCollider2D>())) {
+            if (other.gameObject.tag == "Flag" && GameManager.Instance.GameStart && other.IsTouching(GetComponent<BoxCollider2D>())) {
                 if ((bool)PhotonNetwork.CurrentRoom.CustomProperties["flagging"])     return;
 
                 PV.RPC("SetWinner", RpcTarget.All, PhotonNetwork.LocalPlayer.NickName);
@@ -193,7 +196,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
                 CP["flagging"] = true;
                 PhotonNetwork.CurrentRoom.SetCustomProperties(CP);
 
-                //if ((bool)PhotonNetwork.CurrentRoom.CustomProperties["win"])     return;
                 face.Score();
             } 
             // ** 떨어지는 발판 **
@@ -207,10 +209,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
         }
     }
 
-    [PunRPC]
-    void SetWinner(string name) => GameObject.Find("Canvas").transform.Find("WinPanel").transform.Find("WinMsg").GetComponent<Text>().text = "[" + name + "]이/가 승리했습니다!";
-
-
     void OnTriggerExit2D(Collider2D other) {
         if (PV.IsMine) {
             if (other.gameObject.tag == "FallingPlatform") {
@@ -218,8 +216,29 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
             }
         }
     }
+#endregion Unity Methods
 
-    #region active 상태 변경
+
+#region Methods
+    #region # Move #
+    [PunRPC]
+    void FlipXRPC(float axis) => spriteRenderer.flipX = axis == -1;
+
+    bool isLandingPlatform() {
+        RaycastHit2D raycastHit = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
+        if (raycastHit.collider != null && raycastHit.distance < 0.96f) {
+            return true;
+        }
+        return false;
+    }
+
+    void VelocityZero()
+    {
+        rigid.velocity = Vector2.zero;
+    }
+    #endregion Move
+
+    #region # Set Active State #
     public void Deactive(bool b)
     {
         PV.RPC("SetActiveRPC", RpcTarget.All, false);
@@ -232,7 +251,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
         PV.RPC("ActiveRPC", RpcTarget.All);
 
         if (PV.IsMine)
-            FindObjectOfType<GameManager>().Respawn(gameObject.transform);
+            GameManager.Instance.Respawn(gameObject.transform);
     }
 
     [PunRPC]
@@ -240,9 +259,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
 
     [PunRPC]
     void SetActiveRPC(bool b) => active = b;
-    #endregion
+    #endregion Set Active State
 
-    #region 게임 상태
+    #region # Set Game State #
     public bool isGameStart()   { return this.gameStart; }
 
     public void SetDecide(bool d) => PV.RPC("SetDecideEx", RpcTarget.All, d);
@@ -253,13 +272,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
     [PunRPC]
     public void SetReadyEx(bool r) => this.ready = r;
 
-    // master
+    [PunRPC]
+    void SetWinner(string name) => GameObject.Find("Canvas").transform.Find("WinPanel").transform.Find("WinMsg").GetComponent<Text>().text = "[" + name + "]이/가 승리했습니다!";
+
+    // ** master **
     public void SetGameStart(bool g) => PV.RPC("SetGameStartEx", RpcTarget.All, g);
     [PunRPC]
     public void SetGameStartEx(bool g) => this.gameStart = g;
-    #endregion
+    #endregion Set Game State
 
-
+    
     public void Hit()
     {
         animator.SetTrigger("getDamaged");
@@ -281,11 +303,5 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable, IPunI
 
         audioSource.Play();
     }
-
-    
-
-    public void VelocityZero()
-    {
-        rigid.velocity = Vector2.zero;
-    }
+#endregion Methods
 }

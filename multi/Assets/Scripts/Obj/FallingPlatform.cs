@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
@@ -7,6 +6,7 @@ public class FallingPlatform : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Vector3 initPos;
+
 
     void Awake()
     {

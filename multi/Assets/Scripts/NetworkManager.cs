@@ -1,20 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    [Header("ConnectPanel")]
+#region Variables
+    #region ConnectPanel
+    [Header("[ConnectPanel]")]
     public GameObject connectPanel; 
     public InputField nicknameInput;
+    #endregion ConnectPanel
 
-
-    [Header("LobbyPanel")]
+    #region LobbyPanel
+    [Header("[LobbyPanel]")]
     public GameObject lobbyPanel; 
     public InputField roomInput;
     public Text welcomeTxt;
@@ -23,20 +28,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public Button prevBtn;
     public Button nextBtn;
     public GameObject mapPanel;
-    public GameObject cantEnterTxt;
+    #endregion LobbyPanel
 
-
+    #region Etc
     [Header("Etc")]
     public Text statusTxt;
-    public PhotonView PV;
-
-
     List<RoomInfo> rList = new List<RoomInfo>();
     int currPage = 1, maxPage, multiple;
+    #endregion Etc
+#endregion Variables
 
 
-
-    #region 서버연결
+#region Unity Methods
     void Awake()
     {
         Screen.SetResolution(1024, 768, false);
@@ -47,7 +50,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         statusTxt.text = PhotonNetwork.NetworkClientState.ToString();
         lobbyInfoTxt.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) + " 로비 / " + PhotonNetwork.CountOfPlayers + " 접속";
     }
+#endregion Unity Methods
 
+
+#region Methods
+    #region # Connect Server #
     // ** 서버나 로비에 참가한 상태에서만 방에 참가할 수 있음
     public void BtnJoinServer()
     {
@@ -59,7 +66,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinLobby();    // 크아 광장 개념
+        PhotonNetwork.JoinLobby();   
         print("서버 접속 완료");
     }
 
@@ -75,20 +82,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         rList.Clear();
     }
 
-
     public void BtnDisconnect() => PhotonNetwork.Disconnect();
+
     public override void OnDisconnected(DisconnectCause cause)
     { 
         print("연결 종료");
         connectPanel.SetActive(true);
         lobbyPanel.SetActive(false);
     }
+    #endregion Connect Server
 
-    #endregion
-    //========================================================================
-    #region 방 생성
-    //public void BtnCreateRoom() => CreateRoom();
+    #region # Create / Join Room #
     public void BtnCreateRoom() => mapPanel.SetActive(true);
+
     public void BtnRandom() => PhotonNetwork.JoinRandomRoom();
 
     public void CreateRoom(int mapNum)
@@ -104,39 +110,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        //if (PhotonNetwork.CurrentRoom.PlayerCount > 1) {
-            //StartCoroutine(ChkGameIng());
-        //} else 
-            RoomManager.Instance.Spawn();
-    }
-
-    IEnumerator ChkGameIng()
-    {
-        yield return new WaitUntil(() => (GameObject)(PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).TagObject) != null);
-        PlayerController master = ((GameObject)(PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).TagObject)).GetComponent<PlayerController>();
-        if (master.isGameStart()) {
-            PhotonNetwork.LeaveRoom();
-            mapPanel.SetActive(false);
-            cantEnterTxt.transform.GetChild(0).GetComponent<Text>().text = "게임이 진행중인 방입니다.";                   
-            cantEnterTxt.SetActive(true);
-            Invoke("CantMsgDisappear", 1.5f);
-            yield return null;
-        }
-        
         RoomManager.Instance.Spawn();
-    }
-
-    void CantMsgDisappear()
-    {
-        cantEnterTxt.SetActive(false);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message) { roomInput.text = ""; BtnCreateRoom(); }
     public override void OnJoinRandomFailed(short returnCode, string message) { roomInput.text = ""; BtnCreateRoom(); }
+    #endregion Create / Join Room
 
-    #endregion
-    //========================================================================
-    #region 방리스트 갱신
+    #region # Room List #
     // 이전 : -2 / 다음 : -1 / 숫자 : 클릭 셀
     public void ClickRoomList(int _num)
     {
@@ -186,10 +167,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         rListRenewal();
     }
-    #endregion
+    #endregion Room List
+#endregion Methods
 
 
-
+#region Context Menu
     [ContextMenu("정보")]
     void Info()
     {
@@ -210,4 +192,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             print("연결됐는지? : " + PhotonNetwork.IsConnected);
         }
     }
+#endregion Context Menu
 }

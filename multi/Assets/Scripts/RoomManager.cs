@@ -1,41 +1,42 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 using Photon.Pun;
 using Photon.Realtime;
-
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
-    #region  싱글톤
-    static GameObject _container;
-    static GameObject Container
-    {
-        get {
-            return _container;
-        }
-    }
-    static RoomManager _instance;
+#region  Singletone
+    static GameObject container;
+    public static GameObject Container => container;
+    
+    static RoomManager instance;
     public static RoomManager Instance
     {
         get {
-            if (!_instance) {
-                _container = new GameObject();
-                _container.name = "RoomManager";
-                _instance = _container.AddComponent(typeof(RoomManager)) as RoomManager;
-                DontDestroyOnLoad(_container);
+            if (!instance) {
+                container = new GameObject();
+                container.name = "RoomManager";
+                instance = container.AddComponent(typeof(RoomManager)) as RoomManager;
+                DontDestroyOnLoad(container);
             }
-            return _instance;
+            return instance;
         }
     }
-    #endregion
+#endregion Singletone
 
+
+#region Variables
     string[] typeArr = { "maskDude", "ninjaFrog", "pinkMan", "virtualGuy" };
     int spawnTurn;
+#endregion Variables
 
+
+#region Methods
+    #region # Spawn #
     public void Spawn()
     {
         // ** 어느 캐릭터 생성할 차례인지 확인 **
@@ -76,19 +77,24 @@ public class RoomManager : MonoBehaviourPunCallbacks
         // ** 이미 들어와있던 사람들 얼굴 동기화 **
         StartCoroutine(SyncFace());
     }
+    #endregion Spawn
 
-
+    #region # Player Enter / Left #
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
+            GameManager.Instance.Notice(newPlayer.NickName, true);
+
         // ** 새로 들어온 사람 얼굴 동기화 **
-        GameObject.Find("GameManager").GetComponent<GameManager>().Notice(newPlayer.NickName, true);
         StartCoroutine(UpdateFace(newPlayer));
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         ((GameObject)(PhotonNetwork.MasterClient.TagObject)).GetComponent<PlayerController>().face.transform.Find("master").gameObject.SetActive(true);
-        GameObject.Find("GameManager").GetComponent<GameManager>().Notice(otherPlayer.NickName, false);
+
+        if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
+            GameManager.Instance.Notice(otherPlayer.NickName, false);
 
         Hashtable CP = PhotonNetwork.CurrentRoom.CustomProperties;
         int actorId = otherPlayer.ActorNumber;
@@ -106,8 +112,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
             }
         }
     }
+    #endregion # Player Enter / Left #
 
-
+    #region # Sync Face Info #
     IEnumerator SyncFace()
     {
         yield return new WaitForSeconds(0.1f);
@@ -134,6 +141,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             face.SetParent(GameObject.Find("Canvas").transform, false);
         }
     }
+    #endregion Sync Face Info
     
     public int IdToCharacter(int _id)   // 액터 아이디 -> 몇번째 캐릭터인지
     {
@@ -148,6 +156,5 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
         return -1;
     }
-
-
+#endregion Methods
 }

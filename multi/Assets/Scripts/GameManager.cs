@@ -1,5 +1,6 @@
-﻿ using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -10,51 +11,80 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
-    #region Variables
-    [Header("Score")]
-    public Text RoundTxt;
-    public bool touchFlag;
+#region Singletone
+    static GameManager instance;
+    public static GameManager Instance => instance;
+#endregion Singletone
+
+
+#region Variables
+    #region Flag
+    [Header("[Flag]")]
+
+    [SerializeField]
+    Text RoundTxt;
+
+    bool touchFlag;
+    public bool TouchFlag => touchFlag;
+
     float flagTime;
     int nextFlagTime;
+    #endregion Flag
 
+    #region Game
+    [Header("[Game]")]
 
-    [Header("Game")]
-    public Text FruitTxt;
-    public bool gameStart;
-    public bool gameEnd;
-    public GameObject winPanel;
+    [SerializeField]
+    Text FruitTxt;
+
+    bool gameStart;
+    public bool GameStart => gameStart;
+    bool gameEnd;
+
+    [SerializeField]
+    GameObject winPanel;
+
     int gameStartTime;
     float startTimeCnt;
+
     PlayerController master;
-    public Button readyBtn;
+
+    [SerializeField]
+    Button readyBtn;
     bool readyClicked;
+    #endregion Game
 
-
-    [Header("Spawn")]
+    #region Etc
+    [Header("[Etc]")]
     public Transform[] spawnPoints;
-
-
-    [Header("Etc")]
     public GameObject BtnExit;
     public PhotonView PV;
     GameObject currMap;
+    #endregion Etc
 
-
-    [Header("Fruit")]
+    #region Fruit
+    [Header("[Fruit]")]
     Transform[] fruitSpawnPoints;
     string[] fruitArr = { "Apple", "Banana", "Cherrie", "Kiwi", "Pineapple" };
     int nextFruitTime;
     float fruitTime;
     bool needFruit;
+    #endregion Fruit
+
+    #region Chat
+    [Header("[Chat]")]
+
+    [SerializeField]
+    GameObject ChatBox;
+    [SerializeField]
+    Text[] ChatTxt = new Text[6];
+    [SerializeField]
+    InputField InputTxt;
+    #endregion Chat
+#endregion Variables
 
 
-    [Header("Chat")]
-    public GameObject ChatBox;
-    public Text[] ChatTxt = new Text[6];
-    public InputField InputTxt;
-    #endregion Variables
-
-
+#region Unity Methods
     public override void OnEnable() {
         nextFruitTime = 8; // 과일 아이템 쿨타임
         nextFlagTime = 30;  // 깃발 쿨타임
@@ -67,12 +97,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         SetMap();
     }
 
+    private void Awake() {
+        instance = this;
+    }
+
     private void Start() {
-        for (int i = 0; i < ChatTxt.Length; i++)    ChatTxt[i].text = "";
+        for (int i = 0; i < ChatTxt.Length; i++)    
+            ChatTxt[i].text = "";
     }
 
     private void Update() 
     {
+        #region # Chk Master #
         if ((GameObject)(PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).TagObject) == null)  return;
         master = ((GameObject)(PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).TagObject)).GetComponent<PlayerController>();
 
@@ -83,8 +119,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             ChkSelect();
             ChkReady();
         }
+        #endregion Chk Master
 
-        if (PhotonNetwork.CurrentRoom.MaxPlayers == PhotonNetwork.PlayerList.Length && master.isGameStart() && !gameStart && (bool)PhotonNetwork.CurrentRoom.CustomProperties["allDecide"]) {
+        #region # Chk Ready #
+        if (PhotonNetwork.CurrentRoom.MaxPlayers == PhotonNetwork.PlayerList.Length && master.isGameStart() 
+            && !gameStart && (bool)PhotonNetwork.CurrentRoom.CustomProperties["allDecide"]) {
+
             startTimeCnt += Time.deltaTime;
             RoundTxt.text = "게임 시작까지... " + ((int)(gameStartTime - startTimeCnt)).ToString();
             FruitTxt.text = ((int)(gameStartTime - startTimeCnt)).ToString() + "초 후 출발 지점으로 이동됩니다.";
@@ -104,11 +144,13 @@ public class GameManager : MonoBehaviourPunCallbacks
             master.SetGameStart(false);
             RoundTxt.text = "다른 플레이어를 기다리는 중...";
         }
+        #endregion Chk Ready
 
-        // ** 게임 시작 ** //
+        #region # Game Start #
         if (gameStart) {
             readyBtn.gameObject.SetActive(false);
 
+            #region ~ Chk Game End ~
             // 새로 깃발을 잡았으면
             if (!touchFlag && (bool)PhotonNetwork.CurrentRoom.CustomProperties["flagging"]) {
                 //** 게임 끝 여부(누군가 두번 잡았는지) 확인 **//
@@ -119,7 +161,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                     flagTime = 0;
                 }
             }
+            #endregion Chk Game End
 
+            #region ~ Game End ~
             if (gameEnd) {
                 if (PhotonNetwork.IsMasterClient) {
                     if ((bool)PhotonNetwork.CurrentRoom.CustomProperties["flagging"]) {
@@ -140,7 +184,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
                 return;
             }
+            #endregion Game End
 
+            #region ~ If Touch Flag ~
             // 누군가 깃발을 잡았으면 + 게임이 안끝났으면 =  깃발 쿨타임
             if (touchFlag) {
                 flagTime += Time.deltaTime;
@@ -159,7 +205,9 @@ public class GameManager : MonoBehaviourPunCallbacks
                     }
                 }
             }
+            #endregion If Touch Flag
             
+            #region ~ Fruit ~
             // ** 과일 총알 ** //
             if (!gameEnd) {
                 var itemList = FindObjectsOfType<ItemFruit>();
@@ -180,9 +228,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                     }
                 }
             }
+            #endregion Fruit
         }
+        #endregion Game Start
 
-        // ** 메뉴 ** //
+        #region # Menu #
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (BtnExit.activeSelf)
                 BtnExit.SetActive(false);
@@ -203,18 +253,13 @@ public class GameManager : MonoBehaviourPunCallbacks
             if (ChatBox.activeSelf)
                 Send();
         }
+        #endregion Menu
     }
+#endregion Unity Methods
 
-    [PunRPC]
-    void SpawnFruitRPC()
-    {
-        PhotonNetwork.Instantiate("Item/" + fruitArr[Random.Range(0, 5)], fruitSpawnPoints[Random.Range(0, 10)].position, Quaternion.identity);
 
-        needFruit = false;
-        FruitTxt.text = "과일이 생성되었습니다.";
-    }
-
-    #region Chk Member's State
+#region Methods
+    #region # Chk Ready State #
     public void BtnReadyClicked()
     {
         if (PhotonNetwork.IsMasterClient && !ChkReady())    return;
@@ -244,8 +289,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             PlayerController playerLogic = player.GetComponent<PlayerController>();
             if (playerLogic.ready == false) {
                 master.SetGameStart(false);
-                //return false;
-                //isReady = false;
             } else  whoReady++;
         }
         readyBtn.transform.Find("readyCnt").GetComponent<Text>().text = (1 + whoReady).ToString() + " / 4";
@@ -256,16 +299,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void ResetReady()
     {
-        //if (!master.isGameStart())     return;
-
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++) {
             PlayerController playerLogic = ((GameObject)(PhotonNetwork.PlayerList[i].TagObject)).GetComponent<PlayerController>();
             playerLogic.SetReady(false);
         }
-
-        //master.SetGameStart(false);
     }
+    #endregion Chk Ready State
 
+    #region # Chk End Select State #
     bool ChkSelect()
     {
         for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++) {
@@ -278,7 +319,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
-        if (/*!gameStart*/!master.isGameStart()) {
+        if (!master.isGameStart()) {
             Hashtable CP2 = PhotonNetwork.CurrentRoom.CustomProperties;
             CP2["allDecide"] = true;
             PhotonNetwork.CurrentRoom.SetCustomProperties(CP2);
@@ -301,31 +342,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         CP["allDecide"] = false;
         PhotonNetwork.CurrentRoom.SetCustomProperties(CP);
     }
-    #endregion Chk Members
+    #endregion Chk End Select State
 
-    public void SetMap()
-    {
-        GameObject map1 = GameObject.Find("stage1").gameObject;
-        GameObject map2 = GameObject.Find("stage2").gameObject;
-
-        string mapStr = "stage" + ((int)PhotonNetwork.CurrentRoom.CustomProperties["map"]).ToString();
-        map1.SetActive(map1.name == mapStr ? true : false);
-        map2.SetActive(map2.name == mapStr ? true : false);
-
-        currMap = map1.activeSelf == true ? map1 : map2;
-
-        spawnPoints = new Transform[currMap.transform.Find("RespawnPoints").childCount];
-        for (int i = 0; i < spawnPoints.Length; i++) {
-            spawnPoints[i] = currMap.transform.Find("RespawnPoints").GetChild(i);
-        }
-        fruitSpawnPoints = new Transform[currMap.transform.Find("ItemSpawnPoints").childCount];
-        for (int i = 0; i < fruitSpawnPoints.Length; i++) {
-            fruitSpawnPoints[i] = currMap.transform.Find("ItemSpawnPoints").GetChild(i);
-        }
-    }
-
-
-    #region 나가기, 계속하기
+    #region # Menu #
     public void BtnContinue()
     {
         gameStart = false;
@@ -356,6 +375,17 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel(0);
     }
+    #endregion Menu
+
+    #region # Fruit #
+    [PunRPC]
+    void SpawnFruitRPC()
+    {
+        PhotonNetwork.Instantiate("Item/" + fruitArr[Random.Range(0, 5)], fruitSpawnPoints[Random.Range(0, 10)].position, Quaternion.identity);
+
+        needFruit = false;
+        FruitTxt.text = "과일이 생성되었습니다.";
+    }
 
     void FruitDestroy()
     {
@@ -364,10 +394,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             i.DestroyFruit();
         }
     }
+    #endregion Fruit
 
-    #endregion
-
-    #region 채팅
+    #region # Chat #
     public void Send()
     {
         string msg = PhotonNetwork.LocalPlayer.NickName + " : " + InputTxt.text;
@@ -402,10 +431,31 @@ public class GameManager : MonoBehaviourPunCallbacks
             ChatTxt[ChatTxt.Length-1].text = msg;
         }
     }
-    #endregion 채팅
+    #endregion Chat
 
-    #region 리스폰
-    private void OnTriggerEnter2D(Collider2D other) {
+    #region # Spawn #
+    public void SetMap()
+    {
+        GameObject map1 = GameObject.Find("stage1").gameObject;
+        GameObject map2 = GameObject.Find("stage2").gameObject;
+
+        string mapStr = "stage" + ((int)PhotonNetwork.CurrentRoom.CustomProperties["map"]).ToString();
+        map1.SetActive(map1.name == mapStr ? true : false);
+        map2.SetActive(map2.name == mapStr ? true : false);
+
+        currMap = map1.activeSelf == true ? map1 : map2;
+
+        spawnPoints = new Transform[currMap.transform.Find("RespawnPoints").childCount];
+        for (int i = 0; i < spawnPoints.Length; i++) {
+            spawnPoints[i] = currMap.transform.Find("RespawnPoints").GetChild(i);
+        }
+        fruitSpawnPoints = new Transform[currMap.transform.Find("ItemSpawnPoints").childCount];
+        for (int i = 0; i < fruitSpawnPoints.Length; i++) {
+            fruitSpawnPoints[i] = currMap.transform.Find("ItemSpawnPoints").GetChild(i);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "Player") { // 리스폰
             Respawn(other.transform);
         }
@@ -415,5 +465,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         _player.position = spawnPoints[Random.Range(0, 4)].position;
     }
-    #endregion
+    #endregion Spawn
+#endregion Methods
 }

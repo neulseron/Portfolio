@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,7 @@ using Photon.Realtime;
 
 public class ItemFruit : MonoBehaviourPunCallbacks, IPunObservable
 {
+#region Variables
     AudioSource audioSource;
     public AudioClip audioItem;
 
@@ -16,7 +16,10 @@ public class ItemFruit : MonoBehaviourPunCallbacks, IPunObservable
     float exitTime = 0.8f;
     GameObject localPlayer;
     GameObject fruitUI;
+#endregion Variables
     
+
+#region Photon Methods
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting) { // isMine인 경우
@@ -25,8 +28,11 @@ public class ItemFruit : MonoBehaviourPunCallbacks, IPunObservable
             transform.position = (Vector3)stream.ReceiveNext();
         }
     }
+#endregion Photon Methods
 
-    private void Awake() {
+
+#region Unity Methods
+    void Awake() {
         animator = GetComponent<Animator>();
         localPlayer = (GameObject)(PhotonNetwork.LocalPlayer.TagObject);
         audioSource = GetComponent<AudioSource>();
@@ -53,7 +59,10 @@ public class ItemFruit : MonoBehaviourPunCallbacks, IPunObservable
 
         }
     }
+#endregion Unity Methods
 
+
+#region Methods
     public void DestroyFruit()
     {
         PV.RPC("DestroyRPC", RpcTarget.All); 
@@ -69,4 +78,5 @@ public class ItemFruit : MonoBehaviourPunCallbacks, IPunObservable
 
         PV.RPC("DestroyRPC", RpcTarget.All);
     }
+#endregion Methods
 }
