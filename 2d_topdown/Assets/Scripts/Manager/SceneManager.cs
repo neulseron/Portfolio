@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SceneManager : MonoBehaviour
@@ -11,19 +9,21 @@ public class SceneManager : MonoBehaviour
 #endregion Singletone
 
 
-    public Animator JR_monitorAnimator;
+#region Variables
     public TypingEffect textBoxTE;
-    //============================
+
     public Text Btn1Txt;
     public Text Btn2Txt;
     public Text Btn3Txt;
     public Text Btn4Txt;
     public Text SelectBoxTxt;
-    //---------------------------
+
     public bool JR_newMail;
     public bool D_newMail;
-    //============================
+#endregion Variables
 
+
+#region Methods
     void Awake() {
         instance = this;
     }
@@ -33,6 +33,7 @@ public class SceneManager : MonoBehaviour
         D_newMail = false;
     }
 
+    #region Play Dialogue
     public void PlayTalk(int _talkNum, int _sceneIndex, string _allignment = "UL")
     {
         GameManager.Instance.currSceneIndex = _sceneIndex;
@@ -55,7 +56,9 @@ public class SceneManager : MonoBehaviour
         textBoxTE.allignment = _allignment;
         GameManager.Instance.InterAction();
     }
+    #endregion Play Dialogue
 
+    #region NPC
     public GameObject PlayNPC(string _who, Vector3 _pos)
     {
         return GameManager.Instance.SpawnNPC(_who, _pos);
@@ -65,7 +68,9 @@ public class SceneManager : MonoBehaviour
     {
         return GameManager.Instance.SpawnRandomNPC(_who, _pos);
     }
+    #endregion NPC
 
+    #region Select Box
     public void SetSelectBtnTxt(string _btn1, string _btn2, string _btn3, string _btn4)
     {
         Btn1Txt.text = _btn1;
@@ -79,4 +84,6 @@ public class SceneManager : MonoBehaviour
     {
         SelectBoxTxt.text = _txt;
     }
+    #endregion Select Box
+#endregion Methods
 }

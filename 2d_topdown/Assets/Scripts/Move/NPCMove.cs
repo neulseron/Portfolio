@@ -1,29 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NPCMove : MonoBehaviour
 {
+#region Variables
     Rigidbody2D rigid;
     Animator animator;
     public Vector3[] wayPoint;
-    //-----------------
+
     Vector3 currPos;
     int waypointsIndex = 0;
     public float speed = 2.3f;
-    //-----------------
+
     public bool isOn = false;
     public bool isOff = false;
     public bool isTurn = false;
     bool isHorizontal = false;
+#endregion Variables
 
-    private void Awake() {
-        //wayPoint = GetComponent<WayPoint>().points;
+    void Awake() {
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
 
-    private void Update() {
+    void Update() {
         if (isOn)   Move();
     }
 
@@ -106,11 +105,9 @@ public class NPCMove : MonoBehaviour
 
     public void SetWaypoint(int _size, params Vector3[] _val)
     {
-        //Debug.Log("들어옴");
         wayPoint = new Vector3[_size];
 
         for (int i = 0; i < _size; i++) {
-            //Debug.Log(_val[i]);
             wayPoint[i] = _val[i];
         }
     }

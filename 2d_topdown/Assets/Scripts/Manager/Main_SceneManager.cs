@@ -1,18 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using System.IO;
 
+// [시작 화면]
 public class Main_SceneManager : MonoBehaviour
 {
+#region Variables
     public Button continueBtn;
     public GameObject saveSlot;
     string btnName;
     string[] saveMsg;
+#endregion Variables
 
+
+#region Methods
     void Start()
     {
         if (File.Exists(Application.persistentDataPath + "SaveFile.json")) {
@@ -70,4 +72,5 @@ public class Main_SceneManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
         saveSlot.SetActive(false);
     }
+#endregion Methods
 }

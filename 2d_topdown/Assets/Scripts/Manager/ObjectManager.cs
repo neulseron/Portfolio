@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
@@ -9,12 +7,16 @@ public class ObjectManager : MonoBehaviour
     public static ObjectManager Instance => instance;
 #endregion Singletone
 
-    // ** Prefab **
+
+#region Variables
+    #region Prefabs
     public GameObject[] PlayerPrefabs;
     public GameObject[] NPCPrefabs;
     public GameObject[] RandomNPCPrefabs;
+    #endregion Prefabs
 
-    // ** Save Arr **
+
+    #region Pool Arr
     GameObject[] players;
     GameObject[] npcs;
 
@@ -27,14 +29,14 @@ public class ObjectManager : MonoBehaviour
     GameObject[] randomNpcs6;
     GameObject[] randomNpcs7;
     GameObject[] randomNpcs8;
-
+    #endregion Pool Arr
 
     GameObject[] targetPool;
     GameObject target;
+#endregion Variables
 
 
-
-    // ** 초기화 **
+#region Methods
     void Awake() {
         instance = this;
         
@@ -159,11 +161,5 @@ public class ObjectManager : MonoBehaviour
 
         return null;
     }
-
-    public GameObject[] GetPool(string type)
-    {
-        
-        
-        return targetPool;
-    }
+#endregion Methods
 }

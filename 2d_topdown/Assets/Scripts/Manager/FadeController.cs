@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,10 +7,10 @@ public enum FadeState { FadeIn = 0, FadeOut, FadeInOut, FadeLoop, FadeOut2 }
 
 public class FadeController : MonoBehaviour
 {
+#region Variables
     [SerializeField]
     [Range(0.01f, 10f)]
     float fadeTime;
-
     [SerializeField]
     AnimationCurve fadeCurve;
 
@@ -19,17 +18,17 @@ public class FadeController : MonoBehaviour
     FadeState fadeState;
     public bool endFade;
 
-
     public SimpleTypingEffect nameTxtTE;
     public SimpleTypingEffect timeTxtTE;
-    public bool nameTyping = false;
+    bool nameTyping = false;
     public string nameStr;
     public string timeStr;
+#endregion Variables
 
+
+#region Methods
     void Awake() {
         FadeImg = GetComponent<Image>();
-
-        //OnFade(FadeState.FadeOut);
     }
 
     public void OnFade(FadeState _state)
@@ -65,7 +64,6 @@ public class FadeController : MonoBehaviour
         {
             currTime += Time.deltaTime;
             percent = currTime / fadeTime;
-            //Debug.Log(percent);
 
             Color color = FadeImg.color;
             color.a = Mathf.Lerp(_start, _end, fadeCurve.Evaluate(percent));
@@ -139,5 +137,5 @@ public class FadeController : MonoBehaviour
         
         Debug.Log(GameManager.Instance.currTime);
     }
-
+#endregion Methods
 }

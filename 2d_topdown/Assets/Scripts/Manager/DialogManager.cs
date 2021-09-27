@@ -18,6 +18,7 @@ public class DialogManager : MonoBehaviour
     public Image portraitImg;
 
     public TypingEffect SystemTxt;
+
     public string itemName;
 
     int dialogIndex = 1;

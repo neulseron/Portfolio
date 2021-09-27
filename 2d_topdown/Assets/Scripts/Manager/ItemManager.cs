@@ -8,10 +8,15 @@ public class ItemManager : MonoBehaviour
     public static ItemManager Instance => instance;
 #endregion Singletone
 
+
+#region Variables
     public Sprite[] itemImages;
     
     public Dictionary<int, Item> itemDic;
+#endregion Variables
 
+
+#region Methods
     private void Awake() {
         instance = this;
         
@@ -33,4 +38,5 @@ public class ItemManager : MonoBehaviour
             itemDic.Add(_item.itemIndex, _item);
         }
     }
+#endregion Methods
 }

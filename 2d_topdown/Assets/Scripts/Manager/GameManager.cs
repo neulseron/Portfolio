@@ -14,23 +14,21 @@ public class GameManager : MonoBehaviour
     public GameData Data => data;
 #endregion Singletone
 
-    //=====================================================
-    // ** 컨트롤 매니저 **
-    //public QuestManager questManager;
+
+#region Variables
     public MainCamera main_camera;
     public FadeController fadeEffect;
-    public string l1 = "";
-    //=====================================================
-    // ** 플레이어 **
+
+    #region Player
+    [Header("[Player]")]
     public GameObject player;
     public GameObject scanObj;
     public bool dontMove;
     public bool canSleep;
+    #endregion Player
 
-    public string l2 = "";
-    //=====================================================
-    // ** 대화 박스 **
-    // [대화]
+    #region Interact
+    [Header("[Interact]")]
     public Animator talkBox;
     public bool isTalking;
     public int currSceneIndex;
@@ -38,22 +36,23 @@ public class GameManager : MonoBehaviour
     public bool isInterAction;
     public int objIndex;
     public int objCutIndex;
-    //public Text questTxt;
-    // [시스템]
     public Animator systemBox;
     public bool isSystem;
     // [선택지 창]
     public GameObject selectBox;
     public int selectIndex;
     public bool isSelecting;
-    //=====================================================
-    // ** 맵 이동 **
+    #endregion Interact
+
+    #region Map
+    [Header("[Map]")]
     public GameObject[] maps;
     public int currMapIndex = 0;
     public int currShowMinimapIndex;
     public GameObject mapUI;
-    //=====================================================
-    // ** 메뉴 **
+    #endregion Map
+
+    #region Menu
     public GameObject menuSet;
     public GameObject inventory;
     public GameObject saveSlot;
@@ -61,15 +60,15 @@ public class GameManager : MonoBehaviour
     bool isSave;
     public int currTime = 0;
     string[] saveMsg;
-    //=====================================================
+    #endregion Menu
+#endregion Variables
         
-    // ** 초기화 **
+
+#region Unity Methods
     void Awake() {
         instance = this;
         
         GameLoad();
-        //questTxt.text = questManager.CheckQuest();
-        //SpawnPlayer("P_Jaei", new Vector3(25f, 5f, 0));
         saveMsg = new string[9] { "2030-03-06(수) 오후  2:10:00", "2030-03-06(수)  오후  3:41:00", "2030-03-06(수)  오후  5:13:00", "2030-03-06(수)  오후  9:20:00", "2030-03-07(목)  오전  9:30:00", "2030-03-07(목)  오전  9:50:00", "2030-03-07(목) 오후  1:40:00", "2030-03-07(목) 오후  4:52:00", "2030-03-06(수) 오후  3:10:00" };
     }
 
@@ -112,17 +111,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public IEnumerator IntroFade()
-    {
-        dontSave = true;
-        dontMove = true;
-        yield return StartCoroutine(fadeEffect.SetTxt("서재이", "2030-03-06(수)\n오후  2:10:00"));
-        dontSave = false;
-        dontMove = false;
-    }
-
-    //=================
-
     void Update() {
         // ** 인벤토리 (I) **
         if (Input.GetKeyDown(KeyCode.I))
@@ -164,9 +152,21 @@ public class GameManager : MonoBehaviour
             
         }
     }
+#endregion Unity Methods
 
-    //=================
-    // ** 플레이어 관리 **
+
+#region Methods
+    public IEnumerator IntroFade()
+    {
+        dontSave = true;
+        dontMove = true;
+        yield return StartCoroutine(fadeEffect.SetTxt("서재이", "2030-03-06(수)\n오후  2:10:00"));
+        dontSave = false;
+        dontMove = false;
+    }
+
+
+    #region # Player #
     public void SpawnPlayer(string type, Vector3 pos)
     {
         if (player != null) {
@@ -181,13 +181,6 @@ public class GameManager : MonoBehaviour
     public void OffPlayer(GameObject _p)
     {
         _p.SetActive(false);
-    }
-
-    public void ChangePlayer(string type)
-    {
-        player.SetActive(false);
-        player = ObjectManager.Instance.MakeObj(type);
-        main_camera.target = player.transform;
     }
 
     public GameObject SpawnNPC(string _type, Vector3 _pos)
@@ -205,8 +198,10 @@ public class GameManager : MonoBehaviour
 
         return npc;
     }
-    //=================
-    // ** 상호작용 **
+    #endregion # Player #
+
+
+    #region # Interaction #
     public void Action()
     {
         DialogManager.Instance.Talk(currSceneIndex, currCutIndex);
@@ -240,13 +235,12 @@ public class GameManager : MonoBehaviour
         currCutIndex = 0;
         DialogManager.Instance.itemName = item.itemName;
 
-        //if (item.destroyable)
-            //isSystem = true;
-        //else
         SystemAction();
     }
-    //=================
-    // ** 맵
+    #endregion # Interaction #
+
+
+    #region # Map #
     public void ChangeMap(int _mapIndex, string _type, Vector3 _playerSpawnPos, string _turnDir, int _showMap)
     {
         maps[currMapIndex].SetActive(false);
@@ -258,9 +252,10 @@ public class GameManager : MonoBehaviour
 
         player.GetComponent<PlayerAction>().Turn(_turnDir);
     }
+    #endregion # Map #
 
-    //=================
-    // ** 데이터 저장 **
+
+    #region # Switch Manage #
     public void AddSwitchToManager(SwitchData _data)
     {
         bool chk = DataManager.Instance.switchDic.ContainsKey(_data.name);
@@ -295,9 +290,10 @@ public class GameManager : MonoBehaviour
                 SwitchManager.Instance.AddDic(p.Value);
         }
     }
+    #endregion # Switch Manage #
 
-    //=================
-    // ** 세이브, 로드, 종료 **
+
+    #region Save / Load
     public void BtnLoad()
     {
         saveSlot.SetActive(true);
@@ -313,12 +309,6 @@ public class GameManager : MonoBehaviour
 
         saveSlot.SetActive(true);
         isSave = true;
-    }
-
-    IEnumerator cantUseFunc()
-    {
-        SceneManager.Instance.PlaySystemTalk(10, 400);
-        yield return new WaitUntil(() => isSystem == false);
     }
 
     public void BtnSaveSlot()
@@ -343,8 +333,6 @@ public class GameManager : MonoBehaviour
             inventory.SetActive(true);
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
-
-        //saveSlot.SetActive(false);
     }
 
     public void GameSave()
@@ -369,7 +357,6 @@ public class GameManager : MonoBehaviour
 
     public void GameLoad()
     {
-
         // ** 플레이어 **
         player = ObjectManager.Instance.MakeObj(DataManager.Instance.gameData.playerName);
         float x = DataManager.Instance.gameData.playerX;
@@ -382,12 +369,20 @@ public class GameManager : MonoBehaviour
         // ** 스위치 **
         DataManager.Instance.InitializeDic();
         DataManagerToSwitchManager();
-        
     }
+
+    IEnumerator cantUseFunc()   // 저장 불가능한 지역일 때
+    {
+        SceneManager.Instance.PlaySystemTalk(10, 400);
+        yield return new WaitUntil(() => isSystem == false);
+    }
+    #endregion Save / Load
+
 
     public void GameExit()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
         //Application.Quit();
     }
+#endregion Methods
 }

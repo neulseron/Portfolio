@@ -6243,10 +6243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a382445438ea3648a3aa0d79844389a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
-  comaData: {fileID: 602911315}
   IdleDoor: {fileID: 1238120280}
   Door: {fileID: 97764698}
   spawnPoints:
@@ -18640,12 +18636,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 765dd70c2dc13e643a5cde0ac42fde41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   Director: {fileID: 2195590035554982824}
-  spawnPoints:
-  - {fileID: 164383210}
 --- !u!156049354 &283470754
 Grid:
   m_ObjectHideFlags: 0
@@ -19628,8 +19619,6 @@ MonoBehaviour:
   - {fileID: 2996924060106556534, guid: 2640cf1b1498fde4a9e424068168cd2e, type: 3}
   - {fileID: 2996924060106556534, guid: ed3ee28892c44174d817eae6a24a0a5c, type: 3}
   - {fileID: 2996924060106556534, guid: cf03bd9b25f97ca40b0dc3e1c4a64f18, type: 3}
-  gameManager: {fileID: 1904002456}
-  switchManager: {fileID: 1379659597}
 --- !u!4 &319436083
 Transform:
   m_ObjectHideFlags: 0
@@ -32001,11 +31990,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f70698e5c88ce2f4aab235a4fb1c99e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   listUI: {fileID: 2075295788}
-  spawnPoints: []
 --- !u!156049354 &521898229
 Grid:
   m_ObjectHideFlags: 0
@@ -37617,9 +37602,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c5ab5b5693f8944a98eb4463e746b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   Sunwoo_FirstSearch: {fileID: 8632004291660765354}
   monitorUI: {fileID: 1301522703}
   monitorObj: {fileID: 882735291}
@@ -41146,9 +41128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b03d097868ed04f4cbccf5b80085dbe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  switchManager: {fileID: 1379659597}
-  sceneManager: {fileID: 2051863866}
   SearchComUI: {fileID: 364498723}
   inventory: {fileID: 775099707}
   tutorialSet: {fileID: 594277051}
@@ -43104,9 +43083,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64215a1b54cb94b47973dbb6d7e832c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchManager: {fileID: 1379659597}
-  portraits:
-  - {fileID: -2728467286139901204, guid: 6d901bef7b3380240942434a5d482198, type: 3}
   inputComaId: 
   searchComaEnd: 0
 --- !u!4 &602911316
@@ -50099,20 +50075,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a618eeabf6c894eb912391532286e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   comaData: {fileID: 602911315}
-  Black: {fileID: 2126833269}
   DataComUI: {fileID: 607014545}
+  Black: {fileID: 2126833269}
+  cameraMiddleTarget: {fileID: 742900533}
   tutoMark: {fileID: 1539245655}
   JiHyeonAnimator: {fileID: 1634567192}
-  mail10: {fileID: 847326213}
   Jihyeon: {fileID: 1634567187}
   JihyeonList: {fileID: 33898026}
   Hyeongseo: {fileID: 781708138}
   HyeongseoList: {fileID: 1650388974}
-  cameraMiddleTarget: {fileID: 742900533}
   Sunwoo: {fileID: 1983990928955132}
   spawnPoints:
   - {fileID: 686557254}
@@ -56312,9 +56284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d7c6dba4a1a1ea44988ed453652f3fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  switchManager: {fileID: 1379659597}
-  sceneManager: {fileID: 2051863866}
   DataComUI: {fileID: 607014545}
   inventory: {fileID: 775099707}
   tutorialSet: {fileID: 1070443889}
@@ -57558,9 +57527,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9816d74a545364c9adc7a6980cd008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   appearJH: {fileID: 1945023987}
   spawnPoints:
   - {fileID: 626374456}
@@ -59982,14 +59948,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca4dd9b71ecc2d94682e50747fe866c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  csvManager: {fileID: 204373693}
-  itemManager: {fileID: 754286902}
   allSlots: []
   itemIndexList: 
   originalSlot: {fileID: 1964602160}
   invenRect: {fileID: 775099708}
-  infoWindow: {fileID: 775099707}
   infoImage: {fileID: 1733838569}
   infoName: {fileID: 576127845}
   infoContent: {fileID: 865982265}
@@ -70097,13 +70059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d1032c0eb45764da0e3319d7575550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   tutoMark: {fileID: 135549342}
   SearchingSW: {fileID: 945098902}
   SearchingJU: {fileID: 737046401}
-  spawnPoints: []
 --- !u!156049354 &882366514
 Grid:
   m_ObjectHideFlags: 0
@@ -71462,9 +71420,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f61b6e3f33b24440992947e00facfc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   spawnPoints:
   - {fileID: 931498892}
 --- !u!1 &917025368
@@ -71615,12 +71570,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d41178b838ebdd4e817f02acfb9f37d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
-  spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!1 &920741782
 GameObject:
   m_ObjectHideFlags: 0
@@ -72374,7 +72323,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a3c475676695fa438b84642f7eb4c81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
   maps:
   - {fileID: 1034186254}
   - {fileID: 98562040}
@@ -72754,9 +72702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80889574ba115074bbaf486b647988c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   screenUI: {fileID: 1913689907}
 --- !u!156049354 &957496867
 Grid:
@@ -74298,7 +74243,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91dd17d3e6434ce47a79ca26f69bbe40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
   miniMaps:
   - {fileID: 1971499386}
   - {fileID: 1760354497}
@@ -77569,7 +77513,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 061fabb8b2f7f4d4e8300b1729cd3a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
   monitor: {fileID: 1876384798}
   inventory: {fileID: 775099711}
   mail6: {fileID: 2101363298}
@@ -92801,10 +92744,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 353baa835e4f7bb4790bb02816b4c16f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  switchManager: {fileID: 1379659597}
-  csvManager: {fileID: 204373693}
-  sceneManager: {fileID: 2051863866}
   inventory: {fileID: 775099711}
   monitorAnimator: {fileID: 882735294}
   mail6: {fileID: 0}
@@ -96712,14 +96651,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ing: 0
-  MR_StartExam: {fileID: 1095764753}
   MR_turn2: {fileID: 120859769}
   MR_turn3: {fileID: 467170955}
-  L7: ----------------------------------
   A1MazeAns: LULRLU
-  L5: ----------------------------------
   D1_TalkSumin: {fileID: 2307248534925417326}
-  D1_movePoint: {fileID: 2103479221}
 --- !u!4 &1379659598
 Transform:
   m_ObjectHideFlags: 0
@@ -107407,12 +107342,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f100d59f8864814ea112235f976ae9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   screenUI: {fileID: 1671016201}
   rightPerson: {fileID: 598752763}
-  spawnPoints: []
 --- !u!1 &1535595556
 GameObject:
   m_ObjectHideFlags: 0
@@ -107761,10 +107692,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   FadeImg: {fileID: 0}
   endFade: 0
-  gameManager: {fileID: 1904002456}
   nameTxtTE: {fileID: 589469757}
   timeTxtTE: {fileID: 1280671091}
-  nameTyping: 0
   nameStr: 
   timeStr: 
 --- !u!114 &1540364182
@@ -112430,8 +112359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cf584954fa6324cb20051a663fd918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvManager: {fileID: 204373693}
-  gameManager: {fileID: 1904002456}
   nameBox: {fileID: 1150945462}
   talkText: {fileID: 831479215}
   npcName: {fileID: 1363257706}
@@ -117382,9 +117309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 677d394a717fd4849bfa5ead6655a5eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   tutorialSet: {fileID: 336930432}
   JaeiID: {fileID: 1652108780}
   monitorUI: {fileID: 1876384796}
@@ -117443,8 +117367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 256a1cfdaaf6eaf4a93acd280561b963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchManager: {fileID: 1379659597}
-  csvManager: {fileID: 204373693}
   mainWindow: {fileID: 1134876829}
   pressWindow: {fileID: 1347835576}
   articleWindow: {fileID: 474055316}
@@ -119313,11 +119235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddc698ec24371848bd8d50872c27b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   Light: {fileID: 1718507111}
-  spawnPoints: []
 --- !u!156049354 &1704358381
 Grid:
   m_ObjectHideFlags: 0
@@ -120796,9 +120714,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d16cca8cc664c94dbaae790e9969031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   Hyeonseok: {fileID: 6439259492529283329}
   Sunwoo: {fileID: 1648058212625268503}
   spawnPoints:
@@ -125532,10 +125447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 353baa835e4f7bb4790bb02816b4c16f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  switchManager: {fileID: 1379659597}
-  csvManager: {fileID: 204373693}
-  sceneManager: {fileID: 2051863866}
   inventory: {fileID: 775099711}
   monitorAnimator: {fileID: 370153285}
   mail6: {fileID: 2101363298}
@@ -127122,20 +127033,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb0a14cb372ab7439367dab87583c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectManager: {fileID: 319436082}
-  sceneManager: {fileID: 2051863866}
-  csvManager: {fileID: 204373693}
-  dialogManager: {fileID: 1603390111}
-  switchManager: {fileID: 1379659597}
-  itemManager: {fileID: 754286902}
   main_camera: {fileID: 519420033}
   fadeEffect: {fileID: 1540364181}
-  l1: -----------------------------------
   player: {fileID: 0}
   scanObj: {fileID: 0}
   dontMove: 0
   canSleep: 0
-  l2: -------------------------------
   talkBox: {fileID: 1199860640}
   isTalking: 0
   currSceneIndex: 0
@@ -134085,7 +133988,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 061fabb8b2f7f4d4e8300b1729cd3a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
   monitor: {fileID: 1301522705}
   inventory: {fileID: 775099711}
   mail6: {fileID: 0}
@@ -138405,10 +138307,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b6a52890afb0e428c6985be0856aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  questId: 10
-  questActionIndex: 0
-  questObj:
-  - {fileID: 0}
 --- !u!4 &2025830126
 Transform:
   m_ObjectHideFlags: 0
@@ -141680,8 +141578,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b647f267a47d7b4dbf9ae5dfd35fb2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  JR_monitorAnimator: {fileID: 370153285}
   textBoxTE: {fileID: 831479215}
   Btn1Txt: {fileID: 1986862627}
   Btn2Txt: {fileID: 1288776313}
@@ -142968,8 +142864,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e63d86c7a758eb41b3415e81e47a4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  switchManager: {fileID: 1379659597}
-  gameManager: {fileID: 1904002456}
   lists:
   - {fileID: 815452971}
   - {fileID: 1768838736}
@@ -145813,11 +145707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec94c74852a011543931fc329bf42a05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameManager: {fileID: 1904002456}
-  sceneManager: {fileID: 2051863866}
-  switchManager: {fileID: 1379659597}
   sumin: {fileID: 2307248534925417325}
-  spawnPoints: []
 --- !u!156049354 &2126737163
 Grid:
   m_ObjectHideFlags: 0

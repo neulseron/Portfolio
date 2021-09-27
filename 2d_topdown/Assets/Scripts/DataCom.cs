@@ -23,9 +23,10 @@ public class DataCom : MonoBehaviour
     //------------------------------------------------------
     public void BtnCurrComa()
     {
+        Debug.Log("1");
         if (!SwitchManager.Instance.switchdata["Tutorial_DataCom"].off)
             return;
-
+        Debug.Log("2");
         currentScreen = 2;
         Main.SetActive(false);
         CurrComaList.SetActive(true);

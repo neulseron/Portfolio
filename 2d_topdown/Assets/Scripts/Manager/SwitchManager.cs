@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SwitchManager : MonoBehaviour
@@ -10,24 +9,26 @@ public class SwitchManager : MonoBehaviour
 #endregion Singletone
 
 
+#region Variables
     public Dictionary<string, SwitchData> switchdata;
     public bool ing;
-    //======================================
+#endregion Variables
+
+
+#region Etc Switch
     //** Meeting Room **
-    public Switch MR_StartExam;
     public Switch MR_turn2;
     public Switch MR_turn3;
-    public string L7 = "";
-    //======================================
+
     //** A 1 Maze **
     public string A1MazeAns = "LULRLUUR";
-    public string L5 = "";
-    //======================================
+
     //** D 1 **
     public Switch D1_TalkSumin;
-    public Switch D1_movePoint;
-    //======================================
+#endregion Etc Switch
     
+
+#region Methods
     private void Awake() {
         instance = this;
         
@@ -127,4 +128,5 @@ public class SwitchManager : MonoBehaviour
             switchdata.Add(_data.name, _data);
         }
     }
+#endregion Methods
 }
