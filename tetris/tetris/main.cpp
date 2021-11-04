@@ -22,9 +22,10 @@ int main()
 	Board gameBoard(BOARDHEIGHT, BOARDWIDTH);
 	Block currBlock;
 	bool nextTurn = true;
+	bool gameEnd = false;
 
 	clock_t start, end;
-	while (true)  {
+	while (!gameEnd)  {
 		gameBoard.ClearLine();
 
 		// ** 새 블럭 생성
@@ -32,7 +33,7 @@ int main()
 			start = clock();
 
 			currBlock = Block();
-			gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn);
+			gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn, gameEnd);
 			nextTurn = false;
 		}
 
@@ -60,11 +61,11 @@ int main()
 			else if (keyCode == SPACE) {
 				do {
 					currBlock.Down();
-				} while (gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn));
+				} while (gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn, gameEnd));
 			}
 
 			// ** 보드판 영역을 벗어났을 경우 위치 롤백
-			if (!gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn)) {
+			if (!gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn, gameEnd)) {
 				currBlock.RollbackMove(keyCode);
 			}
 		}
@@ -74,8 +75,9 @@ int main()
 		if ((end - start) > 1 * CLOCKS_PER_SEC) {
 			start = clock();
 			currBlock.Down();
-			gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn);
+			gameBoard.DrawCurrBlock(currBlock, keyCode, nextTurn, gameEnd);
 		}
-
 	}
+
+	gameBoard.DrawGameEnd();
 }
