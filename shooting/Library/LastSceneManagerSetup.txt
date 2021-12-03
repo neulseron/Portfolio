@@ -1,13 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/MainScene.unity
+- path: Assets/Scenes/LevelScene.unity
   isLoaded: 1
   isActive: 1
-  isSubScene: 0
-- path: Assets/Scenes/SelectLevelScene.unity
-  isLoaded: 0
-  isActive: 0
-  isSubScene: 0
-- path: Assets/Scenes/LevelScene.unity
-  isLoaded: 0
-  isActive: 0
   isSubScene: 0
