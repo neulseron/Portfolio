@@ -41,7 +41,7 @@ public class LoginManager : MonoBehaviour
         var Bro = Backend.BMember.CustomLogin(ID.text, PW.text);
 
         if (Bro.IsSuccess()) {
-            Debug.Log("동기 로그인 성공");
+            Debug.Log("로그인 성공");
             LoadInterestScene();
         } else Error(Bro.GetErrorCode());
     }

@@ -11,7 +11,31 @@ public class InterestManager : MonoBehaviour
     public List<Toggle> interests = new List<Toggle>();
 
     void Start() {
-        
+        LoadInterestData();
+    }
+
+    public void LoadInterestData()
+    {
+        var bro = Backend.GameData.GetMyData("Interest", new Where());
+
+        if (!bro.IsSuccess()) {
+            Debug.Log("불러오기 실패");
+            //Error(bro.GetErrorCode(), "loadData");
+            return;
+        } else if (bro.GetReturnValuetoJSON()["rows"].Count <= 0) {
+            Debug.Log("불러올 데이터 없음");
+            //Debug.Log(bro);
+            return;
+        }
+
+        foreach (var tog in interests) {
+            var data = bro.Rows()[0][tog.name][0];
+            if ((bool)data) {
+                tog.isOn = true;
+            } else {
+                tog.isOn = false;
+            }
+        }
     }
 
     public void InsertInterestData()
@@ -39,6 +63,8 @@ public class InterestManager : MonoBehaviour
             case "PreconditionFailed":
                 if (type == "gameData")
                     Debug.LogError("데이터를 추가할 수 없음");
+                else if (type == "loadData")
+                    Debug.LogError("데이터를 불러올 수 없음");
                 break;
             default:
                 break;

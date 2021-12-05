@@ -5,6 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class MainManager : MonoBehaviour
 {
+    public GameObject sideMenuPanel;
+
+    void Update() {
+        if (sideMenuPanel.activeSelf && Input.GetKey(KeyCode.Escape)) {
+            sideMenuPanel.SetActive(false);
+        }
+    }
+
+    public void OpenSideMenuPanel()
+    {
+        sideMenuPanel.SetActive(true);
+    }
+
     public void LoadWorldViewScene()
     {
         SceneManager.LoadScene(3);
