@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using BackEnd;
 
 public class SeriesManager : MonoBehaviour
 {
-    void Start()
+
+    public void LoadMainScene()
     {
-        
+        SceneManager.LoadScene(2);
     }
 
-    void Update()
+    public void LoadWorldViewScene()
     {
-        if (Input.GetKey(KeyCode.Escape)) {
-            SceneManager.LoadScene(2);
-        }
+        SceneManager.LoadScene(3);
+    }
+
+    public void LoadCommunityScene()
+    {
+        SceneManager.LoadScene(5);
+    }
+
+    public void LoadMypageScene()
+    {
+        SceneManager.LoadScene(6);
     }
 }

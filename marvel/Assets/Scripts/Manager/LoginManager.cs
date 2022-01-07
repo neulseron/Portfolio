@@ -12,6 +12,15 @@ public class LoginManager : MonoBehaviour
     public InputField PW;
 
 
+    [Header("Login")]
+    public GameObject JoinSet;
+    public InputField JoinID;
+    public InputField JoinPW;
+    public InputField JoinNickname;
+
+    private void Awake() {
+        Screen.SetResolution(360, 720, false);
+    }
     void Start()
     {
         var bro = Backend.Initialize();
@@ -46,12 +55,21 @@ public class LoginManager : MonoBehaviour
         } else Error(Bro.GetErrorCode());
     }
 
+    public void ToJoin()
+    {
+        JoinSet.SetActive(true);
+    }
+
     public void Join()
     {
-        var Bro = Backend.BMember.CustomSignUp(ID.text, PW.text);
+        var Bro = Backend.BMember.CustomSignUp(JoinID.text, JoinPW.text);
 
         if (Bro.IsSuccess())    Debug.Log("동기 회원가입 성공");
         else Error(Bro.GetErrorCode());
+
+        Backend.BMember.CreateNickname(JoinNickname.text);
+
+        JoinSet.SetActive(false);
     }
 
     void LoadInterestScene()

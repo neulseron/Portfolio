@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using BackEnd;
+using LitJson;
 
 public class InterestManager : MonoBehaviour
 {
@@ -23,22 +24,34 @@ public class InterestManager : MonoBehaviour
             //Error(bro.GetErrorCode(), "loadData");
             return;
         } else if (bro.GetReturnValuetoJSON()["rows"].Count <= 0) {
-            Debug.Log("불러올 데이터 없음");
+            Debug.Log("조회할 데이터 없음");
+            InsertInterestData();
             //Debug.Log(bro);
             return;
         }
 
         foreach (var tog in interests) {
             var data = bro.Rows()[0][tog.name][0];
-            if ((bool)data) {
-                tog.isOn = true;
-            } else {
-                tog.isOn = false;
-            }
+            tog.isOn = (bool)data;
         }
     }
 
     public void InsertInterestData()
+    {
+        Param param = new Param();
+        foreach (var tog in interests) {
+            param.Add(tog.name, false);
+        }
+
+        var bro = Backend.GameData.Insert("Interest", param);
+        if (bro.IsSuccess()) {
+            Debug.Log("Interset 데이터 추가 성공");
+        } else {
+            Error(bro.GetErrorCode(), "gameData");
+        }
+    }
+
+    public void UpdateInterestData()
     {
         Param param = new Param();
         foreach (var tog in interests) {
@@ -49,9 +62,10 @@ public class InterestManager : MonoBehaviour
             }
         }
 
-        var bro = Backend.GameData.Insert("Interest", param);
+        var getInDate = Backend.GameData.GetMyData("Interest", new Where());
+        var bro = Backend.GameData.UpdateV2("Interest", getInDate.Rows()[0]["inDate"][0].ToString(), Backend.UserInDate, param);
         if (bro.IsSuccess()) {
-            Debug.Log("Interset 데이터 추가 성공");
+            Debug.Log("Interset 데이터 수정 성공");
         } else {
             Error(bro.GetErrorCode(), "gameData");
         }
@@ -73,7 +87,7 @@ public class InterestManager : MonoBehaviour
 
     public void LoadMainScene()
     {
-        InsertInterestData();
+        UpdateInterestData();
         SceneManager.LoadScene(2);
     }
 }
