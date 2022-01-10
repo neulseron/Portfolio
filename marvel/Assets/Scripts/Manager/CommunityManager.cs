@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using BackEnd;
 
@@ -13,13 +12,14 @@ public class CommunityManager : MonoBehaviour
     GameObject[] PostFrames;
 
 [Header("Write Post")]
-    public Text PostWriter;
+    public GameObject WritingPanel;
+    public InputField PostWriter;
     public InputField PostTitle;
     public InputField PostContent;
-    public GameObject WritingPanel;
 
 #region Unity Methods
-    void Awake() {
+    void Awake() 
+    {
         GeneratePostFrames();
     }
 
@@ -53,12 +53,16 @@ public class CommunityManager : MonoBehaviour
             Text newTitle = newPost.transform.Find("BtnContent").Find("TitleTxt").gameObject.GetComponent<Text>();
             Text newContent = newPost.transform.Find("BtnContent").Find("ContentTxt").gameObject.GetComponent<Text>();
 
-            var writerInDate = bro.Rows()[i]["owner_inDate"]["S"].ToString();
-            var getWriterNickname = Backend.Social.GetUserInfoByInDate(writerInDate);
 
-            string writer = getWriterNickname.GetReturnValuetoJSON()["row"]["nickname"].ToString();
             var title = bro.Rows()[i]["title"]["S"].ToString();
             var content = bro.Rows()[i]["content"]["S"].ToString();
+            var writer = bro.Rows()[i]["nickname"]["S"].ToString();
+
+            /*
+            var writerInDate = bro.Rows()[i]["owner_inDate"]["S"].ToString();
+            var getWriterNickname = Backend.Social.GetUserInfoByInDate(writerInDate);
+            string writer = getWriterNickname.GetReturnValuetoJSON()["row"]["nickname"].ToString();
+            */
 
             newWriter.text = writer;
             newTitle.text = title;
@@ -69,11 +73,13 @@ public class CommunityManager : MonoBehaviour
     public void WritePost()
     {
         WritingPanel.SetActive(true);
+        PostWriter.text = ApplicationManager.Instance.GetNickName();
     }
 
     public void Posting()
     {
         Param param = new Param();
+        param.Add("nickname", PostWriter.text);
         param.Add("title", PostTitle.text);
         param.Add("content", PostContent.text);
 
@@ -117,23 +123,8 @@ public class CommunityManager : MonoBehaviour
     }
 #endregion Frame Pooling
 
-    public void LoadMainScene()
+    public void LoadMenuScene(int idx)
     {
-        SceneManager.LoadScene(2);
-    }
-
-    public void LoadWorldViewScene()
-    {
-        SceneManager.LoadScene(3);
-    }
-
-    public void LoadSeriesScene()
-    {
-        SceneManager.LoadScene(4);
-    }
-
-    public void LoadMypageScene()
-    {
-        SceneManager.LoadScene(6);
+        ApplicationManager.Instance.LoadNextScene(idx);
     }
 }

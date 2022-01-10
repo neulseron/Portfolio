@@ -5,23 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class WordviewManager : MonoBehaviour
 {
-    public void LoadMainScene()
+    public void LoadMenuScene(int idx)
     {
-        SceneManager.LoadScene(2);
-    }
-
-    public void LoadSeriesScene()
-    {
-        SceneManager.LoadScene(4);
-    }
-
-    public void LoadCommunityScene()
-    {
-        SceneManager.LoadScene(5);
-    }
-
-    public void LoadMypageScene()
-    {
-        SceneManager.LoadScene(6);
+        ApplicationManager.Instance.LoadNextScene(idx);
     }
 }

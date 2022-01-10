@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using BackEnd;
 using LitJson;
 
 public class MainManager : MonoBehaviour
 {
     //enum Heros { Guardians, DrStrange, BlackWidow, BlackPanther, SpiderMan, IronMan, AntMan, Avengers, CaptinMarvel, CaptinAmerica, Thor, Hulk, Hawkeye };
-
     public GameObject sideMenuPanel;
     public GameObject[] HeroBtns;
 
@@ -46,23 +44,8 @@ public class MainManager : MonoBehaviour
         sideMenuPanel.SetActive(true);
     }
 
-    public void LoadWorldViewScene()
+    public void LoadMenuScene(int idx)
     {
-        SceneManager.LoadScene(3);
-    }
-
-    public void LoadSeriesScene()
-    {
-        SceneManager.LoadScene(4);
-    }
-
-    public void LoadCommunityScene()
-    {
-        SceneManager.LoadScene(5);
-    }
-
-    public void LoadMypageScene()
-    {
-        SceneManager.LoadScene(6);
+        ApplicationManager.Instance.LoadNextScene(idx);
     }
 }

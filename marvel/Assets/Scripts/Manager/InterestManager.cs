@@ -8,7 +8,6 @@ using LitJson;
 
 public class InterestManager : MonoBehaviour
 {
-    [Header("Interests")]
     public List<Toggle> interests = new List<Toggle>();
 
     void Start() {
@@ -42,13 +41,8 @@ public class InterestManager : MonoBehaviour
         foreach (var tog in interests) {
             param.Add(tog.name, false);
         }
-
-        var bro = Backend.GameData.Insert("Interest", param);
-        if (bro.IsSuccess()) {
-            Debug.Log("Interset 데이터 추가 성공");
-        } else {
-            Error(bro.GetErrorCode(), "gameData");
-        }
+        
+        ApplicationManager.Instance.InsertData("Interest", param);
     }
 
     public void UpdateInterestData()
@@ -62,32 +56,14 @@ public class InterestManager : MonoBehaviour
             }
         }
 
-        var getInDate = Backend.GameData.GetMyData("Interest", new Where());
-        var bro = Backend.GameData.UpdateV2("Interest", getInDate.Rows()[0]["inDate"][0].ToString(), Backend.UserInDate, param);
-        if (bro.IsSuccess()) {
-            Debug.Log("Interset 데이터 수정 성공");
-        } else {
-            Error(bro.GetErrorCode(), "gameData");
-        }
-    }
-
-    void Error(string errorCode, string type)
-    {
-        switch(errorCode) {
-            case "PreconditionFailed":
-                if (type == "gameData")
-                    Debug.LogError("데이터를 추가할 수 없음");
-                else if (type == "loadData")
-                    Debug.LogError("데이터를 불러올 수 없음");
-                break;
-            default:
-                break;
-        }
+        ApplicationManager.Instance.UpdateData("Interest", param);
     }
 
     public void LoadMainScene()
     {
         UpdateInterestData();
-        SceneManager.LoadScene(2);
+        
+        string nextScene = ApplicationManager.Instance.isFromMyPage ? "MyPage" : "Main";
+        ApplicationManager.Instance.LoadNextScene(nextScene);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -18,9 +19,7 @@ public class LoginManager : MonoBehaviour
     public InputField JoinPW;
     public InputField JoinNickname;
 
-    private void Awake() {
-        Screen.SetResolution(360, 720, false);
-    }
+
     void Start()
     {
         var bro = Backend.Initialize();
@@ -47,12 +46,20 @@ public class LoginManager : MonoBehaviour
 
     public void Login()
     {
-        var Bro = Backend.BMember.CustomLogin(ID.text, PW.text);
+        var bro = Backend.BMember.CustomLogin(ID.text, PW.text);
 
-        if (Bro.IsSuccess()) {
+        if (bro.IsSuccess()) {
             Debug.Log("로그인 성공");
-            LoadInterestScene();
-        } else Error(Bro.GetErrorCode());
+
+            var bro2 = Backend.GameData.GetMyData("ProfileImg", new Where());
+            if (bro2.GetReturnValuetoJSON()["rows"].Count <= 0) {
+                Debug.Log("프로필 없음");
+                LoadDefaultProfileImg();
+            }
+
+            ApplicationManager.Instance.isFromMyPage = false;
+            ApplicationManager.Instance.LoadNextScene("Interest");
+        } else Error(bro.GetErrorCode());
     }
 
     public void ToJoin()
@@ -62,18 +69,32 @@ public class LoginManager : MonoBehaviour
 
     public void Join()
     {
-        var Bro = Backend.BMember.CustomSignUp(JoinID.text, JoinPW.text);
+        var bro = Backend.BMember.CustomSignUp(JoinID.text, JoinPW.text);
 
-        if (Bro.IsSuccess())    Debug.Log("동기 회원가입 성공");
-        else Error(Bro.GetErrorCode());
+        if (bro.IsSuccess())    Debug.Log("동기 회원가입 성공");
+        else Error(bro.GetErrorCode());
 
         Backend.BMember.CreateNickname(JoinNickname.text);
 
         JoinSet.SetActive(false);
     }
 
-    void LoadInterestScene()
+    void LoadDefaultProfileImg()
     {
-        SceneManager.LoadScene(1);
+        string path = "Assets/Resources/DefaultProfile.png";
+        byte[] byteTexture = File.ReadAllBytes(path);
+
+        Param param = new Param();
+        param.Add("profile", byteTexture);
+
+        /*
+        var bro = Backend.GameData.Insert("ProfileImg", param);
+        if (bro.IsSuccess()) {
+            Debug.Log("ProfileImg 데이터 추가 성공");
+        } else {
+            Debug.LogError("Profile Img 추가 실패");
+        }
+        */
+        ApplicationManager.Instance.InsertData("ProfileImg", param);
     }
 }
