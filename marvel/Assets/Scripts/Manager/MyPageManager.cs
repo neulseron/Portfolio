@@ -54,8 +54,8 @@ public class MyPageManager : MonoBehaviour
             return;
         }
 
-        var data = bro.Rows()[0]["profile"][0];
-        byte[] byteData = System.Convert.FromBase64String((string)data);
+        string data = bro.Rows()[0]["profile"][0].ToString();
+        byte[] byteData = System.Convert.FromBase64String(data);
         Texture2D texture = new Texture2D(512, 512, TextureFormat.ARGB32, false, true);
         texture.LoadImage(byteData);
 

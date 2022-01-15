@@ -24,7 +24,7 @@ sceneSetups:
   isActive: 0
   isSubScene: 0
 - path: Assets/Scenes/Community.unity
-  isLoaded: 0
+  isLoaded: 1
   isActive: 0
   isSubScene: 0
 - path: Assets/Scenes/MyPage.unity
